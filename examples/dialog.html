@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Hello UI Dialog</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <link rel="stylesheet" href="../co/css/co.css">
+
+        <link rel="stylesheet" href="../co/css/widgets/dialog/dialog.css" />
+
+
+        <style>
+            html,body {
+                background-color: #efeff4;
+            }
+            .ui-btn{
+                display: block;
+                width: 120px;
+                margin: 10px auto;
+              }
+              #info{
+                padding: 20px 10px ;
+              }
+        </style>
+        
+    </head>
+
+    <body>
+        <header class="ui-bar ui-bar-nav">
+            <a class="ui-action-back ui-icon ui-icon-left-nav ui-pull-left"></a>
+            <h1 class="ui-title">消息框（dialog）</h1>
+        </header>
+        <div class="ui-content">
+            <div class="ui-content-padded" style="margin: 5px;text-align: center;">
+                <button id='alertBtn' type="button" class="ui-btn ui-btn-blue ui-btn-outlined">分享框</button>
+                <button id='confirmBtn' type="button" class="ui-btn ui-btn-blue ui-btn-outlined">评分框</button>
+                <button id='promptBtn' type="button" class="ui-btn ui-btn-blue ui-btn-outlined">提示框</button>
+                <button id='toastBtn' type="button" class="ui-btn ui-btn-blue ui-btn-outlined">个性化提示框</button>
+                <button id='alert' type="button" class="ui-btn ui-btn-blue ui-btn-outlined">alert</button>
+                <button id='confirm' type="button" class="ui-btn ui-btn-blue ui-btn-outlined">confirm</button>
+                <button id='prompt' type="button" class="ui-btn ui-btn-blue ui-btn-outlined">prompt</button>
+        
+                </div>
+            </div>
+        </div>
+        <script src="../co/co.js"></script>
+    </body>
+     <script>
+            domReady(function(require){
+                require("dialog");
+                $('.ui-pull-left').button(function(evt){
+                    this.back();
+                })
+
+                $('#alertBtn').button(function(btn,el){
+                         Dialog.dialog({
+                            title:'消息框',
+                            width: 288,
+                            buttons: {
+                                '取消': function(){
+                                    this.close();
+                                }
+                            },
+                            content: '<ul class="share-list"><li class="renren">人人网</li><li class="sina">新浪微博</li><li class="sms">短信息</li><li class="email">用电子邮件发送信息</li></ul>'
+                            },function(dialog){
+                                dialog._wrap.addClass('share-dialog');
+                            });
+
+                        //Dialog.alert('111');
+                    });
+
+                $('#confirmBtn').button(function(btn,el){
+                        Dialog.dialog({
+                            title:'文档评分',
+                            scrollMove: false,
+                            buttons: {
+                                '取消': function(){
+                                    this.close();
+                                },
+                                '确定': function(){
+                                    this.close();
+                                }
+                                ,
+                                '放弃': function(){
+                                    this.close();
+                                }
+                            },
+                            content:  '<div  class="vote-dialog" style="display:block"><p class="vote"></p><p>星级从1到5，获得越多星星，表示等级越高</p></div>'
+                            });
+                        //Dialog.prompt('222');
+                    });
+                $('#promptBtn').button(function(btn,el){
+                       Dialog.dialog({
+                            title:'登陆提示',
+                            buttons: {
+                                '取消': function(){
+                                    this.close();
+                                },
+                                '确定': function(){
+                                    this.close();
+                                }
+                            },
+                            content:  '<div style="display:block"><p>恭喜您, 您是我们第1000000000000个用户</p></div>'
+                        })//.opts['_wrap'].addClass('login-dialog').addClass('login-dialog login-dialog-dark');;
+
+                        //Dialog.prompt('333');
+                    });
+                $('#toastBtn').button(function(btn,el){
+                        Dialog.dialog({
+                            buttons: {
+                                '取消': function(){
+                                    this.close();
+                                },
+                                '确定': function(){
+                                    this.close();
+                                }
+                            },
+                            title: '登录提示',
+                            content: '<p>登录后, 获得更多个性化特色功能</p><p>特色功能1：个性化首页</p>' +
+                                    '<p>特色功能2：各产品线自动关联，无需再次登录，一站式服务</p><p>特色功能3：记录您当前的活动状态</p>' +
+                                    '<p>特色功能4：个性化提醒</p>'
+                        },function(dialog){
+                            dialog._wrap.addClass('login-dialog');
+                        })
+
+                        //Dialog.prompt('444');
+                    });
+                $('#alert').button(function(){
+                        Dialog.alert('消息内容',{
+                            title : '单按钮alert',
+                            buttons : {
+                                '确定': function(){
+                                    alert('确定');
+                                }
+                            }
+                        });
+                });        
+                $('#confirm').button(function(){
+                        Dialog.confirm('消息内容',{
+                            title : '单按钮alert',
+                            buttons : {
+                                '确定': function(){
+                                    alert('确定');
+                                },
+                                '放弃': function(){
+                                    alert('放弃');
+                                },
+                                '取消': function(){
+                                    alert('取消');
+                                }
+                            }
+                        });
+                });       
+                $('#prompt').button(function(){
+                        Dialog.prompt('消息内容',{
+                            title : '单按钮alert',
+                            type:'number',
+                            buttons : ['确认','放弃','取消'],
+                            callback:function(psuccess,perror){
+                                alert(psuccess.buttonIndex);
+                            }
+                        });
+                });        
+
+            });
+        </script>
+</html>

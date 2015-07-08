@@ -1,0 +1,101 @@
+.ui-bar {
+  position: fixed;
+  right: 0;
+  left: 0;
+  z-index: 10;
+  height: 44px;
+  padding-right: 10px;
+  padding-left: 10px;
+  background-color: rgba(247, 247, 247, .98);
+  border-bottom: 0;
+  -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, .85);
+          box-shadow: 0 0 1px rgba(0, 0, 0, .85);
+
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
+}
+.ui-bar-nav {
+  top: 0;
+  -webkit-box-shadow: 0 1px 6px #ccc;
+          box-shadow: 0 1px 6px #ccc;
+}   
+.ui-bar-nav ~ .ui-content {
+  padding-top: 44px;
+}
+
+.ui-title {
+  position: absolute;
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0 -10px;
+  font-size: 17px;
+  font-weight: 500;
+  line-height: 44px;
+  color: #000;
+  text-align: center;
+  white-space: nowrap;
+} 
+
+.ui-btn-link {
+  padding-top: 6px;
+  padding-bottom: 6px;
+  color: #007aff;
+  background-color: transparent;
+  border: 0;
+}
+
+.ui-bar .ui-btn {
+  position: relative;
+  top: 7px;
+  z-index: 20;
+  padding: 6px 12px 7px;
+  margin-top: 0;
+  font-weight: 400;
+}
+
+.ui-bar .ui-title {
+  right: 40px;
+  left: 40px;
+  width: auto;
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ui-bar .ui-icon {
+  position: relative;
+  z-index: 20;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  font-size: 24px;
+}
+
+.ui-bar .ui-btn-link {
+  top: 0;
+  padding: 0;
+  font-size: 16px;
+  line-height: 44px;
+  color: #007aff;
+  border: 0;
+}
+
+.ui-pull-left {
+  float: left;
+}
+
+.ui-pull-right {
+  float: right;
+}
+.ui-bar-nav.ui-bar .ui-icon {
+  padding-right: 10px;
+  padding-left: 10px;
+  margin-right: -10px;
+  margin-left: -10px;
+}
+.ui-bar .ui-btn-nav.ui-pull-left {
+  margin-left: -5px;
+}
+.ui-bar .ui-btn.ui-pull-left {
+  margin-right: 10px;
+}
