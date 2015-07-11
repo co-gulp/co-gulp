@@ -8,30 +8,26 @@
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-		<link rel="stylesheet" href="../co/css/co.css">
+		<link rel="stylesheet" href="../dist/css/co.min.css">
 	</head>
 	<body class="ios7">
-			<header id="header" class="ui-bar ui-bar-nav">
-          <h1 class="ui-title">UI Widgets</h1>
-          <a class="ui-icon ui-icon-bars ui-pull-left"></a>
-          <a id="info" class="ui-icon ui-icon-info-filled ui-pull-right" style="color: #999;"></a>
-	    </header> 
     <div class="ui-content" >
 			<div id='treeview'>
          
       </div>
 		</div>
-		   <script src="../co/js/co.js"></script>
+		   <script src="../dist/js/co.min.js"></script>
        <script src="data-index.js"></script>
 </body>
 <script>
   domReady(function(require){
         require("treeview");
         $('#treeview').treeview({
-                   callback:function(el,evt){
+                    iscroll:true,
+                    callback:function(el,evt){
                        $local.Win.openWin($(el).attr('tar'));
-                   },
-                   data:data
+                    },
+                    data:data
                 });
   })
    </script>

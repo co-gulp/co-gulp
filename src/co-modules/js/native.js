@@ -2,11 +2,6 @@
 ************   ui native window   ************
 ===============================================================================*/
     
-
-    var $N = global.rd
-
-    co.plus = !!$N;
-
     var $local = global.$local = {};
     (function($l,global) {
        $l.Win = {

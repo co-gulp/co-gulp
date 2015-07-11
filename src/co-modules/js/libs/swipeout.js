@@ -14,6 +14,7 @@
                         swipeoutOpenedEl.is(target[0]) ||
                         target.parents('.swipeout').is(swipeoutOpenedEl) 
                         )) {
+                        console.log('close');
                         swipeClose(swipeoutOpenedEl);
                     }
                 }
@@ -45,12 +46,12 @@
                     noFoldRight = actionsRight.hasClass('swipeout-actions-no-fold') || false;
                     if (actionsLeft.length > 0) {
                         actionsLeftWidth = actionsLeft.outerWidth();
-                        buttonsLeft = actionsLeft.children('a');
+                        buttonsLeft = actionsLeft.children('span');
                         overswipeLeftButton = actionsLeft.find('.swipeout-overswipe');
                     }
                     if (actionsRight.length > 0) {
                         actionsRightWidth = actionsRight.outerWidth();
-                        buttonsRight = actionsRight.children('a');
+                        buttonsRight = actionsRight.children('span');
                         overswipeRightButton = actionsRight.find('.swipeout-overswipe');
                     }
                     opened = swipeOutEl.hasClass('swipeout-opened');
@@ -269,7 +270,7 @@
             var noFold = swipeOutActions.hasClass('swipeout-actions-no-fold') || false;
             el.trigger('open').addClass('swipeout-opened').removeClass('transitioning');
             swipeOutActions.addClass('swipeout-actions-opened');
-            var buttons = swipeOutActions.children('a');
+            var buttons = swipeOutActions.children('span');
             var swipeOutActionsWidth = swipeOutActions.outerWidth();
             var translate = dir === 'right' ? -swipeOutActionsWidth : swipeOutActionsWidth;
             var i;
@@ -301,7 +302,7 @@
             var dir = el.find('.swipeout-actions-opened').hasClass('swipeout-actions-right') ? 'right' : 'left';
             var swipeOutActions = el.find('.swipeout-actions-opened').removeClass('swipeout-actions-opened');
             var noFold = swipeOutActions.hasClass('swipeout-actions-no-fold') || false;
-            var buttons = swipeOutActions.children('a');
+            var buttons = swipeOutActions.children('span');
             var swipeOutActionsWidth = swipeOutActions.outerWidth();
             allowSwipeout = false;
             el.trigger('close');
@@ -310,7 +311,7 @@
             var closeTO;
             function onSwipeoutClose() {
                 allowSwipeout = true;
-                buttons.transform('');
+                // buttons.transform('');
                 el.trigger('closed');
                 if (callback) callback.call(el[0]);
                 if (closeTO) clearTimeout(closeTO);

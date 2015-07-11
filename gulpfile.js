@@ -21,9 +21,9 @@ var gulp = require('gulp'), //基础库
             co: {
                 root: 'co/',
                 styles: 'co/css/',
-                scripts: 'co/js/',
-                libs: 'co/js/libs/',
-                ui: 'co/js/ui/'
+                scripts: 'co/',
+                libs: 'co/libs/',
+                ui: 'co/ui/'
             },
             source: {
                 root: 'src/co-modules/',
@@ -73,77 +73,135 @@ var gulp = require('gulp'), //基础库
                 'src/co-modules/less/slider.less'
             ]
         };
-// 清空样式
-gulp.task('cleanStyles', function() {
-    return gulp.src([paths.dist.styles,paths.co.styles], { read:false })
-                .pipe(clean());
-});   
 
-// 清空js
-gulp.task('cleanJs', function() {
-    return gulp.src([paths.dist.scripts,paths.co.scripts], { read:false })
+// 清空co
+gulp.task('cleanCo', function() {
+    return gulp.src([paths.co.root], { read:false })
+                .pipe(clean());
+});  
+
+//co脚本处理
+gulp.task('co-scripts',['cleanCo'], function () {
+    gulp.src(co.jsFiles)  //要合并的文件
+        .pipe(concat(co.filename +".js"))  // 合并匹配到的js文件
+        .pipe(gulp.dest(paths.co.scripts))
+        .pipe(rename({ suffix: '.min' }))
+        .pipe(uglify())
+        .pipe(gulp.dest(paths.co.scripts));
+});
+
+//libs处理
+gulp.task('co-libs',['co-scripts'],function(){
+    gulp.src(paths.source.libs+'*')
+        .pipe(gulp.dest(paths.co.libs));
+});
+
+//ui处理
+gulp.task('co-ui', ['co-libs'],function(){
+    gulp.src(paths.source.ui+'**/*.*')
+        .pipe(gulp.dest(paths.co.ui));
+});
+
+// co样式处理
+gulp.task('co-css',['co-ui'],function () {
+    gulp.src('src/co-modules/less/co.less')
+        .pipe(less())
+        .pipe(gulp.dest(paths.co.styles))
+        .pipe(rename({ suffix: '.min' }))
+        .pipe(minifycss({
+            advanced: false,
+            aggressiveMerging: false,
+        }))
+        .pipe(gulp.dest(paths.co.styles))
+});
+
+//co图片处理
+gulp.task('co-img',['co-css'],function(){
+    gulp.src(paths.source.root + 'img/*.*')
+        .pipe(gulp.dest(paths.co.root + 'img/'));
+});
+
+//co字体处理
+gulp.task('co-font',['co-img'],function(){
+    gulp.src(paths.source.root + 'fonts/*.*')
+        .pipe(gulp.dest(paths.co.root + 'fonts/'));    
+});
+
+//co处理
+gulp.task('buildCo',['co-font']);
+
+
+// 清空dist样式
+gulp.task('cleanDs', function() {
+    return gulp.src([paths.dist.styles], { read:false })
                 .pipe(clean());
 }); 
+
+// dist样式处理
+gulp.task('dist-css', ['cleanDs'],function () {
+    gulp.src('src/co-modules/less/co.less')
+        .pipe(less())
+        .pipe(gulp.dest(paths.dist.styles))
+        .pipe(rename({ suffix: '.min' }))
+        .pipe(minifycss({
+            advanced: false,
+            aggressiveMerging: false,
+        }))
+        .pipe(gulp.dest(paths.dist.styles))
+        .pipe(livereload());
+});
+
+//dist图片处理
+gulp.task('dist-img',function(){
+    gulp.src(paths.source.root + 'img/*.*')
+        .pipe(gulp.dest(paths.dist.root + 'img/'));
+});
+
+//dist字体处理
+gulp.task('dist-font',function(){
+    gulp.src(paths.source.root + 'fonts/*.*')
+        .pipe(gulp.dest(paths.dist.root + 'fonts/'));
+});
+
+// 样式处理
+gulp.task('dist-styles', ['dist-css','dist-img','dist-font']);
+
+// 清空dist脚本
+gulp.task('cleanDj', function() {
+    return gulp.src([paths.dist.scripts], { read:false })
+                .pipe(clean());
+}); 
+
+//libs处理
+gulp.task('dist-libs',['cleanDj'],function(){
+    gulp.src(paths.source.libs+'*')
+        .pipe(gulp.dest(paths.dist.libs))
+        .pipe(livereload());
+});
+
+//ui处理
+gulp.task('dist-ui', ['dist-libs'],function(){
+    gulp.src(paths.source.ui+'**/*.*')
+        .pipe(gulp.dest(paths.dist.ui))
+        .pipe(livereload());
+});
+
+//js处理
+gulp.task('dist-scripts',['dist-ui'], function () {
+    gulp.src(co.jsFiles)  //要合并的文件
+        .pipe(concat(co.filename +".js"))  // 合并匹配到的js文件并命名为 "all.js"
+        .pipe(gulp.dest(paths.dist.scripts))
+        .pipe(rename({ suffix: '.min' }))
+        .pipe(uglify())
+        .pipe(gulp.dest(paths.dist.scripts))
+        .pipe(livereload());
+});
 
 // 清空图片、样式、js
 gulp.task('cleanExamples', function() {
     return gulp.src([paths.examples.root], { read:false })
                 .pipe(clean());
 });      
-
-// css处理
-gulp.task('css', ['cleanStyles'],function () {
-    gulp.src('src/co-modules/less/co.less')
-        .pipe(less())
-        .pipe(gulp.dest(paths.dist.styles))
-        .pipe(gulp.dest(paths.co.styles))
-        .pipe(livereload());
-});
-
-//img处理
-gulp.task('buildimg',function(){
-    gulp.src(paths.source.root + 'img/*.*')
-        .pipe(gulp.dest(paths.dist.root + 'img/'))
-        .pipe(gulp.dest(paths.co.root + 'img/'));
-    gulp.src(paths.source.root + 'fonts/*.*')
-        .pipe(gulp.dest(paths.dist.root + 'fonts/'))
-        .pipe(gulp.dest(paths.co.root + 'fonts/'));    
-});
-
-// 样式处理
-gulp.task('styles', ['css','buildimg'],function () {
-});
-
-
-
-//libs处理
-gulp.task('buildlib',['cleanJs'],function(){
-    gulp.src(paths.source.libs+'*')
-        .pipe(gulp.dest(paths.dist.libs))
-        .pipe(gulp.dest(paths.co.libs))
-        .pipe(livereload());
-});
-
-//ui处理
-gulp.task('buildui', ['buildlib'],function(){
-    gulp.src(paths.source.ui+'**/*.*')
-        .pipe(gulp.dest(paths.dist.ui))
-        .pipe(gulp.dest(paths.co.ui))
-        .pipe(livereload());
-});
-
-//js处理
-gulp.task('scripts',['buildui'], function () {
-    gulp.src(co.jsFiles)  //要合并的文件
-        .pipe(concat(co.filename +".js"))  // 合并匹配到的js文件并命名为 "all.js"
-        .pipe(gulp.dest(paths.dist.scripts))
-        .pipe(gulp.dest(paths.co.scripts))
-        .pipe(rename({ suffix: '.min' }))
-        .pipe(uglify())
-        .pipe(gulp.dest(paths.dist.scripts))
-        .pipe(gulp.dest(paths.co.scripts))
-        .pipe(livereload());
-});
 
 //examples处理
 gulp.task('examples',['cleanExamples'],function(){
@@ -154,8 +212,9 @@ gulp.task('examples',['cleanExamples'],function(){
 
 // 默认任务 清空图片、样式、js并重建 运行语句 gulp
 gulp.task('build', function(){
-    return gulp.start('styles','scripts','examples');
+    return gulp.start('buildCo','dist-scripts','dist-styles','examples');
 });
+
 
 /* =================================
     Watch
@@ -164,17 +223,14 @@ gulp.task('watch', function () {
     livereload.listen();  
     var server = livereload();  
     //styles and scripts
-    gulp.watch(paths.source.styles + '*.less', [ 'css' ],function(event){
-        server.changed(event.type); //变化类型 added为新增,deleted为删除，changed为改变 
-        server.changed(event.path); //变化的文件的路径
+    gulp.watch(paths.source.styles + '*.less', [ 'dist-styles' ],function(event){
+        server.changed(event.path+'-->'+event.type); //变化的文件的路径
     });
-    gulp.watch(paths.source.scripts+'**/*.*', [ 'scripts' ],function(event){
-        server.changed(event.type); //变化类型 added为新增,deleted为删除，changed为改变 
-        server.changed(event.path); //变化的文件的路径
+    gulp.watch(paths.source.scripts+'**/*.*', [ 'dist-scripts' ],function(event){
+        server.changed(event.path+'-->'+event.type); //变化的文件的路径
     });
     gulp.watch(paths.source.examples+'**/*.*',[ 'examples' ],function(event){
-        server.changed(event.type); //变化类型 added为新增,deleted为删除，changed为改变 
-        server.changed(event.path); //变化的文件的路径
+        server.changed(event.path+'-->'+event.type); //变化的文件的路径
     });
 });
 

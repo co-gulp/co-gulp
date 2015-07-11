@@ -125,18 +125,21 @@
             }
             _sl.width = width;
             _sl.arrange();
-            _sl._container.css('display','block');
-            _sl.ref.find(SELECTOR_SLIDER_DOTS ).css('display','block');
-            if(opts.guide){
-                _sl._prev.css('display','block');
-                _sl._next.css('display','block');
-            }
-            _sl.loading.remove();
+//          setTimeout(function(){
+                _sl._container.css('display','block');
+                _sl.ref.find(SELECTOR_SLIDER_DOTS ).css('display','block');
+                if(opts.guide){
+                    _sl._prev.css('display','block');
+                    _sl._next.css('display','block');
+                }
+                _sl.loading.remove();
+//          }, 10);
+           
             _sl.height = _sl.ref.height();
-//          _sl.ref.css( 'height', _sl.height);
-            _sl._container.css( 'height', _sl.height);
-            _sl._container.find('img' ).css( 'height', _sl.height);
-            _sl.ref.trigger('hiChange',[_sl.height]);
+            // _sl.ref.css( 'height', _sl.height);
+            // _sl._container.css( 'height', _sl.height);
+            _sl._container.find('.ui-slider-img' ).css( 'height', _sl.height);
+            _sl.ref.trigger('width.change');
     };
 
 
@@ -289,7 +292,6 @@
          */
         $slider.prototype.stop = function() {
             var _sl = this;
-
             if ( _sl._timer ) {
                 clearTimeout( _sl._timer );
                 _sl._timer = null;

@@ -2,14 +2,21 @@ var data = [{
                                                     cont : "按钮",
                                                     name : "control",
                                                     tar : "button.html"
-                                            },{
-                                                    cont : '弹出框',
-                                                    name : "listview",
-                                                    tar : "dialog.html"
                                                 },{
                                                     cont : '列表',
-                                                    name : "listview",
-                                                    tar : "gridview.html"
+                                                    contents : [{
+                                                        cont : 'deflistview',
+                                                        tar : "listview/deflistview.html"
+                                                    },{
+                                                        cont : 'medialistview',
+                                                        tar : "listview/medialistview.html"
+                                                    },{
+                                                        cont : 'customlistview',
+                                                        tar : "listview/customlistview.html"
+                                                    },{
+                                                        cont : 'swipelistview',
+                                                        tar : "listview/swipelistview.html"
+                                                    }]
                                                 },{
                                                     cont : '导航',
                                                     name : "listview",
@@ -26,6 +33,10 @@ var data = [{
                                                     cont : '轮播图',
                                                     name : "listview",
                                                     tar : "slider.html"
+                                                },{
+                                                    cont : '进度条',
+                                                    name : "progressBar",
+                                                    tar : "progressBar/progressBar.html"
                                                 },{
                                                     cont : '开关',
                                                     name : "listview",

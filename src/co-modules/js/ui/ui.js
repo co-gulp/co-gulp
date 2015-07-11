@@ -1,5 +1,5 @@
 define(function(require, exports, module) {
-	var $ui = {},Base = {},$N = window.rd;
+	var $ui = {},Base = {};
    /*
         判断是否存在原生插件对象
     */

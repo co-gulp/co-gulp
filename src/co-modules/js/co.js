@@ -3,7 +3,7 @@
     return;
   }
 
-  var co = global.CO = {
+  var co = global.co = {
       // The current version of co.js being used
       version: "1.0.1"
   }
@@ -57,10 +57,26 @@
       if (isFunction(factory)) {
           var deps = parseDependencies(factory.toString())
           loader.use(deps, function(){
-            factory.call(null,loader.require);
+            // if($.browser.webview){
+            if(false){
+                setTimeout(function() {
+                    if(domReady.isReady){
+                        factory.call(null,loader.require);
+                    }else{
+                        setTimeout(arguments.callee, 1);
+                    }
+                }, 1);
+            }else{
+                factory.call(null,loader.require);
+            }
           })
       }
   }
   global.domReady = domReady;
-
-  loader.use([],function(){});
+  // global.$N = false;
+  // co.plus = !!$N;
+  // global.onLoad = function(){
+  //   domReady.isReady = true;
+    global.$N = global.rd
+    co.plus = !!$N;
+  // }

@@ -51,6 +51,7 @@
 	right: 15px;
 	content: '\e583';
 }
+
 .ui-table-view-cell.ui-active {
 	background-color: #eee;
 }
@@ -110,4 +111,16 @@
   right: 15px;
   -webkit-transform: translateY(-50%);
           transform: translateY(-50%);
+}
+
+.ui-table-view-cell.ui-collapse .ui-table-view .ui-table-view-cell:after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 30px;
+  height: 1px;
+  content: '';
+  background-color: #c8c7cc;
+  -webkit-transform: scaleY(.5);
+          transform: scaleY(.5);
 }

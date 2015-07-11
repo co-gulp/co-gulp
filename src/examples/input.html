@@ -4,7 +4,7 @@
   <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no,width=device-width">
     <title>Hello UI Input</title>
-   <link rel="stylesheet" href="../co/css/co.css">
+   <link rel="stylesheet" href="../dist/css/co.css">
 </head>
 <body>
         <h5>默认搜索框：</h5>
@@ -91,13 +91,22 @@
                 <div class="ui-input-row" style="margin: 10px 5px;">
                     <textarea id="textarea" rows="5" placeholder="多行文本框"></textarea>
                 </div>
-      <script src="../co/js/co.js"></script>
+      <script src="../dist/js/co.js"></script>
 </body>
      <script>
         domReady(function(require){
             $('a.ui-pull-left').button(function(el,evt){
                 this.back();
             })
+            $('.ui-input-group').radio(function(el,evt){
+                    alert($(el).val());
+            });
+            $('.ui-input-group').checkbox(function(el,evt){
+                    if(el.checked)  alert($(el).val());
+            }); 
+            $('.ui-input-group').select(function(el,eve){
+                    alert(this.callZ(el).val());
+             }); 
       })
     </script>
 </html>
