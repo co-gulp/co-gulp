@@ -130,7 +130,6 @@ gulp.task('co-font',['co-img'],function(){
 //co处理
 gulp.task('buildCo',['co-font']);
 
-
 // 清空dist样式
 gulp.task('cleanDs', function() {
     return gulp.src([paths.dist.styles], { read:false })
