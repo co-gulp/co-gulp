@@ -249,7 +249,10 @@ gulp.task('open', function () {
 
 gulp.task('server', ['build'], function(){
     // gulp.start('watch');
-    gulp.start('connect', 'open','watch');
+    gulp.start('connect', 'open');
 });
 
-gulp.task('default', [ 'server' ]);
+gulp.task('default', [ 'server' ], function(){
+    // gulp.start('watch');
+    gulp.start('watch');
+});
