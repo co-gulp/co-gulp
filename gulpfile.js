@@ -75,35 +75,47 @@ var gulp = require('gulp'), //基础库
         };
 
 // 清空co
-gulp.task('cleanCo', function() {
-    return gulp.src([paths.co.root], { read:false })
-                .pipe(clean());
+gulp.task('cleanCo', function(cb) {
+    gulp.src([paths.co.root], { read:false })
+        .pipe(clean())
+        .on('finish', function () {
+                cb();
+        });
 });  
 
 //co脚本处理
-gulp.task('co-scripts',['cleanCo'], function () {
+gulp.task('co-scripts', function (cb) {
     gulp.src(co.jsFiles)  //要合并的文件
         .pipe(concat(co.filename +".js"))  // 合并匹配到的js文件
         .pipe(gulp.dest(paths.co.scripts))
         .pipe(rename({ suffix: '.min' }))
         .pipe(uglify())
-        .pipe(gulp.dest(paths.co.scripts));
+        .pipe(gulp.dest(paths.co.scripts))
+        .on('finish', function () {
+                cb();
+        });
 });
 
 //libs处理
-gulp.task('co-libs',['co-scripts'],function(){
+gulp.task('co-libs',function(cb){
     gulp.src(paths.source.libs+'*')
-        .pipe(gulp.dest(paths.co.libs));
+        .pipe(gulp.dest(paths.co.libs))
+        .on('finish', function () {
+                cb();
+        });
 });
 
 //ui处理
-gulp.task('co-ui', ['co-libs'],function(){
+gulp.task('co-ui', function(cb){
     gulp.src(paths.source.ui+'**/*.*')
-        .pipe(gulp.dest(paths.co.ui));
+        .pipe(gulp.dest(paths.co.ui))
+        .on('finish', function () {
+                cb();
+        });
 });
 
 // co样式处理
-gulp.task('co-css',['co-ui'],function () {
+gulp.task('co-css',function (cb) {
     gulp.src('src/co-modules/less/co.less')
         .pipe(less())
         .pipe(gulp.dest(paths.co.styles))
@@ -113,31 +125,43 @@ gulp.task('co-css',['co-ui'],function () {
             aggressiveMerging: false,
         }))
         .pipe(gulp.dest(paths.co.styles))
+        .on('finish', function () {
+                cb();
+        });
 });
 
 //co图片处理
-gulp.task('co-img',['co-css'],function(){
+gulp.task('co-img',function(cb){
     gulp.src(paths.source.root + 'img/*.*')
-        .pipe(gulp.dest(paths.co.root + 'img/'));
+        .pipe(gulp.dest(paths.co.root + 'img/'))
+        .on('finish', function () {
+                cb();
+        });
 });
 
 //co字体处理
-gulp.task('co-font',['co-img'],function(){
+gulp.task('co-font',function(cb){
     gulp.src(paths.source.root + 'fonts/*.*')
-        .pipe(gulp.dest(paths.co.root + 'fonts/'));    
+        .pipe(gulp.dest(paths.co.root + 'fonts/'))
+        .on('finish', function () {
+                cb();
+        });
 });
 
 //co处理
-gulp.task('buildCo',['co-font']);
+gulp.task('build-co', gulp.series('cleanCo', 'co-scripts', 'co-libs', 'co-ui', 'co-css', 'co-img', 'co-font'));
 
 // 清空dist样式
-gulp.task('cleanDs', function() {
-    return gulp.src([paths.dist.styles], { read:false })
-                .pipe(clean());
+gulp.task('cleanDist', function(cb) {
+    gulp.src([paths.dist.root], { read:false })
+        .pipe(clean())
+        .on('finish', function () {
+                cb();
+        });
 }); 
 
 // dist样式处理
-gulp.task('dist-css', ['cleanDs'],function () {
+gulp.task('dist-css',function (cb) {
     gulp.src('src/co-modules/less/co.less')
         .pipe(less())
         .pipe(gulp.dest(paths.dist.styles))
@@ -147,112 +171,141 @@ gulp.task('dist-css', ['cleanDs'],function () {
             aggressiveMerging: false,
         }))
         .pipe(gulp.dest(paths.dist.styles))
-        .pipe(livereload());
+        .pipe(livereload())
+        .on('end', function () {
+                cb();
+        });
 });
 
 //dist图片处理
-gulp.task('dist-img',function(){
+gulp.task('dist-img',function(cb){
     gulp.src(paths.source.root + 'img/*.*')
-        .pipe(gulp.dest(paths.dist.root + 'img/'));
+        .pipe(gulp.dest(paths.dist.root + 'img/'))
+        .on('finish', function () {
+                cb();
+        });
 });
 
 //dist字体处理
-gulp.task('dist-font',function(){
+gulp.task('dist-font',function(cb){
     gulp.src(paths.source.root + 'fonts/*.*')
-        .pipe(gulp.dest(paths.dist.root + 'fonts/'));
+        .pipe(gulp.dest(paths.dist.root + 'fonts/'))
+        .on('finish', function () {
+                cb();
+        });
 });
 
 // 样式处理
-gulp.task('dist-styles', ['dist-css','dist-img','dist-font']);
+gulp.task('dist-styles', gulp.series('cleanDist', 'dist-css', 'dist-img', 'dist-font'));
 
-// 清空dist脚本
-gulp.task('cleanDj', function() {
-    return gulp.src([paths.dist.scripts], { read:false })
-                .pipe(clean());
-}); 
 
 //libs处理
-gulp.task('dist-libs',['cleanDj'],function(){
+gulp.task('dist-libs',function(cb){
     gulp.src(paths.source.libs+'*')
         .pipe(gulp.dest(paths.dist.libs))
-        .pipe(livereload());
+        .on('end', function () {
+                cb();
+        });
 });
 
-//ui处理
-gulp.task('dist-ui', ['dist-libs'],function(){
+// //ui处理
+gulp.task('dist-ui',function(cb){
     gulp.src(paths.source.ui+'**/*.*')
         .pipe(gulp.dest(paths.dist.ui))
-        .pipe(livereload());
+        .on('end', function () {
+                cb();
+        });
 });
 
-//js处理
-gulp.task('dist-scripts',['dist-ui'], function () {
+// //js处理
+gulp.task('dist-scripts', function (cb) {
     gulp.src(co.jsFiles)  //要合并的文件
         .pipe(concat(co.filename +".js"))  // 合并匹配到的js文件并命名为 "all.js"
         .pipe(gulp.dest(paths.dist.scripts))
         .pipe(rename({ suffix: '.min' }))
         .pipe(uglify())
         .pipe(gulp.dest(paths.dist.scripts))
-        .pipe(livereload());
+        .pipe(livereload())
+        .on('end', function () {
+                cb();
+        });
 });
 
+gulp.task('build-dist', gulp.series('dist-styles', gulp.series( 'dist-libs', 'dist-ui', 'dist-scripts')));
+
 // 清空图片、样式、js
-gulp.task('cleanExamples', function() {
-    return gulp.src([paths.examples.root], { read:false })
-                .pipe(clean());
+gulp.task('cleanExamples', function(cb) {
+    gulp.src([paths.examples.root], { read:false })
+        .pipe(clean())
+        .on('finish', function () {
+                cb();
+        });
 });      
 
 //examples处理
-gulp.task('examples',['cleanExamples'],function(){
+gulp.task('examples',function(cb){
     gulp.src(paths.source.examples+'**/*.*')
         .pipe(gulp.dest(paths.examples.root))
-        .pipe(livereload());
+        .on('end', function () {
+                cb();
+        });
 });
 
+gulp.task('build-examples', gulp.series('cleanExamples', 'examples'));
+
 // 默认任务 清空图片、样式、js并重建 运行语句 gulp
-gulp.task('build', function(){
-    return gulp.start('buildCo','dist-scripts','dist-styles','examples');
-});
+gulp.task('build', gulp.series('build-co','build-dist','build-examples'));
 
 
 /* =================================
     Watch
 ================================= */
-gulp.task('watch', function () {
-    livereload.listen();  
+// 清空dist样式
+gulp.task('cleanDs', function(cb) {
+    gulp.src([paths.dist.styles], { read:false })
+        .pipe(clean())
+        .on('finish', function () {
+                cb();
+        });
+}); 
+
+// 清空dist脚本
+gulp.task('cleanDj', function(cb) {
+    gulp.src([paths.dist.scripts], { read:false })
+        .pipe(clean())
+        .on('finish', function () {
+                cb();
+        });
+}); 
+
+gulp.task('watch', function (cb) {
     var server = livereload();  
-    //styles and scripts
-    gulp.watch(paths.source.styles + '*.less', [ 'dist-styles' ],function(event){
-        server.changed(event.path+'-->'+event.type); //变化的文件的路径
-    });
-    gulp.watch(paths.source.scripts+'**/*.*', [ 'dist-scripts' ],function(event){
-        server.changed(event.path+'-->'+event.type); //变化的文件的路径
-    });
-    gulp.watch(paths.source.examples+'**/*.*',[ 'examples' ],function(event){
-        server.changed(event.path+'-->'+event.type); //变化的文件的路径
-    });
+    livereload.listen();  
+    var watcher = gulp.watch(paths.source.examples+'**/*.*');
+    watcher.on('change',function(file){
+        gulp.src(file.path)
+            .pipe(gulp.dest(paths.examples.root))
+            .pipe(livereload());
+    })
+    gulp.watch(paths.source.styles + '*.less',gulp.series('dist-css'));
+    gulp.watch(paths.source.scripts+'**/*.*', gulp.series('dist-libs', 'dist-ui', 'dist-scripts'));
+    
+    cb();
 });
 
 
 
-gulp.task('connect', function () {
-    return connect.server({
-            root: [ paths.root ],
-            livereload: true,
-            port:'3000'
+gulp.task('connect', function (cb) {
+    connect.server({
+        root: [ paths.root ],
+        port:'3000'
     });
+    cb();
 });
     
-gulp.task('open', function () {
-    return gulp.src(paths.examples.index).pipe(open('', { url: 'http://localhost:3000/'+paths.examples.index}));
+gulp.task('open', function (cb) {
+    gulp.src(paths.examples.index).pipe(open('', { url: 'http://localhost:3000/'+paths.examples.index}));
+    cb();
 });
 
-gulp.task('server', ['build'], function(){
-    // gulp.start('watch');
-    gulp.start('connect', 'open');
-});
-
-gulp.task('default', [ 'server' ], function(){
-    // gulp.start('watch');
-    gulp.start('watch');
-});
+gulp.task('default', gulp.series('build', 'connect','open','watch'));

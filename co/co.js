@@ -3696,6 +3696,7 @@ seajs.config({
     co.plus = !!$N;
   // }
 
+
 /*===============================================================================
 ************   ui native window   ************
 ===============================================================================*/
@@ -3829,42 +3830,6 @@ seajs.config({
                 }
 
             }
-            $.fn.height = function () {
-                if (this[0] === window) {
-                    return window.innerHeight;
-                }
-                else {
-                    if (this.length > 0) {
-                        return parseFloat(this.css('height'));
-                    }
-                    else {
-                        return null;
-                    }
-                }
-            }
-            $.fn.css = function (props, value) {
-                var i;
-                if (arguments.length === 1) {
-                    if (typeof props === 'string') {
-                        if (this[0]) return window.getComputedStyle(this[0], null).getPropertyValue(props);
-                    }
-                    else {
-                        for (i = 0; i < this.length; i++) {
-                            for (var prop in props) {
-                                this[i].style[prop] = props[prop];
-                            }
-                        }co
-                        return this;
-                    }
-                }
-                if (arguments.length === 2 && typeof props === 'string') {
-                    for (i = 0; i < this.length; i++) {
-                        this[i].style[props] = value;
-                    }
-                    return this;
-                }
-                return this;
-            }
             $.fn.outerHeight = function (includeMargins) {
                 if (this.length > 0) {
                     if (includeMargins) {
@@ -3875,7 +3840,82 @@ seajs.config({
                         return this[0].offsetHeight;
                 }
                 else return null;
-            }   
+            }    
+            $.fn.removeClass = function (className) {
+                var classes = className.split(' ');
+                for (var i = 0; i < classes.length; i++) {
+                    for (var j = 0; j < this.length; j++) {
+                        if (typeof this[j].classList !== 'undefined') this[j].classList.remove(classes[i]);
+                    }
+                }
+                return this;
+            }
+            $.fn.hasClass = function (className) {
+                if (!this[0]) return false;
+                else return this[0].classList.contains(className);
+            }
+            $.fn.toggleClass = function (className) {
+                var classes = className.split(' ');
+                for (var i = 0; i < classes.length; i++) {
+                    for (var j = 0; j < this.length; j++) {
+                        if (typeof this[j].classList !== 'undefined') this[j].classList.toggle(classes[i]);
+                    }
+                }
+                return this;
+            }
+            $.fn.attr = function (attrs, value) {
+                if (arguments.length === 1 && typeof attrs === 'string') {
+                    // Get attr
+                    if (this[0]) return this[0].getAttribute(attrs);
+                    else return undefined;
+                }
+                else {
+                    // Set attrs
+                    for (var i = 0; i < this.length; i++) {
+                        if (arguments.length === 2) {
+                            // String
+                            this[i].setAttribute(attrs, value);
+                        }
+                        else {
+                            // Object
+                            for (var attrName in attrs) {
+                                this[i][attrName] = attrs[attrName];
+                                this[i].setAttribute(attrName, attrs[attrName]);
+                            }
+                        }
+                    }
+                    return this;
+                }
+            }
+            $.fn.removeAttr = function (attr) {
+                for (var i = 0; i < this.length; i++) {
+                    this[i].removeAttribute(attr);
+                }
+                return this;
+            }
+            $.fn.prop = function (props, value) {
+                if (arguments.length === 1 && typeof props === 'string') {
+                    // Get prop
+                    if (this[0]) return this[0][props];
+                    else return undefined;
+                }
+                else {
+                    // Set props
+                    for (var i = 0; i < this.length; i++) {
+                        if (arguments.length === 2) {
+                            // String
+                            this[i][props] = value;
+                        }
+                        else {
+                            // Object
+                            for (var propName in props) {
+                                this[i][propName] = props[propName];
+                            }
+                        }
+                    }
+                    return this;
+                }
+            }    
         }($));
 
 /*===============================================================================
