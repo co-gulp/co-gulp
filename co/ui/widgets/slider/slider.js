@@ -125,21 +125,10 @@
             }
             _sl.width = width;
             _sl.arrange();
-//          setTimeout(function(){
-                _sl._container.css('display','block');
-                _sl.ref.find(SELECTOR_SLIDER_DOTS ).css('display','block');
-                if(opts.guide){
-                    _sl._prev.css('display','block');
-                    _sl._next.css('display','block');
-                }
-                _sl.loading.remove();
-//          }, 10);
-           
-            _sl.height = _sl.ref.height();
-            // _sl.ref.css( 'height', _sl.height);
-            _sl._container.css( 'height', _sl.height);
-            _sl._container.find('.ui-slider-img' ).css( 'height', _sl.height);
-            _sl.ref.trigger('width.change');
+            _sl._container.css('display','block');
+            _sl.ref.find(SELECTOR_SLIDER_DOTS ).css('display','block');
+            _sl.ref.trigger('hiChange');
+            _sl.loading.remove();
     };
 
 
