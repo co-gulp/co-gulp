@@ -7,7 +7,8 @@
     <link rel="stylesheet" href="../dist/css/co.css">
 </head>
 <body>
-        <div id="slider" class="ui-slider ui-fullscreen">
+        
+        <div id="slider" class="ui-slider">
             <div class="ui-slider-group">
                 <div class="ui-slider-item">
                     <img class="ui-slider-img" src="img/img1.png">
@@ -35,7 +36,7 @@
         $('#slider').slider( { 
             loop:true,
             dots:true,
-            autoPlay:true,
+            // autoPlay:true,
             mulViewNum:1
         }).ref.on('hiChange',function(e,h){
             alert(h);

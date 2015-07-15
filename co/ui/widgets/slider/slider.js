@@ -137,7 +137,7 @@
            
             _sl.height = _sl.ref.height();
             // _sl.ref.css( 'height', _sl.height);
-            // _sl._container.css( 'height', _sl.height);
+            _sl._container.css( 'height', _sl.height);
             _sl._container.find('.ui-slider-img' ).css( 'height', _sl.height);
             _sl.ref.trigger('width.change');
     };
