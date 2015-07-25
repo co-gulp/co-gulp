@@ -161,7 +161,7 @@
                  * @property {Number} [speed=400] 动画执行速度
                  * @namespace options
                  */
-                speed: 400,
+                speed: 100,
 
                 /**
                  * @property {Number} [index=0] 初始位置

@@ -87,8 +87,6 @@ gulp.task('cleanCo', function(cb) {
 gulp.task('co-scripts', function (cb) {
     gulp.src(co.jsFiles)  //要合并的文件
         .pipe(concat(co.filename +".js"))  // 合并匹配到的js文件
-        .pipe(gulp.dest(paths.co.scripts))
-        .pipe(rename({ suffix: '.min' }))
         .pipe(uglify())
         .pipe(gulp.dest(paths.co.scripts))
         .on('finish', function () {
@@ -118,8 +116,6 @@ gulp.task('co-ui', function(cb){
 gulp.task('co-css',function (cb) {
     gulp.src('src/co-modules/less/co.less')
         .pipe(less())
-        .pipe(gulp.dest(paths.co.styles))
-        .pipe(rename({ suffix: '.min' }))
         .pipe(minifycss({
             advanced: false,
             aggressiveMerging: false,
