@@ -182,7 +182,7 @@ gulp.task('dist-img',function(cb){
         });
 });
 
-//dist字体处理
+//dist字体处理错误: 没有找到进程 "node.exe"。
 gulp.task('dist-font',function(cb){
     gulp.src(paths.source.root + 'fonts/*.*')
         .pipe(gulp.dest(paths.dist.root + 'fonts/'))
