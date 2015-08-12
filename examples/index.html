@@ -11,16 +11,16 @@
 		<link rel="stylesheet" href="../dist/css/co.min.css">
 	</head>
 	<body class="ios7">
-    <div class="ui-content" >
+    <div>
 			<div id='treeview'>
          
       </div>
 		</div>
-		   <script src="../dist/js/co.min.js"></script>
+		   <script src="../dist/js/co.js"></script>
        <script src="data-index.js"></script>
 </body>
 <script>
-  domReady(function(require){
+  $(function(require){
         require("treeview");
         $('#treeview').treeview({
                     iscroll:true,

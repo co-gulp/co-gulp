@@ -15,7 +15,10 @@ seajs.config({
           'sMultiview':'ui/widgets/slider/multiview',
           'listview' : 'ui/widgets/listview',
           'tab' : 'ui/widgets/tabs/tabs',
+          'navigator' : 'ui/widgets/navigator',
+          'swipePage' : 'ui/widgets/swipePage/swipePage',
           'treeview' : 'ui/widgets/treeview',
+          'refresh' : 'ui/widgets/refresh',
           'scroll' : 'ui/widgets/iscroll'
       },
       preload: ['ui','button','checkbox','select','input']

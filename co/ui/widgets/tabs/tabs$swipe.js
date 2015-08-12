@@ -83,6 +83,8 @@
                         index = opts.active + 1;
                     } else if (e.type == 'tabsSwipeRight' && opts.active > 0) {
                         index = opts.active - 1;
+                    }else{
+                        break;
                     }
                     index !== undefined && (e.stopPropagation(), _tb.switchTo(index));
                     break;

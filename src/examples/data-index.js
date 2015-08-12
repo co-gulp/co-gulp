@@ -94,6 +94,14 @@ var data = [{
                                                     name : "listview",
                                                     tar : "tabs.html"
                                                 },{
+                                                    cont : 'Nav bar',
+                                                    name : "navigator",
+                                                    tar : "navigator.html"
+                                                },{
+                                                    cont : 'swipePage',
+                                                    name : "swipePage",
+                                                    tar : "swipePage.html"
+                                                },{
                                                     cont : '树形列表',
                                                     name : "listview",
                                                     tar : "treeview.html"

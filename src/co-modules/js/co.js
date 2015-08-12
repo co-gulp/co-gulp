@@ -19,6 +19,7 @@
   var isArray = Array.isArray || isType("Array")
   var isFunction = isType("Function")
   var isUndefined = isType("Undefined")
+  var readyRE = /complete|loaded|interactive/;
 
   var REQUIRE_RE = /"(?:\\"|[^"])*"|'(?:\\'|[^'])*'|\/\*[\S\s]*?\*\/|\/(?:\\\/|[^\/\r\n])+\/(?=[^\/])|\/\/.*|\.\s*require|(?:^|[^$])\brequire\s*\(\s*(["'])(.+?)\1\s*\)/g
   var SLASH_RE = /\\\\/g
@@ -57,8 +58,8 @@
       if (isFunction(factory)) {
           var deps = parseDependencies(factory.toString())
           loader.use(deps, function(){
-            // if($.browser.webview){
-            if(false){
+            if($.browser.webview){
+            // if(false){
                 setTimeout(function() {
                     if(domReady.isReady){
                         factory.call(null,loader.require);
@@ -71,13 +72,19 @@
             }
           })
       }
-  }
+  };
   global.domReady = domReady;
-  // global.$N = false;
-  // co.plus = !!$N;
-  // global.onLoad = function(){
-  //   domReady.isReady = true;
+  global.$N = false;
+  co.plus = !!$N;
+  global.onLoad = function(){
+    domReady.isReady = true;
     global.$N = global.rd
     co.plus = !!$N;
-  // }
+  };
+
+  $.fn.ready = function(callback){
+      if (readyRE.test(document.readyState) && document.body) domReady(callback);
+      else document.addEventListener('DOMContentLoaded', function(){ domReady(callback) }, false)
+      return this
+  };
 

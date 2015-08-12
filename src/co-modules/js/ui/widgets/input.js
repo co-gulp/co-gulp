@@ -236,8 +236,6 @@
 
             });
         };
-        $(function(){
-          $(SELECTOR_ACTION).input();
-        })
+        $(SELECTOR_ACTION).input();
      });
 })(window, document);

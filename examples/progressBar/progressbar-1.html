@@ -8,187 +8,75 @@
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
  <title>progressBar</title>
- <link rel="stylesheet" href="co/css/co.css">
- <link rel="stylesheet" href="co/css/widgets/dialog/dialog.css" />
- <script src="co/co.js"></script>
- <script>
- var progressBar;
-domReady(function(require){
-        var p = progressBar = {};
-	 	var prce=0,prces = [];
-	 	p.status = true;
-	 	p.init = function(msg,type){
-	 		p.type = type;
-	 		var	canvas = document.getElementById('canvas');
-	 		var context = canvas.getContext("2d");
-	      	context.font = "15px Arial";  
-		    context.fillStyle = '#9CA0A3';  
-		    context.textAlign = 'center';  
-		    context.textBaseline = 'middle';  
-		    context.moveTo(80, 90);  
-		    context.fillText(msg,80, 150); 
-	         
-		    context.beginPath();  
-		    context.moveTo(80, 75);  
-		    context.arc(80, 75, 50, 0, Math.PI * 2, true);  
-		    context.closePath();  
-		    context.fillStyle = '#323A45';  
-		    context.fill();   
-		    p.img = new Image();//创建一张图片
-		    if(type == 'iphone'){
-	        	p.img.src = "iphone.png";//设置图片的路径
-		    }else{
-	        	p.img.src = "android.png";//设置图片的路径
-		    }
-		    p.img.onload = function() {//当图片加载完成后
-	        	if(type == 'iphone'){
-	        		context.drawImage(p.img, 65,35,27, 23);
-			    }else{
-	        		context.drawImage(p.img, 65,30,29, 29);
-			    }
-	        }
-	 	}
-	 	var getEventPosition = function (ev){   
-			  var x, y;   
-			  if (ev.layerX || ev.layerX == 0) {   
-			    x = ev.layerX;   
-			    y = ev.layerY;   
-			  } else if (ev.offsetX || ev.offsetX == 0) { // Opera   
-			    x = ev.offsetX;   
-			    y = ev.offsetY;   
-			  }   
-			  return {x: x, y: y};   
-		}  
-	 	p.drawFailure = function(msg){
-	 	 	var	canvas = document.getElementById('canvas');
-	 		var context = canvas.getContext("2d");
-	 		context.clearRect(20, 15, 120, 120);  
-	 		context.beginPath();  
-		    context.moveTo(80, 75);  
-		    context.arc(80, 75, 50, 0, Math.PI * 2, true);  
-		    context.closePath();  
-		    context.fillStyle = '#323A45';  
-		    context.fill();  
-	      	context.font = "25px Arial";  
-	        context.fillStyle = '#FBFFFF';  
-	        context.textAlign = 'center';  
-	        context.textBaseline = 'middle';  
-	        context.moveTo(80, 80);  
-	        context.fillText('失败', 80, 80);
-	        if(p.type == 'iphone'){
-	        	context.drawImage(p.img, 65,35,27, 23);
-			}else{
-	        	context.drawImage(p.img, 65,30,29, 29);
-			}
-	        p.status = false; 
+</head>
+ 	<style type="text/css">
+		#demo-radius {
+			background-color:#06BAF0;
+			padding:0.5em;
+			color: wheat;
+			text-align: right;
+			font-size:xx-small;
+		}
+ 	</style>
+<body>
+<canvas id="canvas" width="160" height="180" style="background-color:#FFFFFF;"> </canvas>
 
-		    context.font = "10px Arial";  
-		    context.fillStyle = '#9CA0A3';  
-		    context.textAlign = 'center';  
-		    context.textBaseline = 'middle';  
-		    context.moveTo(80, 90);  
-		    context.fillText('点击查看详细信息',80, 15); 
-	        canvas .addEventListener('click', function(e){
-	        	p = getEventPosition(e);
-	        	if(p.x>33&&p.x<126&&p.y>10&&p.y<20){
-					
-	        	}
-			}, false); 
-	 	}
-	 	var drawProgress = function(process){
-	 		if(!p.status)return;
+<div id="demo-radius" class="has-shadow" style="width:80%; border: 0px none; border-radius: 8em;">80%</div>
+<div id="demo-radius" class="has-shadow" style="width:50%; border: 0px none; border-radius: 8em;">50%</div>
+</body>
+
+ <script>
+
+
+function drawProgress(process){
 	 		var	canvas = document.getElementById('canvas');
 	 		var context = canvas.getContext("2d");
 	 		context.clearRect(20, 15, 120, 120);  
 	        context.beginPath();  
 	        context.moveTo(80, 75);    
-	        context.arc(80, 75, 60, 0, Math.PI * 2 * process / 100, false);  
-	        context.closePath(); 
-		    if(process<50){
-		    	context.fillStyle = '#14ACED';  
-		    }else if(process>50&&process<75){
-		   	 	context.fillStyle = '#FC7A62';  
+	        if(process<25){
+	        	proc = process + 75;
+		    	context.arc(80, 75, 60, Math.PI * 1.5, Math.PI * 2 * proc / 100, false);  
+		    }else if(process>25&&process<75){
+		    	context.arc(80, 75, 60, Math.PI * 1.5, Math.PI * 2, false);  
+		   	 	context.arc(80, 75, 60, 0, Math.PI * 2 * process / 100, false);  
 		    }else{
-		    	context.fillStyle = '#12D7A9';  
+		    	proc = process - 25;
+		    	context.arc(80, 75, 60, Math.PI * 1.5, Math.PI * 2, false);
+		    	context.arc(80, 75, 60, 0, Math.PI * 2 * proc / 100, false);  
 		    }
+	        
+	        context.closePath(); 
+		    context.fillStyle = '#FF716B'; 
 	        context.fill();   
+
 	        context.beginPath();  
 		    context.moveTo(80, 75);  
-		    context.arc(80, 75, 50, 0, Math.PI * 2, true);  
+		    context.arc(80, 75, 38, 0, Math.PI * 2, true);  
 		    context.closePath();  
-		    context.fillStyle = '#323A45';  
+		    context.fillStyle = '#FFFFFF';  
 		    context.fill();  
-		    if(p.type == 'iphone'){
-	        	context.drawImage(p.img, 65,35,27, 23);
-			}else{
-	        	context.drawImage(p.img, 65,30,29, 29);
-			}
+
+	        context.beginPath();  
+		    context.moveTo(80, 75);  
+		    context.arc(80, 75, 35, 0, Math.PI * 2, true);  
+		    context.closePath();  
+		    context.fillStyle = '#0094D3';  
+		    context.fill();  
+
 		    context.beginPath();  
-	        context.font = "30px Arial";  
+	        context.font = "25px Arial";  
 	        context.fillStyle = '#FBFFFF';  
 	        context.textAlign = 'center';  
 	        context.textBaseline = 'middle';  
-	        context.moveTo(80, 80);  
-	        context.fillText(process + "%", 80, 80);  
+	        context.moveTo(80, 75);  
+	        context.fillText(process + "%", 80, 75);  
 	 	}
-	    p.drawProcess = function(process) { 
-	    	if(!p.status)return;
-	    	if(prces.length>0){
-				prces.push(process);
-	    	}else if(process - prce>1){
-	    		prces.push(process);			
-	    		setTimeout(function() {
-	    			if(!p.status)return;
-	    			prce++;
-	    			if(prces[0]>=prce){
-	    				drawProgress(prce);
-	    				setTimeout(arguments.callee, 100);
-	    			}else{
-	    				prce = prces.shift();
-	    				if(prces.length>0){
-	    					setTimeout(arguments.callee, 100);
-	    				}
-	    			}
-				}, 10);
-	    	}else{
-	    		prce = process;
-	    		drawProgress(prce);
-	    	} 
-	} 
-	drawDiagonal();
-  });
 function drawDiagonal(){
-	progressBar.init('iphone 6Plus','iphone');
-	// progressBar.drawFailure();
-    var process = 0;
-    // progressBar.drawProcess(100);
-    // progressBar.drawProcess(50);
-    // progressBar.drawProcess(100);
-    // progressBar.drawProcess(30);
-	var t = setInterval(function(){
-            	if(process<100){
-				    process++;
-				    process = process==10?15:process;
-				    process = process==30?40:process;
-				    process = process==60?75:process;
-				    if(process>50){
-						progressBar.drawFailure('出错了！');
-						clearInterval(t);
-				    }
-					progressBar.drawProcess(process);
-			    }else{
-			    	clearInterval(t);
-			    }
-        },100);
+	drawProgress(80);
 }
-	// window.addEventListener('load',drawDiagonal,true);
+	window.addEventListener('load',drawDiagonal,true);
 </script>
-</head>
- 
-<body>
-<canvas id="canvas" width="160" height="180" style="background-color:#F0F0F0;"> </canvas>
-
-</body>
 </html>
 </body>
 </html>

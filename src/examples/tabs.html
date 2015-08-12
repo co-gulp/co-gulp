@@ -26,15 +26,17 @@
                 <span class="ui-tab-label">设置</span>
             </a>
         </nav>
-             <div id="slider" class="ui-slider" style="">
-                   
+             <div id="slider" class="ui-control-content">
+                   1
             </div>
-            <div id="wrapper" class ="ui-control-content ui-wrapper">
+            <div id="wrapper" class ="ui-control-content">
+                2
             </div>
-            <div id="contact" class ="ui-control-content ui-wrapper">
+            <div id="contact" class ="ui-control-content">
+                3
             </div>
             <div id="contor" class ="ui-control-content">
-              
+              4
             </div>
         </div>
         <script src="../dist/js/co.js"></script>
@@ -44,7 +46,7 @@
             require("tab");
             $('#tabs1').tab();
             $('#tabs1').on('activate',function(evt,to){
-                    alert(to.id);
+                    // alert(to.id);
             });
     });
 </script>   

@@ -86,7 +86,9 @@ gulp.task('cleanCo', function(cb) {
 //co脚本处理
 gulp.task('co-scripts', function (cb) {
     gulp.src(co.jsFiles)  //要合并的文件
-        .pipe(concat(co.filename +".js"))  // 合并匹配到的js文件
+        .pipe(concat(co.filename +".js"))  // 合并匹配到的js文件并命名为 "all.js"
+        .pipe(gulp.dest(paths.co.scripts))
+        .pipe(rename({ suffix: '.min' }))
         .pipe(uglify())
         .pipe(gulp.dest(paths.co.scripts))
         .on('finish', function () {
