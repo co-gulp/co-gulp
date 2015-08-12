@@ -64,9 +64,28 @@
 						setCaption.call(_re,this.y > opts.down.height ? opts.down.contentover : opts.down.contentdown);
 					}
                 });
+
            	_re.scroller.on('scrollEnd',function(e){
-                	resetPosition.call(_re,this);
+                	if (Math.abs(this.y) > 0 && this.y <= this.maxScrollY) {
+						if (!_re.pulldown && !_re.loading&&!_re.finished) {
+							_re.pulldown = false;
+							initPullupRefresh.call(_re);
+							pullupLoading.apply(_re,[0, this]);
+						}
+					}
             });
+
+			var _resetPosition = _re.scroller.resetPosition;
+            $.extend(_re.scroller, { 
+            	resetPosition:function(time) {
+					if (_re.pulldown && this.y >= opts.down.height) {
+						pulldownLoading.apply(_re,[0, _re.scroller]);
+						return true;
+					}
+					_resetPosition.call(_re.scroller,time);
+				}
+            });
+
         };
 
     var initPulldownRefresh = function() {
@@ -78,6 +97,60 @@
 			_re.pullCaption = _re.topCaption;
 			_re.pullLoading = _re.topLoading;
 		};
+	var initPullupRefresh = function() {
+			var _re = this, opts = _re.opts;
+			_re.pulldown = false;
+			_re.pullPocket = _re.bottomPocket;
+			_re.pullPocket.addClass(CLASS_BLOCK);
+			_re.pullPocket.addClass(CLASS_VISIBILITY);
+			_re.pullCaption = _re.bottomCaption;
+			_re.pullLoading = _re.bottomLoading;
+		};
+
+	var resetPosition = function(scroller) {
+			var _re = this, opts = _re.opts;
+			if (_re.pulldown && scroller.y >= opts.down.height) {
+				pulldownLoading.apply(_re,[0, scroller]);
+				return true;
+			}
+		};
+	var pulldownLoading = function(x, scroller) {
+			var _re = this, opts = _re.opts;
+			var time = scroller.options.bounceTime;
+			x = x || 0;
+			scroller.scrollTo(x, opts.down.height, time, IScroll.utils.ease.circular);
+			if (_re.loading) {
+				return;
+			}
+			initPulldownRefresh.call(_re);
+			setCaption.call(_re,opts.down.contentrefresh);
+			_re.loading = true;
+			var callback = opts.down.callback;
+			callback && callback.call(_re);
+			scroller.refresh();
+		};
+	var pullupLoading = function(x, scroller,callback) {
+			var _re = this, opts = _re.opts;
+			var time = scroller.options.bounceTime;
+			x = x || 0;
+			scroller.scrollTo(x, scroller.maxScrollY, time, scroller.options.bounceEasing);
+			if (_re.loading) {
+				return;
+			}
+			initPullupRefresh.call(_re);
+			setCaption.call(_re,opts.up.contentrefresh);
+			_re.loading = true;
+			callback = callback || opts.up.callback;
+			callback && callback.call(this);
+			scroller.refresh();
+		};
+
+    var createPocket = function(clazz, options, iconClass) {
+			var pocket = document.createElement('div');
+			pocket.className = clazz;
+			pocket.innerHTML = pocketHtml.replace('{contentrefresh}', options.contentrefresh).replace('{icon}', iconClass);
+			return $(pocket);
+	};
 
 	var setCaption = function(title, reset) {
 			var _re = this, opts = _re.opts;
@@ -108,7 +181,7 @@
 						if (isPulldown) {
 							if (title === opts.down.contentrefresh) {
 								loading[0].className = CLASS_LOADING;
-								loading.style.webkitAnimation = "spinner-spin 1s step-end infinite";
+								loading[0].style.webkitAnimation = "spinner-spin 1s step-end infinite";
 							} else if (title === opts.down.contentover) {
 								loading[0].className = CLASS_LOADING_UP;
 								loading[0].style.webkitTransition = "-webkit-transform 0.3s ease-in";
@@ -131,47 +204,6 @@
 
 			}
 		};
-
-	var resetPosition = function(scroller) {
-			var _re = this, opts = _re.opts;
-			if (_re.pulldown && scroller.y >= opts.down.height) {
-				pulldownLoading.apply(_re,[0, scroller]);
-				return true;
-			}
-		};
-	var pulldownLoading = function(x, scroller) {
-			var _re = this, opts = _re.opts;
-			var time = scroller.options.bounceTime;
-			x = x || 0;
-			scroller.scrollTo(x, opts.down.height, time, opts.bounceEasing);
-			if (_re.loading) {
-				return;
-			}
-			initPulldownRefresh.call(_re);
-			setCaption(opts.down.contentrefresh);
-			_re.loading = true;
-			scroller.indicators.map(function(indicator) {
-				indicator.fade(0);
-			});
-			var callback = opts.down.callback;
-			callback && callback.call(_re);
-		};
-	var initPulldownRefresh = function() {
-			var _re = this, opts = _re.opts;
-			_re.pulldown = true;
-			_re.pullPocket = _re.topPocket;
-			_re.pullPocket.addClass(CLASS_BLOCK);
-			_re.pullPocket.addClass(CLASS_VISIBILITY);
-			_re.pullCaption = _re.topCaption;
-			_re.pullLoading = _re.topLoading;
-		};
-
-    var createPocket = function(clazz, options, iconClass) {
-			var pocket = document.createElement('div');
-			pocket.className = clazz;
-			pocket.innerHTML = pocketHtml.replace('{contentrefresh}', options.contentrefresh).replace('{icon}', iconClass);
-			return $(pocket);
-	};
 
 	/**
      * 刷新组件
@@ -206,12 +238,44 @@
                 _re.scroller = _re.ref.scroll({
                         scrollY: true,
 						scrollX: false,
-						probeType:3 //每滚动一像素触发
+						bounceTime:300,
+						probeType:1 //每滚动一像素触发
                 });
 	            render.call(_re);
 	            bind.call(_re);
             });
         };
+
+
+
+		$refresh.prototype.endPulldownToRefresh = function() {
+			var _re = this, opts = _re.opts;
+			if (_re.topPocket && _re.loading && _re.pulldown) {
+				_re.scroller.scrollTo(0, 0, _re.scroller.options.bounceTime, _re.scroller.options.bounceEasing);
+				_re.loading = false;
+				setCaption.apply(_re,[opts.down.contentdown, true]);
+				setTimeout(function() {
+					_re.loading || _re.topPocket.removeClass(CLASS_VISIBILITY);
+				}, 150);
+			}
+		};
+
+		$refresh.prototype.endPullupToRefresh = function(finished) {
+			var _re = this, opts = _re.opts;
+			if (_re.bottomPocket && _re.loading && !_re.pulldown) {
+				_re.loading = false;
+				if (finished) {
+					_re.finished = true;
+					setCaption.call(_re,opts.up.contentnomore);
+					// _re.wrapper.removeEventListener('scrollbottom', self);
+				} else {
+					setCaption.call(_re,opts.up.contentdown);
+					setTimeout(function() {
+						_re.loading || _re.bottomPocket.removeClass(CLASS_VISIBILITY);
+					}, 150);
+				}
+			}
+		};
 
         /**
          * 销毁组件

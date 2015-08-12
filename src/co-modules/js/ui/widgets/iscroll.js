@@ -20,14 +20,6 @@
                     opts = $.extend(opts, { disableMouse : true,disablePointer:true});
                     id = ++$ui.uuid;
                     scrollObj = $ui.data[id] = new IScroll(self, opts);
-                    // scrollObj.on('scrollStart', function () {
-                    //         console.log('scrollStart x--> '+this.x);
-                    //         console.log('scrollStart y--> '+this.y);
-                    // });
-                    // scrollObj.on('scrollEnd', function () {
-                    //         console.log('scrollEnd x--> '+this.x);
-                    //         console.log('scrollEnd y--> '+this.y);
-                    // });
                     self.setAttribute('data-scroll', id);
                 } else {
                     scrollObj = $ui.data[id];
