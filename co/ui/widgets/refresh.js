@@ -123,8 +123,8 @@
 			if (_re.loading) {
 				return;
 			}
-			// initPulldownRefresh.call(_re);
-			// setCaption.call(_re,opts.down.contentrefresh);
+			initPulldownRefresh.call(_re);
+			setCaption.call(_re,opts.down.contentrefresh);
 			_re.loading = true;
 			var callback = opts.down.callback;
 			callback && callback.call(_re);

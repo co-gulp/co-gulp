@@ -65,7 +65,7 @@
                 });
 
            	_re.scroller.on('scrollEnd',function(e){
-                	if (Math.abs(this.y) > 0 && this.y <= this.maxScrollY) {
+                	if (this.startY <= -1&&Math.abs(this.y) > 1 && this.y <= this.maxScrollY) {
                 		if(opts.up && opts.up.hasOwnProperty('callback')){
 							if (!_re.pulldown && !_re.loading&&!_re.finished) {
 								_re.pulldown = false;
@@ -83,7 +83,7 @@
 						pulldownLoading.apply(_re,[0, _re.scroller]);
 						return true;
 					}
-					_resetPosition.call(_re.scroller,time);
+					return _resetPosition.call(_re.scroller,time);
 				}
             });
 
@@ -240,6 +240,7 @@
                         scrollY: true,
 						scrollX: false,
 						bounceTime:300,
+						bounceEasing: 'quadratic',
 						probeType:2 //每滚动一像素触发
                 });
 	            render.call(_re);
