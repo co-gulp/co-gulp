@@ -6291,3 +6291,14 @@ html.ios-gt-6.pixel-ratio-3 .list-block li:last-child li .item-inner:after {
 .ui-scroller .ui-navigator-list li {
   display: inline-block;
 }
+.swipe-content {
+  width: 100%;
+}
+.ui-swipe-item {
+  background-color: #e3e3e3;
+  text-align: center;
+  position: relative;
+  float: left;
+  overflow: hidden;
+  -webkit-box-sizing: border-box;
+}

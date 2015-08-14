@@ -1,18 +1,18 @@
 (function() {
 
-	var CLASS_PULL_TOP_POCKET = 'mui-pull-top-pocket';
-	var CLASS_PULL_BOTTOM_POCKET = 'mui-pull-bottom-pocket';
-	var CLASS_PULL = 'mui-pull';
-	var CLASS_PULL_LOADING = 'mui-pull-loading';
-	var CLASS_PULL_CAPTION = 'mui-pull-caption';
+	var CLASS_PULL_TOP_POCKET = 'ui-pull-top-pocket';
+	var CLASS_PULL_BOTTOM_POCKET = 'ui-pull-bottom-pocket';
+	var CLASS_PULL = 'ui-pull';
+	var CLASS_PULL_LOADING = 'ui-pull-loading';
+	var CLASS_PULL_CAPTION = 'ui-pull-caption';
 
-	var CLASS_ICON = 'mui-icon';
-	var CLASS_SPINNER = 'mui-spinner';
-	var CLASS_ICON_PULLDOWN = 'mui-icon-pulldown';
+	var CLASS_ICON = 'ui-icon';
+	var CLASS_SPINNER = 'ui-spinner';
+	var CLASS_ICON_PULLDOWN = 'ui-icon-pulldown';
 
-	var CLASS_BLOCK = 'mui-block';
-	var CLASS_HIDDEN = 'mui-hidden';
-	var CLASS_VISIBILITY = 'mui-visibility';
+	var CLASS_BLOCK = 'ui-block';
+	var CLASS_HIDDEN = 'ui-hidden';
+	var CLASS_VISIBILITY = 'ui-visibility';
 
     var CLASS_SCROLL = 'ui-scroll';
     var CLASS_SCROLL_WRAPPER = 'ui-scroll-wrapper';
@@ -51,7 +51,6 @@
     var bind = function(){
             var _re = this, opts = _re.opts;
            	_re.scroller.on('scrollStart', function () {
-           			console.log('scrollStart x--> '+this.x);
                     if (!_re.loading) {
 						_re.pulldown = _re.pullPocket = _re.pullCaption = _re.pullLoading = false
 					}   
@@ -67,11 +66,13 @@
 
            	_re.scroller.on('scrollEnd',function(e){
                 	if (Math.abs(this.y) > 0 && this.y <= this.maxScrollY) {
-						if (!_re.pulldown && !_re.loading&&!_re.finished) {
-							_re.pulldown = false;
-							initPullupRefresh.call(_re);
-							pullupLoading.apply(_re,[0, this]);
-						}
+                		if(opts.up && opts.up.hasOwnProperty('callback')){
+							if (!_re.pulldown && !_re.loading&&!_re.finished) {
+								_re.pulldown = false;
+								initPullupRefresh.call(_re);
+								pullupLoading.apply(_re,[0, this]);
+							}
+                		}
 					}
             });
 
@@ -239,7 +240,7 @@
                         scrollY: true,
 						scrollX: false,
 						bounceTime:300,
-						probeType:1 //每滚动一像素触发
+						probeType:2 //每滚动一像素触发
                 });
 	            render.call(_re);
 	            bind.call(_re);
@@ -255,6 +256,7 @@
 				_re.loading = false;
 				setCaption.apply(_re,[opts.down.contentdown, true]);
 				setTimeout(function() {
+					_re.scroller.refresh();
 					_re.loading || _re.topPocket.removeClass(CLASS_VISIBILITY);
 				}, 150);
 			}
@@ -267,10 +269,11 @@
 				if (finished) {
 					_re.finished = true;
 					setCaption.call(_re,opts.up.contentnomore);
-					// _re.wrapper.removeEventListener('scrollbottom', self);
+					_re.scroller.refresh();
 				} else {
 					setCaption.call(_re,opts.up.contentdown);
 					setTimeout(function() {
+						_re.scroller.refresh();
 						_re.loading || _re.bottomPocket.removeClass(CLASS_VISIBILITY);
 					}, 150);
 				}

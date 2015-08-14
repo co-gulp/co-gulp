@@ -3,15 +3,84 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>Hello MUI</title>
+		<title>Hello ui</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
 
-		<link rel="stylesheet" href="mui.css">
+		<!-- <link rel="stylesheet" href="mui.css"> -->
 		<link rel="stylesheet" href="../dist/css/co.css">
 	</head>
 		<style type="text/css">
+.ui-pull-top-pocket {
+  top: 0;
+}
+.ui-block {
+  display: block !important;
+}
+.ui-visibility {
+  visibility: visible !important;
+}
+.ui-pull-top-pocket, .ui-pull-bottom-pocket {
+  position: absolute;
+  left: 0;
+  display: block;
+  width: 100%;
+  height: 50px;
+  overflow: hidden;
+  visibility: hidden;
+}
+.ui-pull {
+  position: absolute;
+  right: 0;
+  bottom: 10px;
+  left: 0;
+  font-weight: bold;
+  color: #777;
+  text-align: center;
+}
+.ui-pull-loading {
+  margin-right: 10px;
+  vertical-align: middle;
+  -webkit-transition: -webkit-transform .4s;
+          transition:         transform .4s;
+  -webkit-transition-duration: 400ms;
+          transition-duration: 400ms;
+
+  -webkit-backface-visibility: hidden;
+}
+.ui-pull-caption {
+  position: relative;
+  display: inline-block;
+  margin-top: 0;
+  overflow: visible;
+  font-size: 15px;
+  line-height: 24px;
+  vertical-align: middle;
+}
+
+.ui-pull-bottom-pocket {
+  position: relative;
+  bottom: 0;
+  height: 40px;
+}
+.ui-pull-bottom-pocket .ui-pull-loading {
+  visibility: hidden;
+}
+.ui-pull-bottom-pocket .ui-pull-loading.ui-in {
+  display: inline-block;
+}
+
+.ui-pull-loading.ui-reverse {
+  -webkit-transform: rotate(180deg) translateZ(0);
+          transform: rotate(180deg) translateZ(0);
+}
+.ui-pull-caption span {
+  display: none;
+}
+.ui-pull-caption span.ui-in {
+  display: inline;
+}
 		</style>
 	<body>
 		<!--下拉刷新容器-->
@@ -24,6 +93,7 @@
 		<script>
 			domReady(function(require){
 		        require("refresh");
+		        // refresh() ;
 		        $('#pullrefresh').refresh( { 
 		            down: {
 						callback: pulldownRefresh
@@ -60,7 +130,6 @@
 			function pullupRefresh() {
 				var self = this;
 				setTimeout(function() {
-					self.endPullupToRefresh((++count > 2)); //参数为true代表没有更多数据了。
 					var table = document.body.querySelector('.ui-table-view');
 					var cells = document.body.querySelectorAll('.ui-table-view-cell');
 					for (var i = cells.length, len = i + 20; i < len; i++) {
@@ -69,7 +138,19 @@
 						li.innerHTML = '<a class="ui-navigate-right">Item ' + (i + 1) + '</a>';
 						table.appendChild(li);
 					}
+					self.endPullupToRefresh((++count > 2)); //参数为true代表没有更多数据了。
 				}, 1500);
+			}
+
+			function refresh() {
+					var table = document.body.querySelector('.ui-table-view');
+					var cells = document.body.querySelectorAll('.ui-table-view-cell');
+					for (var i = cells.length, len = i + 20; i < len; i++) {
+						var li = document.createElement('li');
+						li.className = 'ui-table-view-cell';
+						li.innerHTML = '<a class="ui-navigate-right">Item ' + (i + 1) + '</a>';
+						table.appendChild(li);
+					}
 			}
 		</script>
 	</body>
