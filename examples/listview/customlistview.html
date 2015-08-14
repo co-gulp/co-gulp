@@ -103,6 +103,9 @@
 
 	domReady(function(require){
 		require("listview");
+    $('.list-block').listview({
+          iscroll:true
+      });
     require("switch");
     $('.ui-switch').switch();
 	});

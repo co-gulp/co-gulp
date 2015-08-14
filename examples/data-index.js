@@ -102,6 +102,10 @@ var data = [{
                                                     name : "swipePage",
                                                     tar : "swipePage.html"
                                                 },{
+                                                    cont : 'refresh',
+                                                    name : "refresh",
+                                                    tar : "refresh.html"
+                                                },{
                                                     cont : '树形列表',
                                                     name : "listview",
                                                     tar : "treeview.html"

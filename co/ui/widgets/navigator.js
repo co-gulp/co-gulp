@@ -83,7 +83,6 @@
         //初始化
         $nav.prototype.init = function () {
             var _nav = this, opts = _nav.opts;
-            // _nav.ref.addClass('ui-tabs');
             render.call(_nav);
             bind.call(_nav);
             require.async('scroll', function() {

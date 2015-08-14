@@ -281,6 +281,12 @@ gulp.task('watch', function (cb) {
     livereload.listen();  
     var watcher = gulp.watch(paths.source.examples+'**/*.*');
     watcher.on('change',function(file){
+        var ex = file.path.indexOf('examples');
+        var next = file.path.substr(ex+9).indexOf('\\');
+        var destPaht = paths.examples.root;
+        if(next!=-1){
+            destPaht = destPaht + file.path.substring(ex+9,ex+9+next+1);
+        }
         gulp.src(file.path)
             .pipe(gulp.dest(paths.examples.root))
             .pipe(livereload());

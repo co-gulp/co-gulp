@@ -10,6 +10,8 @@
 
             tarEl;
 
+        var CLASS_SCROLL = 'ui-scroll';
+
         var render = function(){
             var _tv = this,opts = _tv.opts;
             _tv._ul = _tv.ref.find('ul.'+CLASS_TABLE_VIEW);
@@ -113,9 +115,10 @@
             render.call(this);
             bind.call(this);
             if(opts.iscroll){
+                _tv.ref.children().wrapAll('<div class = "'+CLASS_SCROLL+'"/>');
                 require.async('scroll', function() {
                     _tv.ref.scroll({
-                        scrollbars: true,
+                        scrollbars: false,
                         interactiveScrollbars: true,
                         shrinkScrollbars: 'scale',
                         fadeScrollbars: true

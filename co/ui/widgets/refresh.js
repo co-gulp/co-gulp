@@ -15,7 +15,6 @@
 	var CLASS_VISIBILITY = 'ui-visibility';
 
     var CLASS_SCROLL = 'ui-scroll';
-    var CLASS_SCROLL_WRAPPER = 'ui-scroll-wrapper';
 
 	var CLASS_LOADING_UP = CLASS_PULL_LOADING + ' ' + CLASS_ICON + ' ' + CLASS_ICON_PULLDOWN;
 	var CLASS_LOADING_DOWN = CLASS_PULL_LOADING + ' ' + CLASS_ICON + ' ' + CLASS_ICON_PULLDOWN;
@@ -65,7 +64,7 @@
                 });
 
            	_re.scroller.on('scrollEnd',function(e){
-                	if (Math.abs(this.y) > 0 && this.y <= this.maxScrollY) {
+                	if (this.maxScrollY < -1&&Math.abs(this.y) > 1 && this.y <= this.maxScrollY) {
                 		if(opts.up && opts.up.hasOwnProperty('callback')){
 							if (!_re.pulldown && !_re.loading&&!_re.finished) {
 								_re.pulldown = false;
@@ -83,7 +82,7 @@
 						pulldownLoading.apply(_re,[0, _re.scroller]);
 						return true;
 					}
-					_resetPosition.call(_re.scroller,time);
+					return _resetPosition.call(_re.scroller,time);
 				}
             });
 
@@ -234,12 +233,12 @@
         $refresh.prototype.init = function () {
             var _re = this, opts = _re.opts;
             require.async('scroll', function() {
-	            _re.ref.addClass(CLASS_SCROLL_WRAPPER);
-	            _re.ref.children().wrapAll('<div class = "'+CLASS_SCROLL+'"/>');
+                _re.ref.children().wrapAll('<div class = "'+CLASS_SCROLL+'"/>');
                 _re.scroller = _re.ref.scroll({
                         scrollY: true,
 						scrollX: false,
 						bounceTime:300,
+						bounceEasing: 'quadratic',
 						probeType:2 //每滚动一像素触发
                 });
 	            render.call(_re);

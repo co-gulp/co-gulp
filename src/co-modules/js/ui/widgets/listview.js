@@ -2,7 +2,8 @@
  * @file 列表组件
  */
 (function() {
-
+        var CLASS_SCROLL = 'ui-scroll';
+        
         var render = function(){
         };
 
@@ -42,8 +43,9 @@
             bind.call(_gv);
             if(opts.iscroll){
                 require.async('scroll', function() {
+                    _gv.ref.children().wrapAll('<div class = "'+CLASS_SCROLL+'"/>');
                     _gv.ref.scroll({
-                            scrollbars: true,
+                            scrollbars: false,
                             interactiveScrollbars: true,
                             shrinkScrollbars: 'scale',
                             fadeScrollbars: true
