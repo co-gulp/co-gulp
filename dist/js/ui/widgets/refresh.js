@@ -65,7 +65,7 @@
                 });
 
            	_re.scroller.on('scrollEnd',function(e){
-                	if (this.startY <= -1&&Math.abs(this.y) > 1 && this.y <= this.maxScrollY) {
+                	if (this.maxScrollY < -1&&Math.abs(this.y) > 1 && this.y <= this.maxScrollY) {
                 		if(opts.up && opts.up.hasOwnProperty('callback')){
 							if (!_re.pulldown && !_re.loading&&!_re.finished) {
 								_re.pulldown = false;
