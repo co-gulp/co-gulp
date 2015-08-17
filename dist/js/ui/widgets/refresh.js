@@ -15,6 +15,7 @@
 	var CLASS_VISIBILITY = 'ui-visibility';
 
     var CLASS_SCROLL = 'ui-scroll';
+    var CLASS_SCROLL_WRAPPER = 'ui-scroll-wrapper';
 
 	var CLASS_LOADING_UP = CLASS_PULL_LOADING + ' ' + CLASS_ICON + ' ' + CLASS_ICON_PULLDOWN;
 	var CLASS_LOADING_DOWN = CLASS_PULL_LOADING + ' ' + CLASS_ICON + ' ' + CLASS_ICON_PULLDOWN;
@@ -233,6 +234,7 @@
         $refresh.prototype.init = function () {
             var _re = this, opts = _re.opts;
             require.async('scroll', function() {
+            	_re.ref.addClass(CLASS_SCROLL_WRAPPER);
                 _re.ref.children().wrapAll('<div class = "'+CLASS_SCROLL+'"/>');
                 _re.scroller = _re.ref.scroll({
                         scrollY: true,

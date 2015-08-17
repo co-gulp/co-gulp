@@ -29,8 +29,7 @@
             </a>
         </nav>
             <div id="slider" class="ui-control-content">
-                   <div id="nav" class="ui-navigator">
-                <div class="ui-scroller">
+                <div id="nav" class="ui-navigator">
                     <ul class="ui-navigator-list">
                         <li class="ui-state-active"><a href="#test1">首页</a></li>
                         <li class=""><a href="#test1">要闻</a></li>
@@ -49,7 +48,6 @@
                         <li class=""><a href="#test12">汽车</a></li>
                     </ul>
                 </div>
-            </div>
                 <div id="swipepage" class="ui-slider">
                     <div class="ui-slider-group">
                         <div class="ui-swipe-item">
@@ -78,7 +76,7 @@
                             </div>
                         </div>
                     </div>
-                    </div> 
+                </div> 
             </div>
             <div id="wrapper" class ="ui-control-content">
               2
@@ -104,7 +102,9 @@
         require("navigator");
         var nav = $('#nav').navigator();
         require("swipePage");
-        var swipe = $('#swipepage').swipepage();
+        var swipe = $('#swipepage').swipepage({
+            itemHeight:500
+        });
         $('#nav').on('select',function(e,index){
             swipe.slideTo(index,1);
         });

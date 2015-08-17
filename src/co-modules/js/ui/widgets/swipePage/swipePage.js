@@ -116,6 +116,7 @@
                  * @namespace options
                  */
                 interval: 4000,
+                itemHeight:500
 
         }); 
         //初始化
@@ -145,7 +146,7 @@
             for ( len = items.length; i < len; i++ ) {
                 item = items[ i ];
 
-                item.style.cssText += 'width:' + _sl.width + 'px;' +
+                item.style.cssText += 'width:' + _sl.width + 'px;' +'height:' + opts.itemHeight + 'px;' +
                         'left:' + (i * -_sl.width) + 'px;';
                 item.setAttribute( 'data-index', i );
 

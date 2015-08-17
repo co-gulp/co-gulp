@@ -1,7 +1,5 @@
 /** 一级导航样式 */
 .ui-navigator {
-    /*border-top: 1px solid #2468c9;*/
-    /*border-bottom: 1px solid #0145a5;*/
     background:#FCFCFC;
 }
 .ui-navigator-list {
@@ -14,7 +12,6 @@
 .ui-navigator .bar {
     position: absolute;
     height: 2px;
-    bottom: 0;
     overflow: hidden;
     -webkit-box-sizing:border-box;
     padding: 0 10px;
@@ -51,6 +48,14 @@
     color: #6EACCC;
 }
 
+.ui-navigator.ui-navigator-wrapper {
+  z-index: 1;
+  width: 100%;
+  overflow: hidden;
+  position:fixed;
+  -webkit-backface-visibility: hidden;
+}
+
 .ui-scroller {
     padding: 0;
     margin: 0;
@@ -72,4 +77,38 @@
 }
 .ui-scroller .ui-navigator-list li {
     display: inline-block;
+}
+
+.ui-navigator .ui-navigator-more {
+    position: absolute;
+    height: 34px;
+    width: 40px;
+    top: 0px;
+    text-align:right;
+    right: 0px;
+}
+.ui-navigator .ui-navigator-more .ui-more {
+    float:right;
+    position: relative;
+    height: 24px;
+    width: 24px;
+    text-align: center;
+    font-weight: bold;
+    color: black;
+    top: 5px;
+    background-color: rgb(252, 252, 252);
+}
+
+.ui-navigator .ui-navigator-more .ui-shadow {
+    float:left;
+    position: relative;
+    height: 24px;
+    width: 16px;
+    top: 5px;
+    -webkit-filter: blur(9px) drop-shadow(0px 0px 0px rgb(252, 252, 252)) opacity(0.9);
+    background-color: rgb(252, 252, 252);
+}
+
+.ui-navigator~.ui-slider {
+    padding-top: 37px;
 }

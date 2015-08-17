@@ -6,7 +6,7 @@
     var CLASS_CONTENT = 'ui-content',
         CLASS_ACTIVE = 'ui-active',
         CLASS_BAR = 'ui-bar',
-        CLASS_BAR_TAB = 'ui-bar-tab',
+        CLASS_TAB_BAR = 'ui-tab-bar',
         CLASS_TAB_ITEM = 'ui-tab-item',
         CLASS_SCROLL_WRAPPER = 'ui-scroll-wrapper',
         CLASS_CONTROL_CONTENT = 'ui-control-content';
@@ -22,7 +22,7 @@
 
     var render = function(){
             var _tb = this, opts = _tb.opts,items;
-
+            _tb.ref.addClass(CLASS_TAB_BAR);
             _tb._nav =  _tb.ref.find('nav').first();
             if(_tb._nav) {
                 _tb._content = $('<div></div>').appendTo(_tb.ref).addClass(CLASS_CONTENT);

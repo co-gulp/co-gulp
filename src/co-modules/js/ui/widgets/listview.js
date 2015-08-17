@@ -3,6 +3,7 @@
  */
 (function() {
         var CLASS_SCROLL = 'ui-scroll';
+        var CLASS_SCROLL_WRAPPER = 'ui-scroll-wrapper';
         
         var render = function(){
         };
@@ -43,6 +44,7 @@
             bind.call(_gv);
             if(opts.iscroll){
                 require.async('scroll', function() {
+                    _gv.ref.addClass(CLASS_SCROLL_WRAPPER);
                     _gv.ref.children().wrapAll('<div class = "'+CLASS_SCROLL+'"/>');
                     _gv.ref.scroll({
                             scrollbars: false,

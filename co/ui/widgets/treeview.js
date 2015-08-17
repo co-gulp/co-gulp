@@ -11,6 +11,7 @@
             tarEl;
 
         var CLASS_SCROLL = 'ui-scroll';
+        var CLASS_SCROLL_WRAPPER = 'ui-scroll-wrapper';
 
         var render = function(){
             var _tv = this,opts = _tv.opts;
@@ -115,6 +116,7 @@
             render.call(this);
             bind.call(this);
             if(opts.iscroll){
+                _tv.ref.addClass(CLASS_SCROLL_WRAPPER);
                 _tv.ref.children().wrapAll('<div class = "'+CLASS_SCROLL+'"/>');
                 require.async('scroll', function() {
                     _tv.ref.scroll({
