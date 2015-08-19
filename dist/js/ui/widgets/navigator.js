@@ -86,7 +86,7 @@
                 _nav.ref.addClass(CLASS_NAVIGATOR_WRAPPER);
                 _nav.ref.children().first().wrapAll('<div class = "'+CLASS_SCROLLER+'"/>');
                 if(_nav.ref.find( '.ui-navigator-more' )[0]){
-                    $('<li style="width: 20px;"></li>').appendTo(_nav.ref.find( 'ul' ));
+                    $('<li style="width: 30px;"></li>').appendTo(_nav.ref.find( 'ul' ));
                 }
                 _nav.ref.scroll({
                         scrollX: true, 

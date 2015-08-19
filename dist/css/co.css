@@ -6349,10 +6349,7 @@ html.ios-gt-6.pixel-ratio-3 .list-block li:last-child li .item-inner:after {
   top: 0;
 }
 .ui-block {
-  display: block !important;
-}
-.ui-visibility {
-  visibility: visible !important;
+  display: block;
 }
 .ui-pull {
   position: absolute;

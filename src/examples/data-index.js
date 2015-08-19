@@ -106,6 +106,10 @@ var data = [{
                                                     name : "refresh",
                                                     tar : "refresh.html"
                                                 },{
+                                                    cont : 'news',
+                                                    name : "news",
+                                                    tar : "news.html"
+                                                },{
                                                     cont : '树形列表',
                                                     name : "listview",
                                                     tar : "treeview.html"
