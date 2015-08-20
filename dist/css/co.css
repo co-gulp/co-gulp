@@ -4744,6 +4744,13 @@ a .icon-flip-vertical:before {
 .ui-bar-nav ~ .ui-content {
   padding-top: 44px;
 }
+.ui-bar-nav-IOS7 {
+  height: 64px;
+  padding-top: 20px;
+}
+.ui-bar-nav-IOS7 ~ .ui-content {
+  padding-top: 64px;
+}
 .ui-title {
   position: absolute;
   display: block;

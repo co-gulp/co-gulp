@@ -3745,171 +3745,171 @@ seajs.config({
     
     (function(global) {
        var $A = {
-          trim : function(url,id,options,type){
+          trim : function(){
 
           },
 
-          trimAll : function(id,options){
+          trimAll : function(){
              
           },
 
-          isArray : function(id,options){
+          isArray : function(){
              
           },
 
-          addEvent : function(id,options){
+          addEvent : function(){
              
           },
 
-          removEvent : function(id,options){
+          removEvent : function(){
              
           },
 
-          one : function(id,options){
+          one : function(){
              
           },
 
-          query : function(id,options){
+          query : function(){
              
           },
 
-          queryAll : function(id,options){
+          queryAll : function(){
              
           },
 
-          first : function(id,options){
+          first : function(){
              
           },
 
-          last : function(id,options){
+          last : function(){
              
           },
 
-          eq : function(id,options){
+          eq : function(){
              
           },
 
-          not : function(id,options){
+          not : function(){
              
           },
 
-          prev : function(id,options){
+          prev : function(){
              
           },
 
-          next : function(id,options){
+          next : function(){
              
           },
 
-          contains : function(id,options){
+          contains : function(){
              
           },
 
-          closest : function(id,options){
+          closest : function(){
              
           },
 
-          remove : function(id,options){
+          remove : function(){
              
           },
 
-          attr : function(id,options){
+          attr : function(){
              
           },
 
-          removeAttr : function(id,options){
+          removeAttr : function(){
              
           },
 
-          hasClass : function(id,options){
+          hasClass : function(){
              
           },
 
-          addClass : function(id,options){
+          addClass : function(){
              
           },
 
-          removeClass : function(id,options){
+          removeClass : function(){
              
           },
 
-          toggleClass : function(id,options){
+          toggleClass : function(){
              
           },
 
-          val : function(id,options){
+          val : function(){
              
           },
 
-          prepend : function(id,options){
+          prepend : function(){
              
           },
 
-          append : function(id,options){
+          append : function(){
              
           },
 
-          before : function(id,options){
+          before : function(){
              
           },
 
-          after : function(id,options){
+          after : function(){
              
           },
 
-          html : function(id,options){
+          html : function(){
              
           },
 
-          text : function(id,options){
+          text : function(){
              
           },
 
-          offset : function(id,options){
+          offset : function(){
              
           },
 
-          css : function(id,options){
+          css : function(){
              
           },
 
-          cssVal : function(id,options){
+          cssVal : function(){
              
           },
 
-          jsonToStr : function(id,options){
+          jsonToStr : function(){
              
           },
 
-          strToJson  : function(id,options){
+          strToJson  : function(){
              
           },
 
-          setStorage : function(id,options){
+          setStorage : function(){
              
           },
 
-          getStorage : function(id,options){
+          getStorage : function(){
              
           },
 
-          removeStorage : function(id,options){
+          removeStorage : function(){
              
           },
 
-          clearStorage : function(id,options){
+          clearStorage : function(){
              
           },
 
-          fullIos7Bar : function(id,options){
+          fullIos7Bar : function(){
              
           },
 
-          fullStatusBar : function(id,options){
+          fullStatusBar : function(){
              
           },
 
-          toast : function(id,options){
+          toast : function(){
              
           }
        }

@@ -4,8 +4,7 @@
 (function() {
     var CLASS_STATE_ACTIVE = 'ui-state-active';
         CLASS_SLIDER_GROUP = 'ui-slider-group' ,
-        CLASS_SLIDER_ITEM = 'ui-slider-item' ,
-        CLASS_SLIDER = 'ui-slider';
+        CLASS_SWIPE_ITEM = 'ui-swipe-item' ;
 
         /**
          * @property {Object}  容器的选择器
@@ -34,7 +33,7 @@
             _sl._items = (_sl._container = container)
                     .children()
                     .toArray();
-            
+            _sl._items[_sl.index].setAttribute( 'actived', true );
             _sl.ref.trigger('donedom');
             initWidth.call(_sl);
         };
@@ -43,7 +42,10 @@
             var _sl = this, opts = _sl.opts;
             _sl.ref.on( 'slideend', $.proxy(handleEvent, _sl))
                    .on( 'touchstart', $.proxy(handleEvent, _sl))
-                   .on( 'touchend', $.proxy(handleEvent, _sl));
+                   .on( 'touchend', $.proxy(handleEvent, _sl))
+                   .on( 'slide', function(evt,to,from) {
+
+                    })
             _sl._container.on( transitionEnd,
                     $.proxy(tansitionEnd, _sl ) );
     };    
@@ -60,7 +62,7 @@
                 case 'touchend':
                 case 'touchcancel':
                 case 'slideend':
-                    // _sl.play();
+                    !_sl._items[_sl.index].getAttribute( 'actived' )&&_sl._items[_sl.index].setAttribute( 'actived', true );
                     break;
             }
         }; 
@@ -83,10 +85,13 @@
     var tansitionEnd = function( evt ) {
              var _sl = this, opts = _sl.opts;
             // ~~用来类型转换，等价于parseInt( str, 10 );
-            if ( ~~evt.target.getAttribute( 'data-index' ) !== _sl.index ) {
-                return;
+            var ele = evt.target;
+            if($(ele).hasClass(CLASS_SWIPE_ITEM)){
+                if ( ~~ele.getAttribute( 'data-index' ) !== _sl.index ) {
+                    return;
+                }
+                _sl.ref.trigger('slideend', [_sl.index]);
             }
-            _sl.ref.trigger('slideend', [_sl.index]);
         }; 
 
  
@@ -112,10 +117,9 @@
                  */
                 index: 0,
                 /**
-                 * @property {Number} [interval=4000] 自动播放的间隔时间（毫秒）
+                 * @property {Number} [itemHeight=500] 
                  * @namespace options
                  */
-                interval: 4000,
                 itemHeight:500
 
         }); 
@@ -291,6 +295,16 @@
          */
         $swipepage.prototype.getIndex = function() {
             return this.index;
+        };
+
+        /**
+         * 返回当前显示的第几个slide
+         * @method getIndex
+         * @chainable
+         * @return {Number} 当前的silde序号
+         */
+        $swipepage.prototype.getItem = function(index) {
+            return this._items[index];
         };
 
         /**
