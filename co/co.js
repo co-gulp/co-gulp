@@ -2520,7 +2520,7 @@ window.$ === undefined && (window.$ = Zepto)
  * @import zepto.js
  */
 
-(function ($) {
+;(function ($) {
 
     /**
      * 是原生的window.matchMedia方法的polyfill，对于不支持matchMedia的方法系统和浏览器，按照[w3c window.matchMedia](http://www.w3.org/TR/cssom-view/#dom-window-matchmedia)的接口

@@ -245,7 +245,7 @@
     $refresh.prototype.pullupLoading = function(callback) {
             var _re = this, opts = _re.opts;
             var time = _re.scroller.options.bounceTime;
-            _re.scroller.scrollTo(0, _re.scroller.maxScrollY - opts.up.height, time, _re.scroller.options.bounceEasing);
+            _re.scroller.scrollTo(0, _re.scroller.maxScrollY, time, _re.scroller.options.bounceEasing);
             if (_re.loading) {
                 return;
             }
