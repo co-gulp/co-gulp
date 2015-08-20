@@ -7,7 +7,7 @@
     var CLASS_PULL_CAPTION = 'ui-pull-caption';
 
     var CLASS_ICON = 'ui-icon';
-    var CLASS_SPINNER = 'ui-spinner';
+    var CLASS_SPINNER = 'icon-spinner icon-spin';
     var CLASS_ICON_PULLDOWN = 'ui-icon-pulldown';
 
     var CLASS_BLOCK = 'ui-block';
@@ -168,6 +168,12 @@
                             if (title === opts.up.contentrefresh) {
                                 $(loading).css('display','inline-block');
                                 $(loading).css('visibility','visible');
+                                if($.os.android&&($.os.version == '4.3')){
+                                    $('html').css('visibility','hidden');
+                                    setTimeout(function(){
+                                             $('html').css('visibility','visible');
+                                    },80);
+                                }
                             } else {
                                 $(caption).css('display','inline-block');
                                 loading.style.display = 'none';
@@ -239,7 +245,7 @@
     $refresh.prototype.pullupLoading = function(callback) {
             var _re = this, opts = _re.opts;
             var time = _re.scroller.options.bounceTime;
-            _re.scroller.scrollTo(0, _re.scroller.maxScrollY - opts.up.height, time, _re.scroller.options.bounceEasing);
+            _re.scroller.scrollTo(0, _re.scroller.maxScrollY, time, _re.scroller.options.bounceEasing);
             if (_re.loading) {
                 return;
             }

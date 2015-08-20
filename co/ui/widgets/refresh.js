@@ -7,7 +7,7 @@
     var CLASS_PULL_CAPTION = 'ui-pull-caption';
 
     var CLASS_ICON = 'ui-icon';
-    var CLASS_SPINNER = 'ui-spinner';
+    var CLASS_SPINNER = 'icon-spinner icon-spin';
     var CLASS_ICON_PULLDOWN = 'ui-icon-pulldown';
 
     var CLASS_BLOCK = 'ui-block';
@@ -47,8 +47,6 @@
                 }
                 _re.bottomLoading = _re.bottomPocket.find('.' + CLASS_PULL_LOADING);
                 _re.bottomCaption = _re.bottomPocket.find('.' + CLASS_PULL_CAPTION);
-                _re.reCaption = $('<div class="' + CLASS_PULL_CAPTION + '">'+opts.up.contentrefresh+'</div>').appendTo(_re.bottomPocket.find('.' + CLASS_PULL));
-                _re.reCaption.css('display','none');
             }
         };
 
@@ -151,6 +149,7 @@
                         loading.style.webkitTransform = "";
                 } else {
                     if (title !== _re.lastTitle) {
+                        caption.innerHTML = title;
                         if (isPulldown) {
                             caption.innerHTML = title;
                             if (title === opts.down.contentrefresh) {
@@ -169,18 +168,14 @@
                             if (title === opts.up.contentrefresh) {
                                 $(loading).css('display','inline-block');
                                 $(loading).css('visibility','visible');
-                                $(caption).css('display','none');
-                                _re.reCaption.css('display','inline-block');
-//                              if($.os.android&&($.os.version == '4.3')){
-//                                  $('html').css('visibility','hidden');
-//                                  setTimeout(function(){
-//                                           $('html').css('visibility','visible');
-//                                  },80);
-//                              }
+                                if($.os.android&&($.os.version == '4.3')){
+                                    $('html').css('visibility','hidden');
+                                    setTimeout(function(){
+                                             $('html').css('visibility','visible');
+                                    },80);
+                                }
                             } else {
-                                caption.innerHTML = title;
                                 $(caption).css('display','inline-block');
-                                _re.reCaption.css('display','none');
                                 loading.style.display = 'none';
                             }
                         }
@@ -246,6 +241,7 @@
             var callback = opts.down.callback;
             callback && callback.call(_re);
         };
+
     $refresh.prototype.pullupLoading = function(callback) {
             var _re = this, opts = _re.opts;
             var time = _re.scroller.options.bounceTime;
