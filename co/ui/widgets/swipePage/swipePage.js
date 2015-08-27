@@ -4,8 +4,7 @@
 (function() {
     var CLASS_STATE_ACTIVE = 'ui-state-active';
         CLASS_SLIDER_GROUP = 'ui-slider-group' ,
-        CLASS_SLIDER_ITEM = 'ui-slider-item' ,
-        CLASS_SLIDER = 'ui-slider';
+        CLASS_SWIPE_ITEM = 'ui-swipe-item' ;
 
         /**
          * @property {Object}  容器的选择器
@@ -20,73 +19,80 @@
     var transitionEnd,translateZ = ' translateZ(0)';
 
     var render = function() {
-            var _sl = this, opts = _sl.opts,
+            var _sp = this, opts = _sp.opts,
                 viewNum = opts.viewNum || 1,
                 items,
                 container;
-            _sl.loading = $(loading).appendTo(_sl.ref);
-            _sl.index = opts.index,
+            _sp.loading = $(loading).appendTo(_sp.ref);
+            _sp.index = opts.index,
             // 检测容器节点是否指定
-            container = _sl.ref.find( SELECTOR_SLIDER_GROUP );
+            container = _sp.ref.find( SELECTOR_SLIDER_GROUP );
 
-            _sl.length = container.children().length;
+            _sp.length = container.children().length;
 
-            _sl._items = (_sl._container = container)
+            _sp._items = (_sp._container = container)
                     .children()
                     .toArray();
-            
-            _sl.ref.trigger('donedom');
-            initWidth.call(_sl);
+            _sp._items[_sp.index].setAttribute( 'actived', true );
+            _sp.ref.trigger('donedom');
+            initWidth.call(_sp);
         };
 
     var bind = function(){
-            var _sl = this, opts = _sl.opts;
-            _sl.ref.on( 'slideend', $.proxy(handleEvent, _sl))
-                   .on( 'touchstart', $.proxy(handleEvent, _sl))
-                   .on( 'touchend', $.proxy(handleEvent, _sl));
-            _sl._container.on( transitionEnd,
-                    $.proxy(tansitionEnd, _sl ) );
+            var _sp = this, opts = _sp.opts;
+            _sp.ref.on( 'slideend', $.proxy(handleEvent, _sp))
+                   .on( 'touchstart', $.proxy(handleEvent, _sp))
+                   .on( 'touchend', $.proxy(handleEvent, _sp))
+                   .on( 'slide', function(evt,to,from) {
+
+                    })
+            _sp._container.on( transitionEnd,
+                    $.proxy(tansitionEnd, _sp ) );
     };    
 
     var handleEvent = function(evt) {
-            var _sl = this, opts = _sl.opts;
+            var _sp = this, opts = _sp.opts;
             // if (element.classList.contains(CLASS_DISABLED)) {
             //     return;
             // }
             switch (evt.type) {
                 case 'touchstart':
-                    _sl.stop();
+                    _sp.stop();
                     break;
                 case 'touchend':
                 case 'touchcancel':
                 case 'slideend':
-                    // _sl.play();
+                    !_sp._items[_sp.index].getAttribute( 'actived' )&&_sp._items[_sp.index].setAttribute( 'actived', true );
                     break;
             }
         }; 
 
     var initWidth = function() {
-            var _sl = this, opts = _sl.opts,width;
+            var _sp = this, opts = _sp.opts,width;
 
             // width没有变化不需要重排
-            if ( (width = _sl.ref.width()) === _sl.width ) {
+            if ( (width = _sp.ref.width()) === _sp.width ) {
                 return;
             }
-            _sl.width = width;
-            _sl.arrange();
-            _sl._container.css('display','block');
-            _sl.ref.trigger('hiChange');
-            _sl.loading.remove();
+            _sp.width = width;
+            _sp.arrange();
+            _sp._container.css('display','block');
+            _sp.ref.trigger('hiChange');
+            _sp.loading.remove();
     };
 
 
     var tansitionEnd = function( evt ) {
-             var _sl = this, opts = _sl.opts;
+             var _sp = this, opts = _sp.opts;
             // ~~用来类型转换，等价于parseInt( str, 10 );
-            if ( ~~evt.target.getAttribute( 'data-index' ) !== _sl.index ) {
-                return;
+            var ele = evt.target;
+            if($(ele).hasClass(CLASS_SWIPE_ITEM)){
+                if ( ~~ele.getAttribute( 'data-index' ) !== _sp.index ) {
+                    return;
+                }
+                _sp.ref.trigger('slideend', [_sp.index]);
+                console.log('tansitionEnd');
             }
-            _sl.ref.trigger('slideend', [_sl.index]);
         }; 
 
  
@@ -112,24 +118,23 @@
                  */
                 index: 0,
                 /**
-                 * @property {Number} [interval=4000] 自动播放的间隔时间（毫秒）
+                 * @property {Number} [itemHeight=500] 
                  * @namespace options
                  */
-                interval: 4000,
                 itemHeight:500
 
         }); 
         //初始化
         $swipepage.prototype.init = function() {
-            var _sl = this,opts = _sl.opts;
+            var _sp = this,opts = _sp.opts;
             // 初始dom结构
-            render.call(_sl);
+            render.call(_sp);
             //绑定事件
-            bind.call(_sl);
+            bind.call(_sp);
 
             //加載觸摸按鈕
             require.async('sTouch', function(st) {
-                st.call(_sl);
+                st.call(_sp);
             });
         };
 
@@ -137,23 +142,23 @@
 
     // 重排items
     $swipepage.prototype.arrange = function() {
-            var _sl = this, opts = _sl.opts,
-                items = _sl._items,
+            var _sp = this, opts = _sp.opts,
+                items = _sp._items,
                 i = 0,item,len;
 
-            _sl._slidePos = new Array( items.length );
+            _sp._slidePos = new Array( items.length );
 
             for ( len = items.length; i < len; i++ ) {
                 item = items[ i ];
 
-                item.style.cssText += 'width:' + _sl.width + 'px;' +'height:' + opts.itemHeight + 'px;' +
-                        'left:' + (i * -_sl.width) + 'px;';
+                item.style.cssText += 'width:' + _sp.width + 'px;' +'height:' + opts.itemHeight + 'px;' +
+                        'left:' + (i * -_sp.width) + 'px;';
                 item.setAttribute( 'data-index', i );
 
-                _sl.move( i, i < _sl.index ? -_sl.width : i > _sl.index ? _sl.width : 0, 0 );
+                _sp.move( i, i < _sp.index ? -_sp.width : i > _sp.index ? _sp.width : 0, 0 );
             }
 
-            _sl._container.css( 'width', _sl.width * len );
+            _sp._container.css( 'width', _sp.width * len );
         };
 
         /**
@@ -165,12 +170,12 @@
          * @uses swipepage.autoplay
          */
         $swipepage.prototype.stop = function() {
-            var _sl = this;
-            if ( _sl._timer ) {
-                clearTimeout( _sl._timer );
-                _sl._timer = null;
+            var _sp = this;
+            if ( _sp._timer ) {
+                clearTimeout( _sp._timer );
+                _sp._timer = null;
             }
-            return _sl;
+            return _sp;
         };
 
         
@@ -181,12 +186,12 @@
          * @return {self} 返回本身
          */
         $swipepage.prototype.next = function() {
-            var _sl = this, opts = _sl.opts;
-            if (_sl.index + 1 < _sl.length ) {
-                _sl.slideTo( _sl.index + 1 );
+            var _sp = this, opts = _sp.opts;
+            if (_sp.index + 1 < _sp.length ) {
+                _sp.slideTo( _sp.index + 1 );
             }
 
-            return _sl;
+            return _sp;
         };
          /**
          * 切换到上一个slide
@@ -195,26 +200,26 @@
          * @return {self} 返回本身
          */
         $swipepage.prototype.prev = function() {
-            var _sl = this, opts = _sl.opts;
-            if (_sl.index > 0 ) {
-                _sl.slideTo( _sl.index - 1 );
+            var _sp = this, opts = _sp.opts;
+            if (_sp.index > 0 ) {
+                _sp.slideTo( _sp.index - 1 );
             }
 
-            return _sl;
+            return _sp;
         };
 
         
 
         $swipepage.prototype.move = function( index, dist, speed, immediate ) {
-            var _sl = this, opts = _sl.opts,
-                slidePos = _sl._slidePos,
-                items = _sl._items;
+            var _sp = this, opts = _sp.opts,
+                slidePos = _sp._slidePos,
+                items = _sp._items;
 
             if ( slidePos[ index ] === dist || !items[ index ] ) {
                 return;
             }
 
-            _sl.translate( index, dist, speed );
+            _sp.translate( index, dist, speed );
             slidePos[ index ] = dist;    // 记录目标位置
 
             // 强制一个reflow
@@ -222,65 +227,68 @@
         };
 
         $swipepage.prototype.translate = function( index, dist, speed ) {
-            var _sl = this, opts = _sl.opts,
-                slide = _sl._items[ index ],
+            var _sp = this, opts = _sp.opts,
+                slide = _sp._items[ index ],
                 style = slide && slide.style;
 
             if ( !style ) {
                 return false;
             }
-
+                    var refreshs = _sp.getWidget('Refresh');
+                    $.each(refreshs, function(key, value){
+                      console.log(key);
+                    })
             style.cssText += cssPrefix + 'transition-duration:' + speed + 
                     'ms;' + cssPrefix + 'transform: translate(' + 
                     dist + 'px, 0)' + translateZ + ';';
         };
 
         $swipepage.prototype.circle = function( index, arr ) {
-            var _sl = this, opts = _sl.opts, len;
+            var _sp = this, opts = _sp.opts, len;
 
-            arr = arr || _sl._items;
+            arr = arr || _sp._items;
             len = arr.length;
 
             return (index % len + len) % arr.length;
         };
 
         $swipepage.prototype.slide = function( from, diff, dir, width, speed, opts ) {
-             var _sl = this, to, opts = _sl.opts;
+             var _sp = this, to, opts = _sp.opts;
 
-            to = _sl.circle( from - dir * diff );
+            to = _sp.circle( from - dir * diff );
 
             dir = Math.abs( from - to ) / (from - to);
             
             // 调整初始位置，如果已经在位置上不会重复处理
-            _sl.move( to, -dir * width, 0, true );
+            _sp.move( to, -dir * width, 0, true );
 
-            _sl.move( from, width * dir, speed );
-            _sl.move( to, 0, speed );
+            _sp.move( from, width * dir, speed );
+            _sp.move( to, 0, speed );
 
-            _sl.index = to;
-            _sl.ref.trigger('slide', [to,from]);
-            return _sl;
+            _sp.index = to;
+            _sp.ref.trigger('slide', [to,from]);
+            return _sp;
         };
 
         /**
          * 切换到第几个slide
          */
         $swipepage.prototype.slideTo = function( to, speed ) {
-            var _sl = this, opts = _sl.opts;
-            if ( _sl.index === to || _sl.index === _sl.circle( to ) ) {
+            var _sp = this, opts = _sp.opts;
+            if ( _sp.index === to || _sp.index === _sp.circle( to ) ) {
                 return this;
             }
 
-            var index = _sl.index,
+            var index = _sp.index,
                 diff = Math.abs( index - to ),
                 
                 // 1向左，-1向右
                 dir = diff / (index - to),
-                width = _sl.width;
+                width = _sp.width;
 
             speed = speed || opts.speed;
 
-            return _sl.slide( index, diff, dir, width, speed, opts );
+            return _sp.slide( index, diff, dir, width, speed, opts );
         };
 
         /**
@@ -291,6 +299,16 @@
          */
         $swipepage.prototype.getIndex = function() {
             return this.index;
+        };
+
+        /**
+         * 返回当前显示的第几个slide
+         * @method getIndex
+         * @chainable
+         * @return {Number} 当前的silde序号
+         */
+        $swipepage.prototype.getItem = function(index) {
+            return this._items[index];
         };
 
         /**

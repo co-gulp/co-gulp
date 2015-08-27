@@ -10,6 +10,15 @@ define(function(require, exports, module) {
             iterator( key, obj[ key ] );
         });
   };
+  Base.getWidget = function( type ) {
+        var widgets = [];
+        type && Object.keys( $ui.data ).forEach(function( key ) {
+            if($ui.data[key]&&($ui.data[key].$family.name == type)){
+                widgets.push($ui.data[key]);
+            }
+        });
+        return widgets;
+  };
   Base.init = function(){};
   /**
   * @name extend
@@ -143,6 +152,7 @@ define(function(require, exports, module) {
             this.opts = $.extend(true,baseOpts, opts); 
             this.ref = $(this.opts.ref);
             this.callback = this.opts.callback;
+            this.$family = {name:name}
             this.init($N);
         }
         $ui[ name ] = Base.extend.call(klass,Base);

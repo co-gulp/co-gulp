@@ -30,6 +30,7 @@ var gulp = require('gulp'), //基础库
                 styles: 'src/co-modules/less/',
                 scripts: 'src/co-modules/js/',
                 libs: 'src/co-modules/js/libs/',
+                dom: 'src/co-modules/js/base/dom/',
                 ui: 'src/co-modules/js/ui/',
                 examples:'src/examples/'
             }
@@ -96,6 +97,18 @@ gulp.task('co-scripts', function (cb) {
         });
 });
 
+//dom处理
+gulp.task('co-dom', function (cb) {
+    gulp.src(paths.source.dom+'*')  //要合并的文件
+        .pipe(gulp.dest(paths.co.scripts))
+        .pipe(rename({ suffix: '.min' }))
+        .pipe(uglify())
+        .pipe(gulp.dest(paths.co.scripts))
+        .on('finish', function () {
+                cb();
+        });
+});
+
 //libs处理
 gulp.task('co-libs',function(cb){
     gulp.src(paths.source.libs+'*')
@@ -147,7 +160,7 @@ gulp.task('co-font',function(cb){
 });
 
 //co处理
-gulp.task('build-co', gulp.series('cleanCo', 'co-scripts', 'co-libs', 'co-ui', 'co-css', 'co-img', 'co-font'));
+gulp.task('build-co', gulp.series('cleanCo', 'co-scripts','co-dom', 'co-libs', 'co-ui', 'co-css', 'co-img', 'co-font'));
 
 // 清空dist样式
 gulp.task('cleanDist', function(cb) {
@@ -206,7 +219,7 @@ gulp.task('dist-libs',function(cb){
         });
 });
 
-// //ui处理
+// ui处理
 gulp.task('dist-ui',function(cb){
     gulp.src(paths.source.ui+'**/*.*')
         .pipe(gulp.dest(paths.dist.ui))
@@ -215,7 +228,7 @@ gulp.task('dist-ui',function(cb){
         });
 });
 
-// //js处理
+// js处理
 gulp.task('dist-scripts', function (cb) {
     gulp.src(co.jsFiles)  //要合并的文件
         .pipe(concat(co.filename +".js"))  // 合并匹配到的js文件并命名为 "all.js"
@@ -229,7 +242,20 @@ gulp.task('dist-scripts', function (cb) {
         });
 });
 
-gulp.task('build-dist', gulp.series('dist-styles', gulp.series( 'dist-libs', 'dist-ui', 'dist-scripts')));
+// dom处理
+gulp.task('dist-dom', function (cb) {
+    gulp.src(paths.source.dom+'*')  //要合并的文件
+        .pipe(gulp.dest(paths.dist.scripts))
+        .pipe(rename({ suffix: '.min' }))
+        .pipe(uglify())
+        .pipe(gulp.dest(paths.dist.scripts))
+        .pipe(livereload())
+        .on('end', function () {
+                cb();
+        });
+});
+
+gulp.task('build-dist', gulp.series('dist-styles', gulp.series( 'dist-libs', 'dist-ui', 'dist-scripts','dist-dom')));
 
 // 清空图片、样式、js
 gulp.task('cleanExamples', function(cb) {

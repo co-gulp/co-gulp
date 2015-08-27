@@ -54,7 +54,7 @@
             var _re = this, opts = _re.opts;
             
             _re.scroller.on('beforeScrollStart', function () {
-                   
+                   _re.ref.trigger('beforeRefresh');
                 });
             _re.scroller.on('scrollStart', function () {
                     if (!_re.loading) {
@@ -83,6 +83,10 @@
                         _re.pullupLoading();
                         _re.readyUpLoad = false;
                     }
+                    // var swipepage = _re.getWidget('Swipepage')[0];
+                    // if(swipepage){
+                    //     swipepage.stopMove = false;
+                    // }
             });
 
             var _resetPosition = _re.scroller.resetPosition;

@@ -20,6 +20,7 @@
                     opts = $.extend(opts, { disableMouse : true,disablePointer:true});
                     id = ++$ui.uuid;
                     scrollObj = $ui.data[id] = new IScroll(self, opts);
+                    scrollObj.$family = {name:'IScroll'}
                     self.setAttribute('data-scroll', id);
                 } else {
                     scrollObj = $ui.data[id];
