@@ -7,7 +7,7 @@
     var CLASS_PULL_CAPTION = 'ui-pull-caption';
 
     var CLASS_ICON = 'ui-icon';
-    var CLASS_SPINNER = 'icon-spinner icon-spin';
+    var CLASS_SPINNER = 'fa fa-spinner fa-pulse';
     var CLASS_ICON_PULLDOWN = 'ui-icon-pulldown';
 
     var CLASS_BLOCK = 'ui-block';
