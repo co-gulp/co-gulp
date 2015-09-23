@@ -1,5 +1,5 @@
 .ui-bar {
-  position: fixed;
+  // position: fixed;
   right: 0;
   left: 0;
   z-index: 10;
@@ -20,15 +20,25 @@
           box-shadow: 0 1px 6px #ccc;
 }   
 .ui-bar-nav ~ .ui-content {
-  padding-top: 44px;
+  position: fixed;
+  overflow: scroll;
+  top: 44px;
+  bottom: 0px;
+}
+
+.ui-bar-nav ~ .ui-scroll-wrapper {
+  top: 44px;
 }
 
 .ui-bar-nav-IOS7 {
   height: 64px;
   padding-top: 20px;
 }
-.ui-bar-nav-IOS7 ~ .ui-content {
-  padding-top: 64px; 
+.ui-content-IOS7 {
+  top: 64px;
+}
+.ui-bar-nav-IOS7 ~ .ui-scroll-wrapper {
+  top: 64px;
 }
 
 .ui-title {

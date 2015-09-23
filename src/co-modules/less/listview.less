@@ -219,10 +219,9 @@ html.ios-gt-6.pixel-ratio-3 .list-block ul:after {
   position: absolute;
   left: 15px;
   bottom: 0;
-  right: auto;
+  right: 0;
   top: auto;
   height: 1px;
-  width: 100%;
   background-color: #c8c7cc;
   display: block;
   z-index: 15;
@@ -297,9 +296,8 @@ html.ios-gt-6.pixel-ratio-3 .list-block .item-inner:after {
   background-position: calc(100% - 15px) center;
 }
 
-.list-block .item-link .item-inner:after {
+.list-block .item-link .item-inner .item-title-row:after {
   position: absolute;
-  top: 30%;
   display: inline-block;
   font-family: uiicons;
   font-size: inherit;
@@ -464,7 +462,7 @@ html.ios-gt-6.pixel-ratio-3 .list-block .item-link.list-button:after {
   font-size: 15px;
   position: relative;
   overflow: hidden;
-  white-space: nowrap;
+  // white-space: nowrap;
   max-width: 100%;
   text-overflow: ellipsis;
 }

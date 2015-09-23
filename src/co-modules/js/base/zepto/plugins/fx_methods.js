@@ -1,7 +1,4 @@
-//     Zepto.js
-//     (c) 2010-2015 Thomas Fuchs
-//     Zepto.js may be freely distributed under the MIT license.
-
+//  fx
 ;(function($, undefined){
   var document = window.document, docElem = document.documentElement,
     origShow = $.fn.show, origHide = $.fn.hide, origToggle = $.fn.toggle
@@ -68,4 +65,4 @@
     })
   }
 
-})(Zepto)
+})(Dom)

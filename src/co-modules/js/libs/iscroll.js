@@ -438,12 +438,22 @@ IScroll.prototype = {
 			e.preventDefault();
 		}
 
+
 		var point		= e.touches ? e.touches[0] : e,
 			deltaX		= point.pageX - this.pointX,
 			deltaY		= point.pageY - this.pointY,
 			timestamp	= utils.getTime(),
 			newX, newY,
 			absDistX, absDistY;
+
+		if(this.options.scrollY){
+
+			var diff_x = point.pageX - this.pointX,
+                    diff_y = point.pageY - this.pointY;
+            if(Math.abs(360*Math.atan(diff_y/diff_x)/(2*Math.PI))<60)return;
+            console.log(co.verticalSwipe);
+            if(!co.verticalSwipe)return;
+		}
 
 		this.pointX		= point.pageX;
 		this.pointY		= point.pageY;

@@ -1,0 +1,92 @@
+/* === Accordion === */
+.list-block {
+    .accordion-item-toggle {
+        cursor: pointer;
+        .transition(300ms);
+        .item-inner {
+            padding-right: 35px;
+            background: no-repeat -webkit-calc(~"100% - 15px") center;
+            background: no-repeat calc(~"100% - 15px") center;
+            
+        }
+        html:not(.watch-active-state) &:active, &.active-state {
+            .transition(0ms);
+            background-color: #d9d9d9;
+            > .item-inner {
+                .hairline-color(bottom, transparent);
+            }
+        }
+    }
+    .accordion-item-toggle, .accordion-item > .accordion-item-link {
+        .item-inner {
+            .transition(300ms);
+            &:after {
+                .transition(300ms);
+            }
+            -webkit-transition-property: background-color;
+            transition-property: background-color;
+        }
+    }
+    .accordion-item-expanded {
+        .accordion-item-toggle .item-inner, > .accordion-item-link .item-inner {
+            background-size: 20px 20px;
+            .hairline-color(bottom, transparent);
+        }
+    }
+    .accordion-item {
+        .content-block, .list-block {
+            margin-top: 0;
+            margin-bottom: 0;
+        }
+        ul {
+            padding-left: 0;
+        }
+    }
+}
+.accordion-item-content {
+    position: relative;
+    overflow: hidden;
+    height: 0;
+    font-size: 14px;
+    .transition(300ms);
+    .transform(translate3d(0,0,0));
+    .accordion-item-expanded > &{
+        height: auto;
+    }
+    html.android-4 & {
+        .transform(none);
+    }
+}
+
+
+.accordion-list .accordion-item .item-inner:after {
+  position: absolute;
+  display: inline-block;
+  font-size: inherit;
+  line-height: 1;
+  color: #bbb;
+  font-family: uiicons;
+  content: '\e581';
+  right: 15px;
+}
+
+.accordion-list .accordion-item-expanded .item-inner:after {
+  content: '\e580';
+}
+
+
+.accordion-item-content .item-content .item-inner:after {
+  content: '';
+}
+
+.accordion-item-content .item-content .item-title-row:after {
+  content: '';
+}
+
+.accordion-item-link {
+  -webkit-transition-duration: 300ms;
+  transition-duration: 300ms;
+  display: block;
+  color: inherit;
+}
+

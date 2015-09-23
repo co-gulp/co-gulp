@@ -7,10 +7,14 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
-		<link rel="stylesheet" href="../dist/css/co.css">
+		<link rel="stylesheet" href="dist/css/co.css">
 	</head>
 	<body>
-		<div id='treeview'>
+		<header  class="ui-bar ui-bar-nav">
+            <h1 class="ui-title">Treeview</h1>
+            <a class="ui-action-back ui-icon ui-icon-left-nav ui-pull-left"></a>
+        </header>
+		<div id='treeview' class = 'ui-content'>
 			<ul class="ui-table-view">
 				<li class="ui-table-view-cell">
 					<a class="ui-navigate-right">按钮</a>
@@ -55,7 +59,8 @@
 				</li>
 			</ul>	
 		</div>
-		<script src="../dist/js/co.js"></script>
+		<script src="dist/js/dom.js"></script>
+		<script src="dist/js/co.js"></script>
 </body>
 <script>
 	domReady(function(require){

@@ -5,49 +5,57 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no, minimal-ui">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black">
-    <link rel="stylesheet" href="../dist/css/co.css">
+    <link rel="stylesheet" href="dist/css/co.css">
+    <title>Hello UI Cards</title>
   </head>
   <body>
-    <div id="tc" class="card">
-        <div class="card-header">
-          <div class="card-header-avatar"><img src="img/img.jpg" width="34" height="34"/></div>
-          <div class="card-header-name"><b>教育技术服务平台分</b></div>
-          <div class="card-header-date"><img src="img/img.jpg" width="34" height="34"/></div>
-        </div>
-        <div class="card-content"> 
-          <div  class = "title-content">
-            <canvas class="canvas"></canvas>
+    <header  class="ui-bar ui-bar-nav">
+        <h1 class="ui-title">Cards</h1>
+        <a class="ui-action-back ui-icon ui-icon-left-nav ui-pull-left"></a>
+    </header>
+    <div class = ' ui-content'>
+      <div id="tc" class="card">
+          <div class="card-header">
+            <div class="card-header-avatar"><img src="img/img.jpg" width="34" height="34"/></div>
+            <div class="card-header-name"><b>教育技术服务平台分</b></div>
+            <div class="card-header-date"><img src="img/img.jpg" width="34" height="34"/></div>
           </div>
-          <div class = 'container'>
-            <canvas class="canvas"></canvas>
+          <div class="card-content"> 
+            <div  class = "title-content">
+              <canvas class="canvas"></canvas>
+            </div>
+            <div class = 'container'>
+              <canvas class="canvas"></canvas>
+            </div>
+          </div>
+        </div>
+        <div id="mm" class="card">
+          <div class="card-header">
+            <div class="card-header-avatar"><img src="img/img.jpg" width="34" height="34"/></div>
+            <div class="card-header-name"><b>妈咪100分</b></div>
+            <div class="card-header-date"><img src="img/img.jpg" width="34" height="34"/></div>
+          </div>
+          <div class="card-content"> 
+            <div  class = "title-content">
+              <canvas class="canvas"></canvas>
+            </div>
+            <div class = 'container'>
+              <canvas class="canvas"></canvas>
+            </div>
           </div>
         </div>
       </div>
-      <div id="mm" class="card">
-        <div class="card-header">
-          <div class="card-header-avatar"><img src="img/img.jpg" width="34" height="34"/></div>
-          <div class="card-header-name"><b>妈咪100分</b></div>
-          <div class="card-header-date"><img src="img/img.jpg" width="34" height="34"/></div>
-        </div>
-        <div class="card-content"> 
-          <div  class = "title-content">
-            <canvas class="canvas"></canvas>
-          </div>
-          <div class = 'container'>
-            <canvas class="canvas"></canvas>
-          </div>
-        </div>
-      </div>
-       <script src="../dist/js/co.js"></script>
+       <script src="dist/js/dom.js"></script>
+       <script src="dist/js/co.js"></script>
   </body>
     <script>
         var randomScalingFactor = function(){ return Math.round(Math.random()*1000)};
 
       
-        window.onload = function(){
+        $(function(){
           drawCard('#tc');
           drawCard('#mm');
-        }
+        })
 
         function drawCard(id){
           var title = $(id);

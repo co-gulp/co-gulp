@@ -3,20 +3,24 @@
 
     <head>
         <meta charset="utf-8">
-        <title>Hello ui</title>
+        <title>Hello UI Navigator</title>
         <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
-        <link rel="stylesheet" href="../dist/css/co.css">
+        <link rel="stylesheet" href="dist/css/co.css">
         <style type="text/css">
-            .ui-navigator{
-                /*padding-top:20px;*/
-            }
+            /*.ui-navigator .ui-navigator-more{
+                top:54px;
+            }*/
             
     </style>
     </head>
 
     <body>
+        <header  class="ui-bar ui-bar-nav">
+            <h1 class="ui-title">Navigator</h1>
+            <a class="ui-action-back ui-icon ui-icon-left-nav ui-pull-left"></a>
+        </header>
     <div id="nav2" class="ui-navigator">
            <ul class="ui-navigator-list">
                 <li class="ui-state-active"><a href="#test1">首页</a></li>
@@ -40,8 +44,8 @@
                 <div class="ui-icon ui-more ui-icon-more"></div>
             </div>
     </div>
-
-    <script src="../dist/js/co.js"></script>
+    <script src="dist/js/dom.js"></script>
+    <script src="dist/js/co.js"></script>
 </body>
      <script>
         domReady(function(require){

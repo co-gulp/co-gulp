@@ -41,7 +41,7 @@
                     });
                 });
                 opts.items = items;
-                opts.active = Math.max(0, Math.min(items.length-1, opts.active || _tb.callZ(SELECTOR_ACTIVE, _tb.ref).index()||0));
+                opts.active = Math.max(0, Math.min(items.length-1, opts.active || $(SELECTOR_ACTIVE, _tb.ref).index()||0));
                 getPanel.call(_tb).add(_tb._nav.children().eq(opts.active)).addClass(CLASS_ACTIVE);
                 items[opts.active].actived = true;
             } 

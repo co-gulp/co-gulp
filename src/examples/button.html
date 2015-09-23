@@ -2,17 +2,21 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no,width=device-width">
-    <meta name="apple-itunes-app" content="app-id=698076980" />
-    <meta name="Keywords" content="多玩游戏">
-    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
     <title>Hello UI Button</title>
 
     <!-- Style -->
-  <link rel="stylesheet" href="../dist/css/co.css">
+  <link rel="stylesheet" href="dist/css/co.css">
   
 </head>
 <body>
+  <header  class="ui-bar ui-bar-nav">
+        <h1 class="ui-title">button</h1>
+        <a class="ui-action-back ui-icon ui-icon-left-nav ui-pull-left"></a>
+    </header>
+    <div class = "ui-content">
                 <h5>底色按钮：</h5>
                 <button type="button" class="ui-btn" id="basebtn">
                     默认
@@ -88,12 +92,12 @@
   </span>
   
   
-  <a href="#" class="button button-block button-rounded button-large">Go</a>
-  <a href="#" class="button button-block button-rounded button-primary button-large">Go</a>
-  <a href="#" class="button button-block button-rounded button-action button-large">Go</a>
-  <a href="#" class="button button-block button-rounded button-highlight button-large">Go</a>
-  <a href="#" class="button button-block button-rounded button-caution button-large">Go</a>
-  <a href="#" class="button button-block button-rounded button-royal button-large">Go</a>
+  <a class="button button-block button-rounded button-large">Go</a>
+  <a class="button button-block button-rounded button-primary button-large">Go</a>
+  <a class="button button-block button-rounded button-action button-large">Go</a>
+  <a class="button button-block button-rounded button-highlight button-large">Go</a>
+  <a class="button button-block button-rounded button-caution button-large">Go</a>
+  <a class="button button-block button-rounded button-royal button-large">Go</a>
   
   
   <div class="button-group">
@@ -115,12 +119,12 @@
   </div>
   
   
-  <a href="#" class="button button-glow button-rounded button-raised button-primary">Go</a>
-  <a href="#" class="button button-glow button-border button-rounded button-primary">Go</a>
+  <a class="button button-glow button-rounded button-raised button-primary">Go</a>
+  <a class="button button-glow button-border button-rounded button-primary">Go</a>
   <button class="button button-glow button-circle button-action button-jumbo"><i class="fa fa-thumbs-up"></i></button>
-  <a href="#" class="button button-glow button-rounded button-highlight">Go</a>
-  <a href="#" class="button button-glow button-rounded button-caution">Go</a>
-  <a href="#" class="button button-glow button-rounded button-royal">Go</a>
+  <a class="button button-glow button-rounded button-highlight">Go</a>
+  <a class="button button-glow button-rounded button-caution">Go</a>
+  <a class="button button-glow button-rounded button-royal">Go</a>
   
   <button class="button button-primary button-box button-giant button-longshadow-right">
     <i class="fa fa-twitter"></i>
@@ -141,10 +145,15 @@
   <button class="button button-primary button-circle button-giant button-longshadow">
     <i class="fa fa-gear"></i>
   </button>
-      <script src="../dist/js/co.js"></script>
+</div>
+      <script src="dist/js/dom.js"></script>
+      <script src="dist/js/co.js"></script>
 </body>
      <script>
-        domReady(function(require){
+      $(function(require){
+          $('.ui-btn').button(function(btn) {
+            alert(btn.innerHTML)
+          })
       })
     </script>
 </html>

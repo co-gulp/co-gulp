@@ -12,11 +12,11 @@ var gulp = require('gulp'), //基础库
 	paths = {
             root: './',
             dist: {
-                root: 'dist/',
-                styles: 'dist/css/',
-                scripts: 'dist/js/',
-                libs: 'dist/js/libs/',
-                ui: 'dist/js/ui/'
+                root: 'examples/dist/',
+                styles: 'examples/dist/css/',
+                scripts: 'examples/dist/js/',
+                libs: 'examples/dist/js/libs/',
+                ui: 'examples/dist/js/ui/'
             },
             co: {
                 root: 'co/',
@@ -30,7 +30,6 @@ var gulp = require('gulp'), //基础库
                 styles: 'src/co-modules/less/',
                 scripts: 'src/co-modules/js/',
                 libs: 'src/co-modules/js/libs/',
-                dom: 'src/co-modules/js/base/dom/',
                 ui: 'src/co-modules/js/ui/',
                 examples:'src/examples/'
             }
@@ -43,35 +42,36 @@ var gulp = require('gulp'), //基础库
         co = {
             filename: 'co',
             jsFiles: [
-                'src/co-modules/js/base/zepto/zepto.js',
-                'src/co-modules/js/base/zepto/plugins/event.js',
-                'src/co-modules/js/base/zepto/plugins/ajax.js',
-                'src/co-modules/js/base/zepto/plugins/form.js',
-                'src/co-modules/js/base/zepto/plugins/fx.js',
-                'src/co-modules/js/base/zepto/plugins/fx_methods.js',
-                'src/co-modules/js/base/zepto/plugins/data.js',
-                'src/co-modules/js/base/zepto/plugins/deferred.js',
-                'src/co-modules/js/base/zepto/plugins/callbacks.js',
-                'src/co-modules/js/base/zepto/plugins/selector.js',
-                'src/co-modules/js/base/zepto/plugins/stack.js',
-                'src/co-modules/js/base/zepto/plugins/highlight.js',
-                'src/co-modules/js/base/zepto/plugins/detect.js',
-                'src/co-modules/js/base/zepto/plugins/touch.js',
-                'src/co-modules/js/base/zepto/plugins/matchMedia.js',
-                'src/co-modules/js/base/zepto/plugins/ex-ortchange.js',
                 'src/co-modules/js/base/sea.js',
                 'src/co-modules/js/base/config.js',
                 'src/co-modules/js/wrap-start.js',
                 'src/co-modules/js/co.js',
                 'src/co-modules/js/native.js',
-                'src/co-modules/js/$extend.js',
                 'src/co-modules/js/$fn_extend.js',
                 'src/co-modules/js/wrap-end.js'
-            ],
-            lessFiles:[
-                'src/co-modules/less/dialog.less',
-                'src/co-modules/less/list.less',
-                'src/co-modules/less/slider.less'
+            ]
+        },
+        dom = {
+            filename: 'dom',
+            jsFiles: [
+                // 'src/co-modules/js/base/zepto/zepto.js',
+                'src/co-modules/js/base/dom/dom.js',
+                'src/co-modules/js/base/zepto/plugins/event.js', 
+                'src/co-modules/js/base/zepto/plugins/ajax.js',
+                'src/co-modules/js/base/zepto/plugins/fx.js',
+                'src/co-modules/js/base/zepto/plugins/fx_methods.js',
+                'src/co-modules/js/base/zepto/plugins/data.js',
+                'src/co-modules/js/base/zepto/plugins/highlight.js',
+                'src/co-modules/js/base/zepto/plugins/detect.js', 
+                'src/co-modules/js/base/zepto/plugins/touch.js',
+                'src/co-modules/js/base/zepto/plugins/matchMedia.js',
+                'src/co-modules/js/$extend.js',
+                'src/co-modules/js/base/zepto/plugins/ex-ortchange.js'
+                // 'src/co-modules/js/base/zepto/plugins/deferred.js',
+                // 'src/co-modules/js/base/zepto/plugins/callbacks.js',
+                // 'src/co-modules/js/base/zepto/plugins/selector.js',
+                // 'src/co-modules/js/base/zepto/plugins/stack.js',
+                // 'src/co-modules/js/base/zepto/plugins/form.js',
             ]
         };
 
@@ -99,7 +99,8 @@ gulp.task('co-scripts', function (cb) {
 
 //dom处理
 gulp.task('co-dom', function (cb) {
-    gulp.src(paths.source.dom+'*')  //要合并的文件
+    gulp.src(dom.jsFiles)  //要合并的文件
+        .pipe(concat(dom.filename +".js"))  // 合并匹配到的js文件并命名为 "all.js"
         .pipe(gulp.dest(paths.co.scripts))
         .pipe(rename({ suffix: '.min' }))
         .pipe(uglify())
@@ -244,7 +245,8 @@ gulp.task('dist-scripts', function (cb) {
 
 // dom处理
 gulp.task('dist-dom', function (cb) {
-    gulp.src(paths.source.dom+'*')  //要合并的文件
+    gulp.src(dom.jsFiles)  //要合并的文件
+        .pipe(concat(dom.filename +".js"))  // 合并匹配到的js文件并命名为 "all.js"
         .pipe(gulp.dest(paths.dist.scripts))
         .pipe(rename({ suffix: '.min' }))
         .pipe(uglify())
@@ -254,8 +256,6 @@ gulp.task('dist-dom', function (cb) {
                 cb();
         });
 });
-
-gulp.task('build-dist', gulp.series('dist-styles', gulp.series( 'dist-libs', 'dist-ui', 'dist-scripts','dist-dom')));
 
 // 清空图片、样式、js
 gulp.task('cleanExamples', function(cb) {
@@ -277,8 +277,10 @@ gulp.task('examples',function(cb){
 
 gulp.task('build-examples', gulp.series('cleanExamples', 'examples'));
 
+gulp.task('build-dist', gulp.series('dist-styles', gulp.series( 'dist-libs', 'dist-ui', 'dist-scripts','dist-dom')));
+
 // 默认任务 清空图片、样式、js并重建 运行语句 gulp
-gulp.task('build', gulp.series('build-co','build-dist','build-examples'));
+gulp.task('build', gulp.series('build-co','build-examples','build-dist'));
 
 
 /* =================================
@@ -311,14 +313,15 @@ gulp.task('watch', function (cb) {
         var next = file.path.substr(ex+9).indexOf('\\');
         var destPaht = paths.examples.root;
         if(next!=-1){
-            destPaht = destPaht + file.path.substring(ex+9,ex+9+next+1);
+            destPaht = destPaht + file.path.substring(ex+9,ex+9+next)+'/';
         }
+        console.log(destPaht);
         gulp.src(file.path)
-            .pipe(gulp.dest(paths.examples.root))
+            .pipe(gulp.dest(destPaht))
             .pipe(livereload());
     })
     gulp.watch(paths.source.styles + '*.less',gulp.series('dist-css'));
-    gulp.watch(paths.source.scripts+'**/*.*', gulp.series('dist-libs', 'dist-ui', 'dist-scripts'));
+    gulp.watch(paths.source.scripts+'**/*.*', gulp.series('dist-libs', 'dist-ui', 'dist-scripts','dist-dom'));
     
     cb();
 });

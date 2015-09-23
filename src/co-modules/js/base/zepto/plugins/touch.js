@@ -1,6 +1,4 @@
-//     Zepto.js
-//     (c) 2010-2015 Thomas Fuchs
-//     Zepto.js may be freely distributed under the MIT license.
+
 
 ;(function($){
   var touch = {},
@@ -162,4 +160,4 @@
     'doubleTap', 'tap', 'singleTap', 'longTap'].forEach(function(eventName){
     $.fn[eventName] = function(callback){ return this.on(eventName, callback) }
   })
-})(Zepto);
+})(Dom);

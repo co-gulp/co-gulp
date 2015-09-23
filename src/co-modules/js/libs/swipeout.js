@@ -6,7 +6,7 @@
     var allowSwipeout = true;
     define(function(require, exports, module) {
         var initSwipe = function(swipeOutEl){
-            var isTouched, isMoved, isScrolling, touchesStart = {}, touchStartTime, touchesDiff, swipeOutEl, swipeOutContent, actionsRight, actionsLeft, actionsLeftWidth, actionsRightWidth, translate, opened, openedActions, buttonsLeft, buttonsRight, direction, overswipeLeftButton, overswipeRightButton, overswipeLeft, overswipeRight, noFoldLeft, noFoldRight;
+            var isTouched, isMoved, isScrolling, touchesStart = {},touchesEnd = {}, touchStartTime, touchesDiff, swipeOutEl, swipeOutContent, actionsRight, actionsLeft, actionsLeftWidth, actionsRightWidth, translate, opened, openedActions, buttonsLeft, buttonsRight, direction, overswipeLeftButton, overswipeRightButton, overswipeLeft, overswipeRight, noFoldLeft, noFoldRight;
             $(document).on('touchstart', function (e) {
                 if (swipeoutOpenedEl) {
                     var target = $(e.target);
@@ -29,11 +29,22 @@
                 touchesStart.y = e.type === 'touchstart' ? e.targetTouches[0].pageY : e.pageY;
                 touchStartTime = (new Date()).getTime();
             }
+            function angle(start,end){
+                var diff_x = end.x - start.x,
+                    diff_y = end.y - start.y;
+                //返回角度,不是弧度
+                return 360*Math.atan(diff_y/diff_x)/(2*Math.PI);
+            }
             function handleTouchMove(e) {
                 e.stopPropagation();
                 if (!isTouched) return;
                 var pageX = e.type === 'touchmove' ? e.targetTouches[0].pageX : e.pageX;
                 var pageY = e.type === 'touchmove' ? e.targetTouches[0].pageY : e.pageY;
+                var touchesEnd = {};
+                touchesEnd.x  = pageX;
+                touchesEnd.y = pageY;
+                // console.log(angle(touchesStart,touchesEnd));
+                if(Math.abs(angle(touchesStart,touchesEnd)) > 20)return;
                 if (!isMoved) {
                     if ($('.list-block.sortable-opened').length > 0) return;
                     /*jshint validthis:true */

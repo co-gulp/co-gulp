@@ -1,6 +1,4 @@
-//     Zepto.js
-//     (c) 2010-2015 Thomas Fuchs
-//     Zepto.js may be freely distributed under the MIT license.
+
 
 ;(function($){
   function detect(ua, platform){
@@ -71,4 +69,4 @@
   // make available to unit tests
   $.__detect = detect
 
-})(Zepto)
+})(Dom)

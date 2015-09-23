@@ -1,6 +1,7 @@
 /** 一级导航样式 */
 .ui-navigator {
     background:#FCFCFC;
+    position: relative;
 }
 .ui-navigator-list {
     width: 100%;
@@ -10,6 +11,7 @@
 
 
 .ui-navigator .bar {
+    bottom: 0px;
     position: absolute;
     height: 2px;
     overflow: hidden;
@@ -52,22 +54,22 @@
   z-index: 1;
   width: 100%;
   overflow: hidden;
-  position:fixed;
+  position:relative;
   -webkit-backface-visibility: hidden;
 }
 
-.ui-scroller {
+.ui-navigator {
     padding: 0;
     margin: 0;
-    display: inline-block;/*重要，靠他让宽度由子节点撑开*/
+    // display: inline-block;/*重要，靠他让宽度由子节点撑开*/
 }
-.ui-scroller .ui-navigator-list {
+.ui-navigator .ui-navigator-list {
     display: table;
     table-layout: fixed;/*宽度可控*/
     white-space:nowrap;/*内容不换行*/
     width: auto;
 }
-.ui-scroller .ui-navigator-list:after {
+.ui-navigator .ui-navigator-list:after {
     content: '';
     clear: both;
     display: inline-block;
@@ -75,7 +77,7 @@
     height: 0;
     overflow: hidden;
 }
-.ui-scroller .ui-navigator-list li {
+.ui-navigator .ui-navigator-list li {
     display: inline-block;
 }
 
@@ -109,6 +111,6 @@
     background-color: rgb(252, 252, 252);
 }
 
-.ui-navigator~.ui-slider {
-    padding-top: 37px;
-}
+// .ui-navigator~.ui-slider {
+//     padding-top: 37px;
+// }

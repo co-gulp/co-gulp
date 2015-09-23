@@ -11,7 +11,7 @@
     var render = function(){
             var _nav = this, opts = _nav.opts;
                 _nav.$list = _nav.ref.find( 'ul' ).first();
-                _nav.$bar = $('<span class="bar"></span>').appendTo(_nav.ref.find('.'+CLASS_SCROLLER));
+                _nav.$bar = $('<span class="bar"></span>').appendTo(_nav.$list);
                 // 处理直接通过ul初始化的情况
                 if ( _nav.ref.is( 'ul, ol' ) ) {
                     $list = _nav.ref.wrap( '<div>' );
@@ -82,12 +82,9 @@
         //初始化
         $nav.prototype.init = function () {
             var _nav = this, opts = _nav.opts;
+            _nav.ref.addClass(CLASS_NAVIGATOR_WRAPPER);
+            // _nav.ref.children().first().wrapAll('<div class = "'+CLASS_SCROLLER+'"/>');
             require.async('scroll', function() {
-                _nav.ref.addClass(CLASS_NAVIGATOR_WRAPPER);
-                _nav.ref.children().first().wrapAll('<div class = "'+CLASS_SCROLLER+'"/>');
-                if(_nav.ref.find( '.ui-navigator-more' )[0]){
-                    $('<li style="width: 30px;"></li>').appendTo(_nav.ref.find( 'ul' ));
-                }
                 _nav.ref.scroll({
                         scrollX: true, 
                         scrollY: false

@@ -135,8 +135,8 @@ var Zepto = (function() {
     if (singleTagRE.test(html)) dom = $(document.createElement(RegExp.$1))
 
     if (!dom) {
-      if (html.replace) html = html.replace(tagExpanderRE, "<$1></$2>")
-      if (name === undefined) name = fragmentRE.test(html) && RegExp.$1
+      // if (html.replace) html = html.replace(tagExpanderRE, "<$1></$2>")
+      // if (name === undefined) name = fragmentRE.test(html) && RegExp.$1
       if (!(name in containers)) name = '*'
 
       container = containers[name]
@@ -901,5 +901,5 @@ var Zepto = (function() {
 })()
 
 // If `$` is not yet defined, point it to `Zepto`
-window.Zepto = Zepto
+window.Dom = Zepto
 window.$ === undefined && (window.$ = Zepto)

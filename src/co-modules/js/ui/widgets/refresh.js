@@ -49,26 +49,43 @@
                 _re.bottomCaption = _re.bottomPocket.find('.' + CLASS_PULL_CAPTION);
             }
         };
+    var angle = function(start,end){
+                var diff_x = end.x - start.x,
+                    diff_y = end.y - start.y;
+                //返回角度,不是弧度
+                return 360*Math.atan(diff_y/diff_x)/(2*Math.PI);
+    }
 
     var bind = function(){
-            var _re = this, opts = _re.opts;
+            var _re = this, opts = _re.opts,touchesStart,touchesEnd;
             
             _re.scroller.on('beforeScrollStart', function () {
                    _re.ref.trigger('beforeRefresh');
                 });
             _re.scroller.on('scrollStart', function () {
+                    touchesStart = {
+                        x: this.pointX,
+                        y: this.pointY
+                    };
                     if (!_re.loading) {
                         _re.pulldown = _re.pullPocket = _re.pullCaption = _re.pullLoading = false
                     }
                 });
             _re.scroller.on('scroll',function(e){
+                // debugger;
+                    touchesEnd = {
+                        x: this.pointX,
+                        y: this.pointY
+                    }
+                    // console.log(angle(touchesEnd,touchesStart));
+                    // if(Math.abs(angle(touchesEnd,touchesStart)) < 30)return;
                     if (!_re.pulldown && !_re.loading && _re.topPocket && this.directionY === -1 && this.y >= 0) {
                         initPulldownRefresh.call(_re);
                     }
                     if (_re.pulldown) {
                         setCaption.call(_re,this.y > opts.down.height ? opts.down.contentover : opts.down.contentdown);
                     }
-                    if(_re.initPullup&&this.maxScrollY - this.y >20){
+                    if(_re.initPullup&&this.maxScrollY - this.y >10){
                             if(opts.up && opts.up.hasOwnProperty('callback')){
                                 if (!_re.pulldown && !_re.loading&&!_re.finished) {
                                     _re.readyUpLoad = true;

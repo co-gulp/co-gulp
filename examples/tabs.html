@@ -4,10 +4,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0">
     <meta charset="utf-8">
     <title>Hello UI Tabs</title>
-   <link rel="stylesheet" href="../dist/css/co.css">
+   <link rel="stylesheet" href="dist/css/co.css">
 </head>
 <body>  
-    <div id = "tabs1">
+    <header  class="ui-bar ui-bar-nav">
+            <h1 class="ui-title">Tabs</h1>
+            <a class="ui-action-back ui-icon ui-icon-left-nav ui-pull-left"></a>
+        </header>
+    <div id = "tabs1" class = 'ui-content'>
         <nav class="ui-bar ui-bar-tab">
             <a class="ui-tab-item" href="#slider">
                 <span class="ui-icon ui-icon-home"></span>
@@ -39,14 +43,16 @@
               4
             </div>
         </div>
-        <script src="../dist/js/co.js"></script>
+
+        <script src="dist/js/dom.js"></script>
+        <script src="dist/js/co.js"></script>
 </body>
 <script>
     domReady(function(require){
             require("tab");
             $('#tabs1').tab();
             $('#tabs1').on('activate',function(evt,to){
-                     alert(id);
+                
             });
     });
 </script>   

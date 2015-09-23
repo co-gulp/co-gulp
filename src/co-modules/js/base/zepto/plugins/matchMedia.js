@@ -1,6 +1,5 @@
 /**
  * @file 媒体查询
- * @import zepto.js
  */
 
 ;(function ($) {
@@ -71,4 +70,4 @@
             return ret;
         };
     }());
-})(Zepto);
+})(Dom);

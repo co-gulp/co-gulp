@@ -5,13 +5,20 @@
 (function() {
     
     var isScrolling,
-        start,
+        touchesStart,
+        touchesEnd,
         delta,
         moved;
 
         var sliderTonClick = function() {
                 return !moved;
             };
+        var angle = function(start,end){
+                var diff_x = end.x - start.x,
+                    diff_y = end.y - start.y;
+                //返回角度,不是弧度
+                return 360*Math.atan(diff_y/diff_x)/(2*Math.PI);
+        }
 
         var sliderTonStart = function( e ) {
                     
@@ -25,7 +32,7 @@
                     opts = _sl.opts,
                     num;
 
-                start = {
+                touchesStart = {
                     x: touche.pageX,
                     y: touche.pageY,
                     time: +new Date()
@@ -45,8 +52,8 @@
                         ' touchcancel', _sl._handler );
             };
 
-        var sliderTonMove = function( e ) {
 
+        var sliderTonMove = function( e ) {
                 // 多指或缩放不处理
                 if ( e.touches.length > 1 || e.scale &&
                         e.scale !== 1 ) {
@@ -64,10 +71,15 @@
                     slidePos;
 
                 opts.disableScroll && e.preventDefault();
-
-                delta.x = touche.pageX - start.x;
-                delta.y = touche.pageY - start.y;
-
+                touchesEnd = {
+                    x: touche.pageX,
+                    y: touche.pageY
+                }
+                if(Math.abs(angle(touchesStart,touchesEnd)) > 30)return;
+                
+                co.verticalSwipe = false;
+                delta.x = touche.pageX - touchesStart.x;
+                delta.y = touche.pageY - touchesStart.y;
                 if ( typeof isScrolling === 'undefined' ) {
                     isScrolling = Math.abs( delta.x ) <
                             Math.abs( delta.y );
@@ -103,6 +115,7 @@
             };
 
         var sliderTonEnd = function() {
+                co.verticalSwipe = true;
                 var _sl = this,
                     opts = _sl.opts;
                 // 解除事件
@@ -116,7 +129,7 @@
                 var viewNum = opts.mulViewNum || 1,
                     index = _sl.index,
                     slidePos = _sl._slidePos,
-                    duration = +new Date() - start.time,
+                    duration = +new Date() - touchesStart.time,
                     absDeltaX = Math.abs( delta.x ),
 
                     // 是否滑出边界

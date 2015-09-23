@@ -91,7 +91,7 @@
                     return;
                 }
                 _sp.ref.trigger('slideend', [_sp.index]);
-                console.log('tansitionEnd');
+                // console.log('tansitionEnd');
             }
         }; 
 
@@ -234,10 +234,10 @@
             if ( !style ) {
                 return false;
             }
-                    var refreshs = _sp.getWidget('Refresh');
-                    $.each(refreshs, function(key, value){
-                      console.log(key);
-                    })
+                    // var refreshs = _sp.getWidget('Refresh');
+                    // $.each(refreshs, function(key, value){
+                    //   console.log(key);
+                    // })
             style.cssText += cssPrefix + 'transition-duration:' + speed + 
                     'ms;' + cssPrefix + 'transform: translate(' + 
                     dist + 'px, 0)' + translateZ + ';';

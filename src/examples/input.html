@@ -4,9 +4,14 @@
   <meta charset="utf-8">
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no,width=device-width">
     <title>Hello UI Input</title>
-   <link rel="stylesheet" href="../dist/css/co.css">
+   <link rel="stylesheet" href="dist/css/co.css">
 </head>
 <body>
+    <header  class="ui-bar ui-bar-nav">
+            <h1 class="ui-title">Input</h1>
+            <a class="ui-action-back ui-icon ui-icon-left-nav ui-pull-left"></a>
+        </header>
+    <div class = 'ui-content'>
         <h5>默认搜索框：</h5>
                 <div class="ui-input-row ui-search">
                     <input type="search" class="ui-input-clear" placeholder="">
@@ -34,10 +39,10 @@
                         </select>
                     </div>    
                 </div>
-                <form class="ui-input-group">
+                <form class="ui-input-group" onsubmit="alert(1)">
                     <div class="ui-input-row">
                         <label>Input</label>
-                        <input type="text" placeholder="普通输入框">
+                        <input type="email" required="required" placeholder="email">
                     </div>
                     <div class="ui-input-row">
                         <input type="text" class="ui-input-clear" placeholder="带清除按钮的输入框">
@@ -48,7 +53,7 @@
                         <input type="text" class="ui-input-speech ui-input-clear" placeholder="语音输入">
                     </div>
                     <div class="ui-button-row">
-                        <button type="button" class="ui-btn ui-btn-primary" onclick="return false;">确认</button>&nbsp;&nbsp;
+                        <button type="submit" class="ui-btn ui-btn-primary">确认</button>&nbsp;&nbsp;
                         <button type="button" class="ui-btn ui-btn-danger" onclick="return false;">取消</button>
                     </div>
                 </form>
@@ -91,7 +96,9 @@
                 <div class="ui-input-row" style="margin: 10px 5px;">
                     <textarea id="textarea" rows="5" placeholder="多行文本框"></textarea>
                 </div>
-      <script src="../dist/js/co.js"></script>
+        </div>
+      <script src="dist/js/dom.js"></script>
+      <script src="dist/js/co.js"></script>
 </body>
      <script>
         domReady(function(require){
@@ -107,6 +114,9 @@
             $('.ui-input-group').select(function(el,eve){
                     alert(this.callZ(el).val());
              }); 
+            $('.ui-input-group')[0].onSubmit = function(){
+                alert(11)
+            }
       })
     </script>
 </html>

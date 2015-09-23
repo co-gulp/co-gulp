@@ -1,6 +1,3 @@
-//     Zepto.js
-//     (c) 2010-2015 Thomas Fuchs
-//     Zepto.js may be freely distributed under the MIT license.
 
 ;(function($){
   var _zid = 1, undefined,
@@ -270,4 +267,4 @@
     return compatible(event)
   }
 
-})(Zepto)
+})(Dom)

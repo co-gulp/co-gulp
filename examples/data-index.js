@@ -1,4 +1,8 @@
-var data = [{
+var data = [                                    {
+                                                    cont : "accordion",
+                                                    name : "accordion",
+                                                    tar : "accordion.html"
+                                                },{
                                                     cont : "按钮",
                                                     name : "control",
                                                     tar : "button.html"
@@ -22,6 +26,10 @@ var data = [{
                                                     name : "listview",
                                                     tar : "header.html"
                                                 },{
+                                                    cont : '弹出框',
+                                                    name : "Dialog",
+                                                    tar : "dialog.html"
+                                                },{
                                                     cont : 'card',
                                                     name : "card",
                                                     tar : "cards.html"
@@ -36,7 +44,7 @@ var data = [{
                                                 },{
                                                     cont : '进度条',
                                                     name : "progressBar",
-                                                    tar : "progressBar/progressBar.html"
+                                                    tar : "progressBar/progressbar.html"
                                                 },{
                                                     cont : '开关',
                                                     name : "listview",

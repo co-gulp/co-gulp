@@ -3,12 +3,27 @@
 
 	<head>
 		<meta charset="utf-8">
-		<title>Hello UI</title>
+		<title>Hello UI ProgressBar</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
 		<meta name="apple-mobile-web-app-capable" content="yes">
 		<meta name="apple-mobile-web-app-status-bar-style" content="black">
  <title>progressBar</title>
- <script>
+ <link rel="stylesheet" href="../dist/css/co.css">
+ 
+</head>
+ 
+<body>
+	<header  class="ui-bar ui-bar-nav">
+            <h1 class="ui-title">ProgressBar</h1>
+            <a class="ui-action-back ui-icon ui-icon-left-nav ui-pull-left"></a>
+        </header>
+        <div class = 'ui-content'>
+<canvas id="canvas" width="200" height="200" style="background-color:#F0F0F0;"> </canvas>
+</div>
+</body>
+		<script src="../dist/js/dom.js"></script>
+		<script src="../dist/js/co.js"></script>
+<script>
 var progressBar;
 (function(){
         var p = progressBar = {};
@@ -184,14 +199,10 @@ function drawDiagonal(){
 			    }
         },100);
 }
-	window.addEventListener('load',drawDiagonal,true);
+domReady(function(require){
+	drawDiagonal()
+})
 </script>
-</head>
- 
-<body>
-<canvas id="canvas" width="200" height="200" style="background-color:#F0F0F0;"> </canvas>
-
-</body>
 </html>
 </body>
 </html>

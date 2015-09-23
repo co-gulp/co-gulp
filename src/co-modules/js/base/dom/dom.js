@@ -1,6 +1,6 @@
  /* ===========================
-         Dom Library
-     ===========================*/
+                              Dom Library
+                          ===========================*/
  var Dom = (function() {
      var emptyArray = [],
          concat = emptyArray.concat,
@@ -8,9 +8,22 @@
          slice = emptyArray.slice,
          document = window.document,
          readyRE = /complete|loaded|interactive/,
+         cssNumber = {
+             'column-count': 1,
+             'columns': 1,
+             'font-weight': 1,
+             'line-height': 1,
+             'opacity': 1,
+             'z-index': 1,
+             'zoom': 1
+         },
          simpleSelectorRE = /^[\w-]*$/,
          isAndroid = (/android/gi).test(navigator.appVersion),
+         elementDisplay = {},
          class2type = {},
+         classCache = {},
+         table = document.createElement('table'),
+         tableRow = document.createElement('tr'),
          toString = class2type.toString,
          isArray = Array.isArray ||
          function(object) {
@@ -46,9 +59,72 @@
          return type(obj) == "object"
      };
 
+     function flatten(array) {
+         return array.length > 0 ? $.fn.concat.apply([], array) : array
+     };
+
      function isPlainObject(obj) {
          return isObject(obj) && !isWindow(obj) && Object.getPrototypeOf(obj) == Object.prototype
      };
+
+     function likeArray(obj) {
+         return typeof obj.length == 'number'
+     };
+
+     function camelize(str) {
+         return str.replace(/-+(.)?/g, function(match, chr) {
+             return chr ? chr.toUpperCase() : ''
+         })
+     };
+
+     function uniq(array) {
+         return filter.call(array, function(item, idx) {
+             return array.indexOf(item) == idx
+         })
+     };
+
+     function dasherize(str) {
+         return str.replace(/::/g, '/')
+             .replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2')
+             .replace(/([a-z\d])([A-Z])/g, '$1_$2')
+             .replace(/_/g, '-')
+             .toLowerCase()
+     };
+
+     function maybeAddPx(name, value) {
+         return (typeof value == "number" && !cssNumber[dasherize(name)]) ? value + "px" : value
+     };
+
+     function defaultDisplay(nodeName) {
+         var element, display
+         if (!elementDisplay[nodeName]) {
+             element = document.createElement(nodeName)
+             document.body.appendChild(element)
+             display = getComputedStyle(element, '').getPropertyValue("display")
+             element.parentNode.removeChild(element)
+             display == "none" && (display = "block")
+             elementDisplay[nodeName] = display
+         }
+         return elementDisplay[nodeName]
+     };
+
+     function setAttribute(node, name, value) {
+         value == null ? node.removeAttribute(name) : node.setAttribute(name, value)
+     };
+
+     function deserializeValue(value) {
+         try {
+             return value ?
+                 value == "true" ||
+                 (value == "false" ? false :
+                     value == "null" ? null :
+                     +value + "" == value ? +value :
+                     /^[\[\{]/.test(value) ? $.parseJSON(value) :
+                     value) : value
+         } catch (e) {
+             return value
+         }
+     }
 
      function extend(target, source, deep) {
          for (key in source)
@@ -59,13 +135,6 @@
                      target[key] = []
                  extend(target[key], source[key], deep)
              } else if (source[key] !== undefined) target[key] = source[key]
-     };
-
-     function ready(callback) {
-         if (readyRE.test(document.readyState) && document.body) callback($)
-         else document.addEventListener('DOMContentLoaded', function() {
-             callback($)
-         }, false)
      };
 
      function qsa(element, selector) {
@@ -121,7 +190,7 @@
          if (selector) {
              // String
              if (typeof selector === 'string') {
-                 var els, tempParent, html = selector.trim();
+                 var els, container, html = selector.trim();
                  if (html.indexOf('<') >= 0 && html.indexOf('>') >= 0) {
                      var toCreate = 'div';
                      if (html.indexOf('<li') === 0) toCreate = 'ul';
@@ -129,18 +198,20 @@
                      if (html.indexOf('<td') === 0 || html.indexOf('<th') === 0) toCreate = 'tr';
                      if (html.indexOf('<tbody') === 0) toCreate = 'table';
                      if (html.indexOf('<option') === 0) toCreate = 'select';
-                     tempParent = document.createElement(toCreate);
-                     tempParent.innerHTML = selector;
-                     for (i = 0; i < tempParent.childNodes.length; i++) {
-                         arr.push(tempParent.childNodes[i]);
-                     }
+                     container = document.createElement(toCreate);
+                     container.innerHTML = '' + html;
+                     arr = $.each(slice.call(container.childNodes), function() {
+                         container.removeChild(this)
+                     })
                  } else {
                      if (!context && selector[0] === '#' && !selector.match(/[ .<>:~]/)) {
                          // Pure ID selector
                          els = [document.getElementById(selector.split('#')[1])];
                      } else {
+                         if (context !== undefined) els = $(context).find(selector)
+                         else els = document.querySelectorAll(selector);
                          // Other selectors
-                         els = (context || document).querySelectorAll(selector);
+
                      }
                      for (i = 0; i < els.length; i++) {
                          if (els[i]) arr.push(els[i]);
@@ -150,16 +221,20 @@
              // Node/element
              else if (selector.nodeType || selector === window || selector === document) {
                  arr.push(selector);
-             }
-             //Array of elements or instance of Dom
+             } else if (isFunction(selector)) return $(document).ready(selector)
+                 //Array of elements or instance of Dom
              else if (selector.length > 0 && selector[0].nodeType) {
                  for (i = 0; i < selector.length; i++) {
                      arr.push(selector[i]);
                  }
-             } else if (isFunction(selector)) return ready(selector)
+             }
          }
          return new Dom(arr);
      };
+
+     Dom.isD = function(object) {
+         return object instanceof Dom
+     }
 
      Dom.prototype = {
          // Classes and attriutes
@@ -169,8 +244,10 @@
              }
              var classes = className.split(' ');
              for (var i = 0; i < classes.length; i++) {
-                 for (var j = 0; j < this.length; j++) {
-                     if (typeof this[j].classList !== 'undefined') this[j].classList.add(classes[i]);
+                 if (classes[i]) {
+                     for (var j = 0; j < this.length; j++) {
+                         if (typeof this[j].classList !== 'undefined') this[j].classList.add(classes[i]);
+                     }
                  }
              }
              return this;
@@ -178,8 +255,10 @@
          removeClass: function(className) {
              var classes = className.split(' ');
              for (var i = 0; i < classes.length; i++) {
-                 for (var j = 0; j < this.length; j++) {
-                     if (typeof this[j].classList !== 'undefined') this[j].classList.remove(classes[i]);
+                 if (classes[i]) {
+                     for (var j = 0; j < this.length; j++) {
+                         if (typeof this[j].classList !== 'undefined') this[j].classList.remove(classes[i]);
+                     }
                  }
              }
              return this;
@@ -191,11 +270,20 @@
          toggleClass: function(className) {
              var classes = className.split(' ');
              for (var i = 0; i < classes.length; i++) {
-                 for (var j = 0; j < this.length; j++) {
-                     if (typeof this[j].classList !== 'undefined') this[j].classList.toggle(classes[i]);
+                 if (classes[i]) {
+                     for (var j = 0; j < this.length; j++) {
+                         if (typeof this[j].classList !== 'undefined') this[j].classList.toggle(classes[i]);
+                     }
                  }
              }
              return this;
+         },
+
+         ready: function(callback) {
+             if (readyRE.test(document.readyState) && document.body) callback($)
+             else document.addEventListener('DOMContentLoaded', function() {
+                 callback($)
+             }, false)
          },
          attr: function(attrs, value) {
              if (arguments.length === 1 && typeof attrs === 'string') {
@@ -207,12 +295,12 @@
                  for (var i = 0; i < this.length; i++) {
                      if (arguments.length === 2) {
                          // String
-                         this[i].setAttribute(attrs, value);
+                         setAttribute(this[i], attrs, value)
                      } else {
                          // Object
                          for (var attrName in attrs) {
                              this[i][attrName] = attrs[attrName];
-                             this[i].setAttribute(attrName, attrs[attrName]);
+                             setAttribute(this[i], attrName, attrs[attrName]);
                          }
                      }
                  }
@@ -246,49 +334,6 @@
                  return this;
              }
          },
-         data: function(key, value) {
-             if (typeof value === 'undefined') {
-                 // Get value
-                 if (this[0]) {
-                     var dataKey = this[0].getAttribute('data-' + key);
-                     if (dataKey) return dataKey;
-                     else if (this[0].DomElementDataStorage && (key in this[0].DomElementDataStorage)) return this[0].DomElementDataStorage[key];
-                     else return undefined;
-                 } else return undefined;
-             } else {
-                 // Set value
-                 for (var i = 0; i < this.length; i++) {
-                     var el = this[i];
-                     if (!el.DomElementDataStorage) el.DomElementDataStorage = {};
-                     el.DomElementDataStorage[key] = value;
-                 }
-                 return this;
-             }
-         },
-         dataset: function() {
-             var el = this[0];
-             if (el) {
-                 var dataset = {};
-                 if (el.dataset) {
-                     for (var dataKey in el.dataset) {
-                         dataset[dataKey] = el.dataset[dataKey];
-                     }
-                 } else {
-                     for (var i = 0; i < el.attributes.length; i++) {
-                         var attr = el.attributes[i];
-                         if (attr.name.indexOf('data-') >= 0) {
-                             dataset[$.toCamelCase(attr.name.split('data-')[1])] = attr.value;
-                         }
-                     }
-                 }
-                 for (var key in dataset) {
-                     if (dataset[key] === 'false') dataset[key] = false;
-                     else if (dataset[key] === 'true') dataset[key] = true;
-                     else if (parseFloat(dataset[key]) === dataset[key] * 1) dataset[key] = dataset[key] * 1;
-                 }
-                 return dataset;
-             } else return undefined;
-         },
          val: function(value) {
              if (typeof value === 'undefined') {
                  if (this[0]) return this[0].value;
@@ -315,102 +360,6 @@
              for (var i = 0; i < this.length; i++) {
                  var elStyle = this[i].style;
                  elStyle.webkitTransitionDuration = elStyle.MsTransitionDuration = elStyle.msTransitionDuration = elStyle.MozTransitionDuration = elStyle.OTransitionDuration = elStyle.transitionDuration = duration;
-             }
-             return this;
-         },
-         //Events
-         on: function(eventName, targetSelector, listener, capture) {
-             function handleLiveEvent(e) {
-                 var target = e.target;
-                 if ($(target).is(targetSelector)) listener.call(target, e);
-                 else {
-                     var parents = $(target).parents();
-                     for (var k = 0; k < parents.length; k++) {
-                         if ($(parents[k]).is(targetSelector)) listener.call(parents[k], e);
-                     }
-                 }
-             }
-             var events = eventName.split(' ');
-             var i, j;
-             for (i = 0; i < this.length; i++) {
-                 if (typeof targetSelector === 'function' || targetSelector === false) {
-                     // Usual events
-                     if (typeof targetSelector === 'function') {
-                         listener = arguments[1];
-                         capture = arguments[2] || false;
-                     }
-                     for (j = 0; j < events.length; j++) {
-                         this[i].addEventListener(events[j], listener, capture);
-                     }
-                 } else {
-                     //Live events
-                     for (j = 0; j < events.length; j++) {
-                         if (!this[i].DomLiveListeners) this[i].DomLiveListeners = [];
-                         this[i].DomLiveListeners.push({
-                             listener: listener,
-                             liveListener: handleLiveEvent
-                         });
-                         this[i].addEventListener(events[j], handleLiveEvent, capture);
-                     }
-                 }
-             }
-
-             return this;
-         },
-         off: function(eventName, targetSelector, listener, capture) {
-             var events = eventName.split(' ');
-             for (var i = 0; i < events.length; i++) {
-                 for (var j = 0; j < this.length; j++) {
-                     if (typeof targetSelector === 'function' || targetSelector === false) {
-                         // Usual events
-                         if (typeof targetSelector === 'function') {
-                             listener = arguments[1];
-                             capture = arguments[2] || false;
-                         }
-                         this[j].removeEventListener(events[i], listener, capture);
-                     } else {
-                         // Live event
-                         if (this[j].DomLiveListeners) {
-                             for (var k = 0; k < this[j].DomLiveListeners.length; k++) {
-                                 if (this[j].DomLiveListeners[k].listener === listener) {
-                                     this[j].removeEventListener(events[i], this[j].DomLiveListeners[k].liveListener, capture);
-                                 }
-                             }
-                         }
-                     }
-                 }
-             }
-             return this;
-         },
-         once: function(eventName, targetSelector, listener, capture) {
-             var dom = this;
-             if (typeof targetSelector === 'function') {
-                 targetSelector = false;
-                 listener = arguments[1];
-                 capture = arguments[2];
-             }
-
-             function proxy(e) {
-                 listener(e);
-                 dom.off(eventName, targetSelector, proxy, capture);
-             }
-             dom.on(eventName, targetSelector, proxy, capture);
-         },
-         trigger: function(eventName, eventData) {
-             for (var i = 0; i < this.length; i++) {
-                 var evt;
-                 try {
-                     evt = new CustomEvent(eventName, {
-                         detail: eventData,
-                         bubbles: true,
-                         cancelable: true
-                     });
-                 } catch (e) {
-                     evt = document.createEvent('Event');
-                     evt.initEvent(eventName, true, true);
-                     evt.detail = eventData;
-                 }
-                 this[i].dispatchEvent(evt);
              }
              return this;
          },
@@ -450,18 +399,6 @@
              }
              return this;
          },
-         // Sizing/Styles
-         width: function() {
-             if (this[0] === window) {
-                 return window.innerWidth;
-             } else {
-                 if (this.length > 0) {
-                     return parseFloat(this.css('width'));
-                 } else {
-                     return null;
-                 }
-             }
-         },
          outerWidth: function(includeMargins) {
              if (this.length > 0) {
                  if (includeMargins) {
@@ -470,17 +407,6 @@
                  } else
                      return this[0].offsetWidth;
              } else return null;
-         },
-         height: function() {
-             if (this[0] === window) {
-                 return window.innerHeight;
-             } else {
-                 if (this.length > 0) {
-                     return parseFloat(this.css('height'));
-                 } else {
-                     return null;
-                 }
-             }
          },
          outerHeight: function(includeMargins) {
              if (this.length > 0) {
@@ -511,51 +437,86 @@
              }
          },
          hide: function() {
-             for (var i = 0; i < this.length; i++) {
-                 this[i].style.display = 'none';
-             }
-             return this;
+             return this.css("display", "none")
          },
          show: function() {
-             for (var i = 0; i < this.length; i++) {
-                 this[i].style.display = 'block';
-             }
-             return this;
+             return this.each(function() {
+                 this.style.display == "none" && (this.style.display = '')
+                 if (getComputedStyle(this, '').getPropertyValue("display") == "none")
+                     this.style.display = defaultDisplay(this.nodeName)
+             })
          },
          styles: function() {
              var i, styles;
              if (this[0]) return window.getComputedStyle(this[0], null);
              else return undefined;
          },
-         css: function(props, value) {
-             var i;
-             if (arguments.length === 1) {
-                 if (typeof props === 'string') {
-                     if (this[0]) return window.getComputedStyle(this[0], null).getPropertyValue(props);
-                 } else {
-                     for (i = 0; i < this.length; i++) {
-                         for (var prop in props) {
-                             this[i].style[prop] = props[prop];
-                         }
-                     }
-                     return this;
+         css: function(property, value) {
+             if (arguments.length < 2) {
+                 var computedStyle, element = this[0]
+                 if (!element) return
+                 computedStyle = getComputedStyle(element, '')
+                 if (typeof property == 'string')
+                     return element.style[camelize(property)] || computedStyle.getPropertyValue(property)
+                 else if (isArray(property)) {
+                     var props = {}
+                     $.each(property, function(_, prop) {
+                         props[prop] = (element.style[camelize(prop)] || computedStyle.getPropertyValue(prop))
+                     })
+                     return props
                  }
              }
-             if (arguments.length === 2 && typeof props === 'string') {
-                 for (i = 0; i < this.length; i++) {
-                     this[i].style[props] = value;
-                 }
-                 return this;
+
+             var css = ''
+             if (type(property) == 'string') {
+                 if (!value && value !== 0)
+                     this.each(function() {
+                         this.style.removeProperty(dasherize(property))
+                     })
+                 else
+                     css = dasherize(property) + ":" + maybeAddPx(property, value)
+             } else {
+                 for (key in property)
+                     if (!property[key] && property[key] !== 0)
+                         this.each(function() {
+                             this.style.removeProperty(dasherize(key))
+                         })
+                     else
+                         css += dasherize(key) + ':' + maybeAddPx(key, property[key]) + ';'
              }
-             return this;
+
+             return this.each(function() {
+                 this.style.cssText += ';' + css
+             })
          },
 
          //Dom manipulation
          each: function(callback) {
-             for (var i = 0; i < this.length; i++) {
-                 callback.call(this[i], i, this[i]);
+             emptyArray.every.call(this, function(el, idx) {
+                 return callback.call(el, idx, el) !== false
+             })
+             return this
+         },
+         filter: function(selector) {
+             if (isFunction(selector)) return this.not(this.not(selector))
+             return $(filter.call(this, function(element) {
+                 return matches(element, selector)
+             }))
+         },
+         not: function(selector) {
+             var nodes = []
+             if (isFunction(selector) && selector.call !== undefined)
+                 this.each(function(idx) {
+                     if (!selector.call(this, idx)) nodes.push(this)
+                 })
+             else {
+                 var excludes = typeof selector == 'string' ? this.filter(selector) :
+                     (likeArray(selector) && isFunction(selector.item)) ? slice.call(selector) : $(selector)
+                 this.forEach(function(el) {
+                     if (excludes.indexOf(el) < 0) nodes.push(el)
+                 })
              }
-             return this;
+             return $(nodes)
          },
          html: function(html) {
              if (typeof html === 'undefined') {
@@ -577,6 +538,20 @@
                      this[i].textContent = text;
                  }
              }
+         },
+         concat: function() {
+             var i, value, args = []
+             for (i = 0; i < arguments.length; i++) {
+                 value = arguments[i]
+                 args[i] = Dom.isD(value) ? value.toArray() : value
+             }
+             return concat.apply(Dom.isD(this) ? this.toArray() : this, args)
+         },
+         get: function(idx) {
+             return idx === undefined ? slice.call(this) : this[idx >= 0 ? idx : idx + this.length]
+         },
+         toArray: function() {
+             return this.get()
          },
          is: function(selector) {
              if (!this[0] || typeof selector === 'undefined') return false;
@@ -640,6 +615,14 @@
              }
              return new Dom([this[index]]);
          },
+         first: function() {
+             var el = this[0]
+             return el && !isObject(el) ? el : $(el)
+         },
+         last: function() {
+             var el = this[this.length - 1]
+             return el && !isObject(el) ? el : $(el)
+         },
          append: function(newChild) {
              var i, j;
              for (i = 0; i < this.length; i++) {
@@ -657,6 +640,10 @@
                      this[i].appendChild(newChild);
                  }
              }
+             return this;
+         },
+         appendTo: function(target) {
+             $(target).append(this);
              return this;
          },
          prepend: function(newChild) {
@@ -679,6 +666,10 @@
              }
              return this;
          },
+         prependTo: function(target) {
+             $(target).prepend(this);
+             return this;
+         },
          insertBefore: function(selector) {
              var before = $(selector);
              for (var i = 0; i < this.length; i++) {
@@ -690,6 +681,7 @@
                      }
                  }
              }
+             return this;
          },
          insertAfter: function(selector) {
              var after = $(selector);
@@ -702,6 +694,7 @@
                      }
                  }
              }
+             return this;
          },
          next: function(selector) {
              if (this.length > 0) {
@@ -750,6 +743,30 @@
                  el = prev;
              }
              return new Dom(prevEls);
+         },
+         wrap: function(structure) {
+             var func = isFunction(structure)
+             if (this[0] && !func)
+                 var dom = $(structure).get(0),
+                     clone = dom.parentNode || this.length > 1
+
+             return this.each(function(index) {
+                 $(this).wrapAll(
+                     func ? structure.call(this, index) :
+                     clone ? dom.cloneNode(true) : dom
+                 )
+             })
+         },
+         wrapAll: function(structure) {
+             if (this[0]) {
+                 structure = $(structure);
+                 structure.insertBefore($(this[0]))
+                 var children
+                     // drill down to the inmost element
+                 while ((children = structure.children()).length) structure = children.first()
+                 $(structure).append(this)
+             }
+             return this
          },
          parent: function(selector) {
              var parents = [];
@@ -816,343 +833,50 @@
              }
              return this;
          },
+         empty: function() {
+             return this.each(function() {
+                 this.innerHTML = ''
+             })
+         },
          detach: function() {
              return this.remove();
          },
-         add: function() {
-             var dom = this;
-             var i, j;
-             for (i = 0; i < arguments.length; i++) {
-                 var toAdd = $(arguments[i]);
-                 for (j = 0; j < toAdd.length; j++) {
-                     dom[dom.length] = toAdd[j];
-                     dom.length++;
-                 }
-             }
-             return dom;
-         }
+         add: function(selector, context) {
+             return $(uniq(this.concat($(selector, context))))
+         },
      };
 
-     // Shortcuts
-     (function() {
-         var shortcuts = ('click blur focus focusin focusout keyup keydown keypress submit change mousedown mousemove mouseup mouseenter mouseleave mouseout mouseover touchstart touchend touchmove resize scroll').split(' ');
-         var notTrigger = ('resize scroll').split(' ');
+     // Link to prototype
+     $.fn = Dom.prototype;
 
-         function createMethod(name) {
-             Dom.prototype[name] = function(handler) {
-                 var i;
-                 if (typeof handler === 'undefined') {
-                     for (i = 0; i < this.length; i++) {
-                         if (notTrigger.indexOf(name) < 0) {
-                             if (name in this[i]) this[i][name]();
-                             else {
-                                 $(this[i]).trigger(name);
-                             }
-                         }
-                     }
-                     return this;
-                 } else {
-                     return this.on(name, handler);
-                 }
-             };
+     // Generate the `width` and `height` functions
+     ['width', 'height'].forEach(function(dimension) {
+         var dimensionProperty =
+             dimension.replace(/./, function(m) {
+                 return m[0].toUpperCase()
+             })
+
+         $.fn[dimension] = function(value) {
+             var offset, el = this[0]
+             if (value === undefined) return isWindow(el) ? el['inner' + dimensionProperty] :
+                 isDocument(el) ? el.documentElement['scroll' + dimensionProperty] :
+                 (offset = this.offset()) && offset[dimension]
+             else return this.each(function(idx) {
+                 el = $(this)
+                 el.css(dimension, value)
+             })
          }
-         for (var i = 0; i < shortcuts.length; i++) {
-             createMethod(shortcuts[i]);
-         }
-     })();
-
-
-     // Global Ajax Setup
-     var globalAjaxOptions = {};
-     $.ajaxSetup = function(options) {
-         if (options.type) options.method = options.type;
-         $.each(options, function(optionName, optionValue) {
-             globalAjaxOptions[optionName] = optionValue;
-         });
-     };
-
-     // Ajax
-     var _jsonpRequests = 0;
-     $.ajax = function(options) {
-         var defaults = {
-             method: 'GET',
-             data: false,
-             async: true,
-             cache: true,
-             user: '',
-             password: '',
-             headers: {},
-             xhrFields: {},
-             statusCode: {},
-             processData: true,
-             dataType: 'text',
-             contentType: 'application/x-www-form-urlencoded',
-             timeout: 0
-         };
-         var callbacks = ['beforeSend', 'error', 'complete', 'success', 'statusCode'];
-
-
-         //For jQuery guys
-         if (options.type) options.method = options.type;
-
-         // Merge global and defaults
-         $.each(globalAjaxOptions, function(globalOptionName, globalOptionValue) {
-             if (callbacks.indexOf(globalOptionName) < 0) defaults[globalOptionName] = globalOptionValue;
-         });
-
-         // Function to run XHR callbacks and events
-         function fireAjaxCallback(eventName, eventData, callbackName) {
-             var a = arguments;
-             if (eventName) $(document).trigger(eventName, eventData);
-             if (callbackName) {
-                 // Global callback
-                 if (callbackName in globalAjaxOptions) globalAjaxOptions[callbackName](a[3], a[4], a[5], a[6]);
-                 // Options callback
-                 if (options[callbackName]) options[callbackName](a[3], a[4], a[5], a[6]);
-             }
-         }
-
-         // Merge options and defaults
-         $.each(defaults, function(prop, defaultValue) {
-             if (!(prop in options)) options[prop] = defaultValue;
-         });
-
-         // Default URL
-         if (!options.url) {
-             options.url = window.location.toString();
-         }
-         // Parameters Prefix
-         var paramsPrefix = options.url.indexOf('?') >= 0 ? '&' : '?';
-
-         // UC method
-         var _method = options.method.toUpperCase();
-         // Data to modify GET URL
-         if ((_method === 'GET' || _method === 'HEAD') && options.data) {
-             var stringData;
-             if (typeof options.data === 'string') {
-                 // Should be key=value string
-                 if (options.data.indexOf('?') >= 0) stringData = options.data.split('?')[1];
-                 else stringData = options.data;
-             } else {
-                 // Should be key=value object
-                 stringData = $.serializeObject(options.data);
-             }
-             options.url += paramsPrefix + stringData;
-         }
-         // JSONP
-         if (options.dataType === 'json' && options.url.indexOf('callback=') >= 0) {
-
-             var callbackName = 'f7jsonp_' + Date.now() + (_jsonpRequests++);
-             var abortTimeout;
-             var callbackSplit = options.url.split('callback=');
-             var requestUrl = callbackSplit[0] + 'callback=' + callbackName;
-             if (callbackSplit[1].indexOf('&') >= 0) {
-                 var addVars = callbackSplit[1].split('&').filter(function(el) {
-                     return el.indexOf('=') > 0;
-                 }).join('&');
-                 if (addVars.length > 0) requestUrl += '&' + addVars;
-             }
-
-             // Create script
-             var script = document.createElement('script');
-             script.type = 'text/javascript';
-             script.onerror = function() {
-                 clearTimeout(abortTimeout);
-                 fireAjaxCallback(undefined, undefined, 'error', null, 'scripterror');
-             };
-             script.src = requestUrl;
-
-             // Handler
-             window[callbackName] = function(data) {
-                 clearTimeout(abortTimeout);
-                 fireAjaxCallback(undefined, undefined, 'success', data);
-                 script.parentNode.removeChild(script);
-                 script = null;
-                 delete window[callbackName];
-             };
-             document.querySelector('head').appendChild(script);
-
-             if (options.timeout > 0) {
-                 abortTimeout = setTimeout(function() {
-                     script.parentNode.removeChild(script);
-                     script = null;
-                     fireAjaxCallback(undefined, undefined, 'error', null, 'timeout');
-                 }, options.timeout);
-             }
-
-             return;
-         }
-
-         // Cache for GET/HEAD requests
-         if (_method === 'GET' || _method === 'HEAD') {
-             if (options.cache === false) {
-                 options.url += (paramsPrefix + '_nocache=' + Date.now());
-             }
-         }
-
-         // Create XHR
-         var xhr = new XMLHttpRequest();
-
-         // Save Request URL
-         xhr.requestUrl = options.url;
-
-         // Open XHR
-         xhr.open(_method, options.url, options.async, options.user, options.password);
-
-         // Create POST Data
-         var postData = null;
-
-         if ((_method === 'POST' || _method === 'PUT') && options.data) {
-             if (options.processData) {
-                 var postDataInstances = [ArrayBuffer, Blob, Document, FormData];
-                 // Post Data
-                 if (postDataInstances.indexOf(options.data.constructor) >= 0) {
-                     postData = options.data;
-                 } else {
-                     // POST Headers
-                     var boundary = '---------------------------' + Date.now().toString(16);
-
-                     if (options.contentType === 'multipart\/form-data') {
-                         xhr.setRequestHeader('Content-Type', 'multipart\/form-data; boundary=' + boundary);
-                     } else {
-                         xhr.setRequestHeader('Content-Type', options.contentType);
-                     }
-                     postData = '';
-                     var _data = $.serializeObject(options.data);
-                     if (options.contentType === 'multipart\/form-data') {
-                         boundary = '---------------------------' + Date.now().toString(16);
-                         _data = _data.split('&');
-                         var _newData = [];
-                         for (var i = 0; i < _data.length; i++) {
-                             _newData.push('Content-Disposition: form-data; name="' + _data[i].split('=')[0] + '"\r\n\r\n' + _data[i].split('=')[1] + '\r\n');
-                         }
-                         postData = '--' + boundary + '\r\n' + _newData.join('--' + boundary + '\r\n') + '--' + boundary + '--\r\n';
-                     } else {
-                         postData = options.contentType === 'application/x-www-form-urlencoded' ? _data : _data.replace(/&/g, '\r\n');
-                     }
-                 }
-             } else {
-                 postData = options.data;
-             }
-
-         }
-
-         // Additional headers
-         if (options.headers) {
-             $.each(options.headers, function(headerName, headerCallback) {
-                 xhr.setRequestHeader(headerName, headerCallback);
-             });
-         }
-
-         // Check for crossDomain
-         if (typeof options.crossDomain === 'undefined') {
-             options.crossDomain = /^([\w-]+:)?\/\/([^\/]+)/.test(options.url) && RegExp.$2 !== window.location.host;
-         }
-
-         if (!options.crossDomain) {
-             xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
-         }
-
-         if (options.xhrFields) {
-             $.each(options.xhrFields, function(fieldName, fieldValue) {
-                 xhr[fieldName] = fieldValue;
-             });
-         }
-
-         var xhrTimeout;
-         // Handle XHR
-         xhr.onload = function(e) {
-             if (xhrTimeout) clearTimeout(xhrTimeout);
-             if ((xhr.status >= 200 && xhr.status < 300) || xhr.status === 0) {
-                 var responseData;
-                 if (options.dataType === 'json') {
-                     try {
-                         responseData = JSON.parse(xhr.responseText);
-                         fireAjaxCallback('ajaxSuccess', {
-                             xhr: xhr
-                         }, 'success', responseData, xhr.status, xhr);
-                     } catch (err) {
-                         fireAjaxCallback('ajaxError', {
-                             xhr: xhr,
-                             parseerror: true
-                         }, 'error', xhr, 'parseerror');
-                     }
-                 } else {
-                     fireAjaxCallback('ajaxSuccess', {
-                         xhr: xhr
-                     }, 'success', xhr.responseText, xhr.status, xhr);
-                 }
-             } else {
-                 fireAjaxCallback('ajaxError', {
-                     xhr: xhr
-                 }, 'error', xhr, xhr.status);
-             }
-             if (options.statusCode) {
-                 if (globalAjaxOptions.statusCode && globalAjaxOptions.statusCode[xhr.status]) globalAjaxOptions.statusCode[xhr.status](xhr);
-                 if (options.statusCode[xhr.status]) options.statusCode[xhr.status](xhr);
-             }
-             fireAjaxCallback('ajaxComplete', {
-                 xhr: xhr
-             }, 'complete', xhr, xhr.status);
-         };
-
-         xhr.onerror = function(e) {
-             if (xhrTimeout) clearTimeout(xhrTimeout);
-             fireAjaxCallback('ajaxError', {
-                 xhr: xhr
-             }, 'error', xhr, xhr.status);
-         };
-
-         // Ajax start callback
-         fireAjaxCallback('ajaxStart', {
-             xhr: xhr
-         }, 'start', xhr);
-         fireAjaxCallback(undefined, undefined, 'beforeSend', xhr);
-
-
-         // Send XHR
-         xhr.send(postData);
-
-         // Timeout
-         if (options.timeout > 0) {
-             xhrTimeout = setTimeout(function() {
-                 xhr.abort();
-                 fireAjaxCallback('ajaxError', {
-                     xhr: xhr,
-                     timeout: true
-                 }, 'error', xhr, 'timeout');
-                 fireAjaxCallback('ajaxComplete', {
-                     xhr: xhr,
-                     timeout: true
-                 }, 'complete', xhr, 'timeout');
-             }, options.timeout);
-         }
-
-         // Return XHR object
-         return xhr;
-     };
-     // Shrotcuts
-     (function() {
-         var methods = ('get post getJSON').split(' ');
-
-         function createMethod(method) {
-             $[method] = function(url, data, success) {
-                 return $.ajax({
-                     url: url,
-                     method: method === 'post' ? 'POST' : 'GET',
-                     data: typeof data === 'function' ? undefined : data,
-                     success: typeof data === 'function' ? data : success,
-                     dataType: method === 'getJSON' ? 'json' : undefined
-                 });
-             };
-         }
-         for (var i = 0; i < methods.length; i++) {
-             createMethod(methods[i]);
-         }
-     })();
-
+     })
 
      // DOM Library Utilites
+     $.type = type
+     $.isFunction = isFunction
+     $.isWindow = isWindow
+     $.isArray = isArray
+     $.isPlainObject = isPlainObject
+     $.camelCase = camelize
+     $.deserializeValue = deserializeValue
+     if (window.JSON) $.parseJSON = JSON.parse
      $.parseUrlQuery = function(url) {
          var query = {},
              i, params, param;
@@ -1165,29 +889,37 @@
          }
          return query;
      };
+     $.map = function(elements, callback) {
+         var value, values = [],
+             i, key
+         if (likeArray(elements))
+             for (i = 0; i < elements.length; i++) {
+                 value = callback(elements[i], i)
+                 if (value != null) values.push(value)
+             } else
+                 for (key in elements) {
+                     value = callback(elements[key], key)
+                     if (value != null) values.push(value)
+                 }
+         return flatten(values)
+     }
      $.isArray = function(arr) {
          if (Object.prototype.toString.apply(arr) === '[object Array]') return true;
          else return false;
      };
-     $.each = function(obj, callback) {
-         if (typeof obj !== 'object') return;
-         if (!callback) return;
-         var i, prop;
-         if ($.isArray(obj) || obj instanceof Dom) {
-             // Array
-             for (i = 0; i < obj.length; i++) {
-                 callback(i, obj[i]);
+     $.each = function(elements, callback) {
+             var i, key
+             if (likeArray(elements)) {
+                 for (i = 0; i < elements.length; i++)
+                     if (callback.call(elements[i], i, elements[i]) === false) return elements
+             } else {
+                 for (key in elements)
+                     if (callback.call(elements[key], key, elements[key]) === false) return elements
              }
-         } else {
-             // Object
-             for (prop in obj) {
-                 if (obj.hasOwnProperty(prop)) {
-                     callback(prop, obj[prop]);
-                 }
-             }
+
+             return elements
          }
-     };
-     // Populate the class2type map
+         // Populate the class2type map
      $.each("Boolean Number String Function Array Date RegExp Object Error".split(" "), function(i, name) {
              class2type["[object " + name + "]"] = name.toLowerCase()
          })
@@ -1203,10 +935,16 @@
              extend(target, arg, deep)
          })
          return target
-     }
+     };
      $.trim = function(str) {
          return str == null ? "" : String.prototype.trim.call(str)
-     }
+     };
+     $.trimLeft = function(str) {
+         return str == null ? "" : String.prototype.trimLeft.call(str)
+     };
+     $.trimRight = function(str) {
+         return str == null ? "" : String.prototype.trimRight.call(str)
+     };
      $.trimAll = function(str) {
          return str == null ? "" : str.replace(/\s*/g, '');
      };
@@ -1219,45 +957,6 @@
                  if (node === parent) return true
              return false
          };
-
-
-     $.storage = function(key, value) {
-         var ls = storage();
-         if (!ls) return;
-         if (arguments.length === 2) {
-             var v = value;
-             if (typeof v == 'object') {
-                 v = JSON.stringify(v);
-                 v = 'obj-' + v;
-             } else {
-                 v = 'str-' + v;
-             }
-             ls.setItem(key, v);
-         } else if (arguments.length === 1) {
-             var v = ls.getItem(key);
-             if (!v) {
-                 return;
-             }
-             if (v.indexOf('obj-') === 0) {
-                 v = v.slice(4);
-                 return JSON.parse(v);
-             } else if (v.indexOf('str-') === 0) {
-                 return v.slice(4);
-             }
-         }
-     };
-     $.removeStorage = function(key) {
-         var ls = storage();
-         if (ls && key) {
-             ls.removeItem(key);
-         }
-     };
-     $.clearStorage = function() {
-         var ls = storage();
-         if (ls) {
-             ls.clear();
-         }
-     };
      $.unique = function(arr) {
          var unique = [];
          for (var i = 0; i < arr.length; i++) {
@@ -1286,14 +985,6 @@
          }
 
          return resultArray.join(separator);
-     };
-     $.toCamelCase = function(string) {
-         return string.toLowerCase().replace(/-(.)/g, function(match, group1) {
-             return group1.toUpperCase();
-         });
-     };
-     $.dataset = function(el) {
-         return $(el).dataset();
      };
      $.getTranslate = function(el, axis) {
          var matrix, curTransform, curStyle, transformMatrix;
@@ -1357,8 +1048,7 @@
      };
      $.supportTouch = !!(('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
 
-     // Link to prototype
-     $.fn = Dom.prototype;
+
 
      // Plugins
      $.fn.scrollTo = function(left, top, duration, easing, callback) {
@@ -1468,8 +1158,6 @@
      return $;
  })();
 
- // Export to local scope
- var $ = Dom;
-
  // Export to Window
  window.Dom = Dom;
+ window.$ === undefined && (window.$ = Dom);
