@@ -115,6 +115,10 @@
         $('#swipepage').on('slideend',function(e,index){
             nav.switchTo(index);
         });
+        
+        $('#swipepage').on('moveend',function(e,index){
+            alert(index)
+        });
     });
 </script>
 </html>

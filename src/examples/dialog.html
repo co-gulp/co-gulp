@@ -23,23 +23,53 @@
         </header>
             <a id='alertBtn' class="button button-block button-rounded button-primary button-large">分享框</a>
             <a id='confirmBtn' class="button button-block button-rounded button-action button-large">评分框</a>
-            <a id='promptBtn' class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
             <a id='customBtn' class="button button-block button-rounded button-royal button-large">个性化提示框</a>
             <a id='toastBtn' class="button button-block button-rounded button-inverse button-large">加载中Toast</a>
             <a id='mesToastBtn' class="button button-block button-rounded button-caution button-large">带有消息的Toast</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <input type="email" required="required" placeholder="email">
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            <a class="button button-block button-rounded button-highlight button-large">提示框</a>
+            
         <script src="dist/js/dom.js"></script>
     <script src="dist/js/co.js"></script>
     </body>
      <script>
             domReady(function(require){
-                require("button");
                 var Dialog = require("dialog");
                 $('#alertBtn').button(function(btn,el){
+                        var str = 'null';
+    console.log($.chk(str))
                          Dialog.init({
                             title:'消息框',
                             width: 288,
                             contentMaxHeight:100,
-                            scrollMove: false,
+                            scrollMove: true,
                             buttons: {
                                 '取消': function(){
                                     this.close();
@@ -47,6 +77,7 @@
                             },
                             content: '<ul class="share-list"><li class="renren">人人网</li><li class="sina">新浪微博</li><li class="sms">短信息</li><li class="email">用电子邮件发送信息</li></ul>'
                         })._wrap.addClass('share-dialog');
+
 
                 });
 
@@ -67,7 +98,7 @@
                             content:  '<div  class="vote-dialog" style="display:block"><p class="vote"></p><p>星级从1到5，获得越多星星，表示等级越高</p></div>'
                         });
                 });
-                $('#promptBtn').button(function(btn,el){
+                $('.button-highlight').button(function(btn,el){
                        Dialog.init({
                             title:'登陆提示',
                             autoOpen: false,

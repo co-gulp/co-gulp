@@ -1,5 +1,5 @@
 /**
- * button组件
+ * @file button组件
  */
 (function() {
 
@@ -42,7 +42,7 @@
                 if (!id) {
                     opts = { ref : this,callback : callback};
                     id = ++$ui.uuid;
-                    $ui.data[id] = new $button(opts);
+                    buttonObj = $ui.data[id] = new $button(opts);
                     this.setAttribute('data-button', id);
                 } else {
                     buttonObj = $ui.data[id];

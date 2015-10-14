@@ -49,7 +49,7 @@
                         _sl.index + num, _sl.width, 0, true );
 
                 _sl.ref.on( 'touchmove' + ' touchend' +
-                        ' touchcancel', _sl._handler );
+                        ' touchcancel', _sl._touchHandler );
             };
 
 
@@ -105,7 +105,6 @@
 
                     for ( i = index - viewNum, len = index + 2 * viewNum;
                             i < len; i++ ) {
-
                         pos = opts.loop ? _sl.circle( i ) : i;
                         _sl.translate( pos, delta.x + slidePos[ pos ], 0 );
                     }
@@ -120,7 +119,7 @@
                     opts = _sl.opts;
                 // 解除事件
                 _sl.ref.off( 'touchmove' + ' touchend' + ' touchcancel',
-                        _sl.ref._handler );
+                        _sl._touchHandler );
 
                 if ( !moved ) {
                     return;
@@ -167,7 +166,9 @@
                                 _sl.width, opts.speed );
                     }
                 } else {
-                    
+                    if((_sl.index == 0 && dir == 1) || (_sl.index == (_sl.length - 1) && dir == -1)){//左右滑到尽头
+                        _sl.ref.trigger('moveend', [_sl.index,dir]);
+                    }
                     // 滑回去
                     for ( i = index - viewNum, len = index + 2 * viewNum;
                         i < len; i++ ) {
@@ -210,7 +211,7 @@
                     disableScroll: false
                 });
 
-                _sl._handler = function( e ) {
+                _sl._touchHandler = function( e ) {
                     opts.stopPropagation && e.stopPropagation();
                     switch (e.type) {
                         case 'touchstart':
@@ -229,7 +230,7 @@
                     }
                 };
                 // 绑定手势
-                _sl.ref.on( 'touchstart', _sl._handler);
+                _sl.ref.on( 'touchstart', _sl._touchHandler);
                     
             };
         module.exports = sTouch;

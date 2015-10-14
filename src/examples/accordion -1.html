@@ -219,9 +219,15 @@
 <script>
 	domReady(function(require){
    		require("accordion");
-   		$('.accordion-list').accordion({});
+   		$('.accordion-list').accordion({
+   			autoExpanded:true,
+   			toggleClose:false
+   		});
    		require("treeview");
-   		$('#treeview').treeview({});
+   		$('#treeview').treeview({
+   			autoExpanded:true,
+   			toggleClose:false
+   		});
    		$('.ui-block').button(function(btn) {
    			alert(btn.innerHTML)
    		})

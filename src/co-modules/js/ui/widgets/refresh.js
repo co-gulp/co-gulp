@@ -1,3 +1,6 @@
+/**
+ * @file refresh 组件
+ */
 (function() {
 
     var CLASS_PULL_TOP_POCKET = 'ui-pull-top-pocket';

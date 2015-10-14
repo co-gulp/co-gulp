@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>Hello UI Switche</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+		<link rel="stylesheet" href="dist/css/co.css">
+		
+	</head>
+
+	<body>
+		<header  class="ui-bar ui-bar-nav">
+            <h1 class="ui-title">Switche</h1>
+            <a class="ui-action-back ui-icon ui-icon-left-nav ui-pull-left"></a>
+        </header>
+        <div class = 'ui-content'>
+			<ul class="ui-table-view">
+				<li class="ui-table-view-cell">
+					<span></span>
+					<div class="ui-switch ui-active">
+						<div class="ui-switch-handle"></div>
+					</div>
+				</li>
+				<li class="ui-table-view-cell">
+					<span></span>
+					<div class="ui-switch">
+						<div class="ui-switch-handle"></div>
+					</div>
+				</li>
+				<li class="ui-table-view-cell">
+					<span></span>
+					<div class="ui-switch ui-switch-mini ui-active ">
+						<div class="ui-switch-handle"></div>
+					</div>
+				</li>
+				<li class="ui-table-view-cell">
+					<span></span>
+					<div class="ui-switch ui-switch-mini">
+						<div class="ui-switch-handle"></div>
+					</div>
+				</li>
+				<li class="ui-table-view-cell">
+					<span></span>
+					<div class="ui-switch ui-switch-blue ui-active">
+						<div class="ui-switch-handle"></div>
+					</div>
+				</li>
+				<li class="ui-table-view-cell">
+					<span></span>
+					<div class="ui-switch ui-switch-blue">
+						<div class="ui-switch-handle"></div>
+					</div>
+				</li>
+				<li class="ui-table-view-cell">
+					<span></span>
+					<div class="ui-switch ui-switch-blue ui-switch-mini ui-active">
+						<div class="ui-switch-handle"></div>
+					</div>
+				</li>
+				<li class="ui-table-view-cell">
+					<span></span>
+					<div class="ui-switch ui-switch-blue ui-switch-mini">
+						<div class="ui-switch-handle"></div>
+					</div>
+				</li>
+			</ul>
+		</div>
+		<script src="dist/js/dom.js"></script>
+		<script src="dist/js/co.js"></script>
+		<script>
+		domReady(function(require){
+			require("switch");
+			 	var sw = $('.ui-switch').switch({
+                    callback:function(el,evt,isActive){
+                        el.parentNode.querySelector('span').innerText = '状态：' + ( isActive? 'true' : 'false');
+                    }
+                })[0].toggle();
+                $('.ui-switch').each(function() { //循环所有toggle
+					this.parentNode.querySelector('span').innerText = '状态：' + (this.classList.contains('ui-active') ? 'true' : 'false');
+				});
+		});
+		</script>
+	</body>
+</html>

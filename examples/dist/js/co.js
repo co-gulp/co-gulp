@@ -986,6 +986,7 @@ seajs.config({
           'slider':'ui/widgets/slider/slider',
           'sGuide':'ui/widgets/slider/guide',
           'sTouch':'ui/widgets/slider/touch',
+          'sGestures':'ui/widgets/slider/gestures',
           'sMultiview':'ui/widgets/slider/multiview',
           'listview' : 'ui/widgets/listview',
           'tab' : 'ui/widgets/tabs/tabs',
@@ -993,6 +994,10 @@ seajs.config({
           'swipePage' : 'ui/widgets/swipePage/swipePage',
           'treeview' : 'ui/widgets/treeview',
           'refresh' : 'ui/widgets/refresh',
+          'fullpage' : 'ui/widgets/fullpage',
+          'searchbar' : 'ui/widgets/searchbar',
+          'photoBrowser' : 'ui/widgets/photoBrowser',
+          'lazyLoadImage' : 'ui/widgets/lazyLoadImage',
           'scroll' : 'ui/widgets/iscroll'
       },
       preload: ['ui','button','checkbox','select','input']
@@ -1171,8 +1176,6 @@ window.onerror = function(sMsg,sUrl,sLine,columnNumber,error){
   str+="URL: " + sUrl + "---------";
   str+="columnNumber: " + columnNumber + "---------";
   str+="error: " + error + "---------";
-  if (($.os.android || $.os.ios) && global.rd) {
-  	alert(str)
-  }
+  alert(str)
   return false;
 }

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>Hello UI Navigator</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <link rel="stylesheet" href="dist/css/co.css">
+        <style type="text/css">
+            /*.ui-navigator .ui-navigator-more{
+                top:54px;
+            }*/
+            
+    </style>
+    </head>
+
+    <body>
+        <header  class="ui-bar ui-bar-nav">
+            <h1 class="ui-title">Navigator</h1>
+            <a class="ui-action-back ui-icon ui-icon-left-nav ui-pull-left"></a>
+        </header>
+    <div id="nav2" class="ui-navigator">
+           <ul class="ui-navigator-list">
+                <li class="ui-state-active"><a href="#test1">首页</a></li>
+                <li class=""><a href="#test1">要闻</a></li>
+                <li class=""><a href="javascript:;">国内</a></li>
+                <li class=""><a href="#test2">国际</a></li>
+                <li class=""><a href="#test3">军事</a></li>
+                <li class=""><a href="#test4">社会</a></li>
+                <li class=""><a href="#test5">娱乐</a></li>
+                <li class=""><a href="#test6">女人</a></li>
+                <li class=""><a href="#">体育</a></li>
+                <li class=""><a href="#test7">科技</a></li>
+                <li class=""><a href="#test8">互联网</a></li>
+                <li class=""><a href="#test9">教育</a></li>
+                <li class=""><a href="#">财经</a></li>
+                <li class=""><a href="#test11">房产</a></li>
+                <li class=""><a href="#test12">汽车</a></li>
+            </ul>
+            <div class="ui-navigator-more">
+                <div class="ui-shadow"></div>
+                <div class="ui-icon ui-more ui-icon-more"></div>
+            </div>
+    </div>
+    <script src="dist/js/dom.js"></script>
+    <script src="dist/js/co.js"></script>
+</body>
+     <script>
+        domReady(function(require){
+            require("navigator");
+            $('#nav2').navigator();
+        })
+    </script>
+
+</html>

@@ -1,5 +1,5 @@
 /**
- * @file 选项卡组件
+ * @file navigator组件
  */
 
 (function() {

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no,width=device-width">
+    <meta name="apple-itunes-app" content="app-id=698076980" />
+    <meta name="Keywords" content="多玩游戏">
+    <meta name="description" content="">
+    <title>Hello UI Header</title>
+    <link rel="stylesheet" href="dist/css/co.css">
+    <style type="text/css">
+
+</style>
+</head>
+<body>
+    <header  class="ui-bar ui-bar-nav">
+        <h1 class="ui-title">导航栏</h1>
+        <a class="ui-icon ui-icon-bars ui-pull-right"></a>
+        <a class="ui-action-back ui-icon ui-icon-left-nav ui-pull-left"></a>
+    </header>
+    <header  class="ui-bar ui-bar-nav">
+       <h1 class="ui-title">导航栏</h1>
+       <button class="ui-action-back ui-btn ui-btn-blue ui-btn-link ui-btn-nav ui-pull-left">
+           <span class="ui-icon ui-icon-left-nav"></span>
+           首页
+       </button>
+       <button class="ui-btn ui-btn-blue ui-btn-link ui-pull-right">
+           编辑
+       </button>
+   </header>
+     <script src="dist/js/dom.js"></script>
+     <script src="dist/js/co.js"></script>
+</body>
+     <script>
+        domReady(function(require){
+             $('a.ui-pull-left').button(function(evt){
+                this.back();
+            })
+            $('a.ui-pull-right').button(function(evt){
+                alert('右边');
+            })
+        });
+    </script>
+</html>

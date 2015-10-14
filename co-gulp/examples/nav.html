@@ -1,0 +1,144 @@
+
+<!DOCTYPE html>
+<html>
+
+    <head>
+        <meta charset="utf-8">
+        <title>Hello ui</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-status-bar-style" content="black">
+        <link rel="stylesheet" href="dist/css/co.css">
+        <style>
+         html,
+            body {
+                background-color: #efeff4;
+            }
+            header.ui-bar {
+                display: none;
+            }
+            .ui-bar-nav~.ui-content {
+                padding: 0;
+            }
+a {
+  color: #007aff;
+  text-decoration: none;
+}
+
+.ui-segmented-control {
+  position: relative;
+  display: table;
+  width: 100%;
+  overflow: hidden;
+  font-size: 15px;
+  font-weight: 400;
+  table-layout: fixed;
+  background-color: transparent;
+  border: 1px solid #007aff;
+  border-radius: 3px;
+
+  -webkit-touch-callout: none;
+}
+
+
+.ui-segmented-control .ui-control-item {
+  display: table-cell;
+  width: 1%;
+  overflow: hidden;
+  line-height: 38px;
+  color: #007aff;
+  text-align: center;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  border-color: #007aff;
+  border-left: 1px solid #007aff;
+  -webkit-transition: background-color .1s linear;
+          transition: background-color .1s linear;
+}
+
+.ui-segmented-control.ui-segmented-control-inverted .ui-control-item {
+  color: inherit;
+  border: 0;
+}
+
+.ui-segmented-control.ui-segmented-control-inverted .ui-control-item {
+  color: inherit;
+  border: 0;
+}
+.ui-slider-indicator {
+  position: absolute;
+  bottom: 8px;
+  width: 100%;
+  text-align: center;
+  background: none;
+}
+.ui-segmented-control.ui-segmented-control-inverted {
+  width: 100%;
+  border: 0;
+  border-radius: 0;
+}
+.ui-col-xs-4 {
+  width: 33.33333333%;
+}
+.ui-slider-indicator.ui-segmented-control {
+  position: relative;
+  bottom: auto;
+}
+.ui-slider-progress-bar {
+  z-index: 1;
+  height: 2px;
+  -webkit-transform: translateZ(0);
+          transform: translateZ(0);
+
+  -webkit-backface-visibility: hidden;
+}
+.ui-segmented-control.ui-segmented-control-inverted ~ .ui-slider-progress-bar {
+  background-color: #007aff;
+}
+.ui-control-content {
+  position: relative;
+  display: none;
+}
+.ui-control-content.ui-active {
+  display: block;
+}
+        </style>
+    </head>
+
+    <body>
+
+        <style>
+            .ui-control-content {
+                background-color: white;
+                min-height: 215px;
+            }
+            .ui-control-content .ui-loading {
+                margin-top: 50px;
+            }
+        </style>
+            <div id="nav">
+                <divclass="ui-slider-indicator ui-segmented-control ui-segmented-control-inverted">
+                    <a class="ui-control-item">
+                        待办公文
+                    </a>
+                    <a class="ui-control-item">
+                        已办公文
+                    </a>
+                    <a class="ui-control-item">
+                        全部公文
+                    </a>
+                </div>
+                <div class="ui-slider-progress-bar ui-col-xs-4"></div>
+               
+            </div>
+     <script src="dist/js/dom.js"></script>
+    <script src="dist/js/co.js"></script>
+</body>
+     <script>
+        domReady(function(require){
+            require("navigator");
+            // $('#nav').tab();
+        })
+    </script>
+
+</html>

@@ -1,6 +1,6 @@
  /* ===========================
-                              Dom Library
-                          ===========================*/
+                                Dom Library
+                            ===========================*/
  var Dom = (function() {
      var emptyArray = [],
          concat = emptyArray.concat,
@@ -279,6 +279,31 @@
              return this;
          },
 
+         scrollTop: function(value) {
+             if (!this.length) return
+             var hasScrollTop = 'scrollTop' in this[0]
+             if (value === undefined) return hasScrollTop ? this[0].scrollTop : this[0].pageYOffset
+             return this.each(hasScrollTop ?
+                 function() {
+                     this.scrollTop = value
+                 } :
+                 function() {
+                     this.scrollTo(this.scrollX, value)
+                 })
+         },
+         scrollLeft: function(value) {
+             if (!this.length) return
+             var hasScrollLeft = 'scrollLeft' in this[0]
+             if (value === undefined) return hasScrollLeft ? this[0].scrollLeft : this[0].pageXOffset
+             return this.each(hasScrollLeft ?
+                 function() {
+                     this.scrollLeft = value
+                 } :
+                 function() {
+                     this.scrollTo(value, this.scrollY)
+                 })
+         },
+
          ready: function(callback) {
              if (readyRE.test(document.readyState) && document.body) callback($)
              else document.addEventListener('DOMContentLoaded', function() {
@@ -445,6 +470,9 @@
                  if (getComputedStyle(this, '').getPropertyValue("display") == "none")
                      this.style.display = defaultDisplay(this.nodeName)
              })
+         },
+         size: function() {
+             return this.length
          },
          styles: function() {
              var i, styles;
@@ -939,15 +967,6 @@
      $.trim = function(str) {
          return str == null ? "" : String.prototype.trim.call(str)
      };
-     $.trimLeft = function(str) {
-         return str == null ? "" : String.prototype.trimLeft.call(str)
-     };
-     $.trimRight = function(str) {
-         return str == null ? "" : String.prototype.trimRight.call(str)
-     };
-     $.trimAll = function(str) {
-         return str == null ? "" : str.replace(/\s*/g, '');
-     };
      $.contains = document.documentElement.contains ?
          function(parent, node) {
              return parent !== node && parent.contains(node)
@@ -1049,111 +1068,6 @@
      $.supportTouch = !!(('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
 
 
-
-     // Plugins
-     $.fn.scrollTo = function(left, top, duration, easing, callback) {
-         if (arguments.length === 4 && typeof easing === 'function') {
-             callback = easing;
-             easing = undefined;
-         }
-         return this.each(function() {
-             var el = this;
-             var currentTop, currentLeft, maxTop, maxLeft, newTop, newLeft, scrollTop, scrollLeft;
-             var animateTop = top > 0 || top === 0;
-             var animateLeft = left > 0 || left === 0;
-             if (typeof easing === 'undefined') {
-                 easing = 'swing';
-             }
-             if (animateTop) {
-                 currentTop = el.scrollTop;
-                 if (!duration) {
-                     el.scrollTop = top;
-                 }
-             }
-             if (animateLeft) {
-                 currentLeft = el.scrollLeft;
-                 if (!duration) {
-                     el.scrollLeft = left;
-                 }
-             }
-             if (!duration) return;
-             if (animateTop) {
-                 maxTop = el.scrollHeight - el.offsetHeight;
-                 newTop = Math.max(Math.min(top, maxTop), 0);
-             }
-             if (animateLeft) {
-                 maxLeft = el.scrollWidth - el.offsetWidth;
-                 newLeft = Math.max(Math.min(left, maxLeft), 0);
-             }
-             var startTime = null;
-             if (animateTop && newTop === currentTop) animateTop = false;
-             if (animateLeft && newLeft === currentLeft) animateLeft = false;
-
-             function render(time) {
-                 if (time === undefined) {
-                     time = new Date().getTime();
-                 }
-                 if (startTime === null) {
-                     startTime = time;
-                 }
-                 var doneLeft, doneTop, done;
-                 var progress = Math.max(Math.min((time - startTime) / duration, 1), 0);
-                 var easeProgress = easing === 'linear' ? progress : (0.5 - Math.cos(progress * Math.PI) / 2);
-                 if (animateTop) scrollTop = currentTop + (easeProgress * (newTop - currentTop));
-                 if (animateLeft) scrollLeft = currentLeft + (easeProgress * (newLeft - currentLeft));
-                 if (animateTop && newTop > currentTop && scrollTop >= newTop) {
-                     el.scrollTop = newTop;
-                     done = true;
-                 }
-                 if (animateTop && newTop < currentTop && scrollTop <= newTop) {
-                     el.scrollTop = newTop;
-                     done = true;
-                 }
-
-                 if (animateLeft && newLeft > currentLeft && scrollLeft >= newLeft) {
-                     el.scrollLeft = newLeft;
-                     done = true;
-                 }
-                 if (animateLeft && newLeft < currentLeft && scrollLeft <= newLeft) {
-                     el.scrollLeft = newLeft;
-                     done = true;
-                 }
-
-                 if (done) {
-                     if (callback) callback();
-                     return;
-                 }
-                 if (animateTop) el.scrollTop = scrollTop;
-                 if (animateLeft) el.scrollLeft = scrollLeft;
-                 $.requestAnimationFrame(render);
-             }
-             $.requestAnimationFrame(render);
-         });
-     };
-     $.fn.scrollTop = function(top, duration, easing, callback) {
-         if (arguments.length === 3 && typeof easing === 'function') {
-             callback = easing;
-             easing = undefined;
-         }
-         var dom = this;
-         if (typeof top === 'undefined') {
-             if (dom.length > 0) return dom[0].scrollTop;
-             else return null;
-         }
-         return dom.scrollTo(undefined, top, duration, easing, callback);
-     };
-     $.fn.scrollLeft = function(left, duration, easing, callback) {
-         if (arguments.length === 3 && typeof easing === 'function') {
-             callback = easing;
-             easing = undefined;
-         }
-         var dom = this;
-         if (typeof left === 'undefined') {
-             if (dom.length > 0) return dom[0].scrollLeft;
-             else return null;
-         }
-         return dom.scrollTo(left, undefined, duration, easing, callback);
-     };
 
      return $;
  })();

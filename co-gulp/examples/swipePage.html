@@ -1,0 +1,123 @@
+<!doctype html>
+<html>
+<head>
+    <title>Hello UI SwipePage</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="dist/css/co.css">
+    <style type="text/css">
+    </style>
+</head>
+<body>
+    <header  class="ui-bar ui-bar-nav">
+            <h1 class="ui-title">SwipePage</h1>
+            <a class="ui-action-back ui-icon ui-icon-left-nav ui-pull-left"></a>
+        </header>
+<div id = "tabs" class = 'ui-content'>
+        <nav class="ui-bar ui-bar-tab">
+            <a class="ui-tab-item" href="#slider">
+                <span class="ui-icon ui-icon-home"></span>
+                <span class="ui-tab-label">新闻</span>
+            </a>
+            <a class="ui-tab-item" href="#wrapper">
+                <span class="ui-icon ui-icon-email"></span>
+                <span class="ui-tab-label">视频</span>
+            </a>
+            <a class="ui-tab-item" href="#contact">
+                <span class="ui-icon ui-icon-contact"></span>
+                <span class="ui-tab-label">图集</span>
+            </a>
+            <a class="ui-tab-item" href="#contor">
+                <span class="ui-icon ui-icon-gear"></span>
+                <span class="ui-tab-label">我的</span>
+            </a>
+        </nav>
+            <div id="slider" class="ui-control-content">
+                <div id="nav" class="ui-navigator">
+                    <ul class="ui-navigator-list">
+                        <li class="ui-state-active"><a href="#test1">首页</a></li>
+                        <li class=""><a href="#test1">要闻</a></li>
+                        <li class=""><a href="javascript:;">国内</a></li>
+                        <li class=""><a href="#test2">国际</a></li>
+                        <li class=""><a href="#test3">军事</a></li>
+                        <li class=""><a href="#test4">社会</a></li>
+                        <li class=""><a href="#test5">娱乐</a></li>
+                        <li class=""><a href="#test6">女人</a></li>
+                        <li class=""><a href="#">体育</a></li>
+                        <li class=""><a href="#test7">科技</a></li>
+                        <li class=""><a href="#test8">互联网</a></li>
+                        <li class=""><a href="#test9">教育</a></li>
+                        <li class=""><a href="#">财经</a></li>
+                        <li class=""><a href="#test11">房产</a></li>
+                        <li class=""><a href="#test12">汽车</a></li>
+                    </ul>
+                </div>
+                <div id="swipepage" class="ui-slider">
+                    <div class="ui-slider-group">
+                        <div class="ui-swipe-item">
+                            <div class="swipe-content">
+                                   1
+                            </div>
+                        </div>
+                        <div class="ui-swipe-item">
+                            <div class="swipe-content">
+                                2
+                            </div>
+                        </div>
+                        <div class="ui-swipe-item">
+                            <div class="swipe-content">
+                                3
+                            </div>
+                        </div>
+                        <div class="ui-swipe-item">
+                            <div class="swipe-content">
+                                4
+                            </div>
+                        </div>
+                        <div class="ui-swipe-item">
+                            <div class="swipe-content">
+                    5
+                            </div>
+                        </div>
+                    </div>
+                </div> 
+            </div>
+            <div id="wrapper" class ="ui-control-content">
+              2
+            </div>
+            <div id="contact" class ="ui-control-content">
+              3
+            </div>
+            <div id="contor" class ="ui-control-content">
+                4
+            </div>
+        </div>
+        <script src="dist/js/dom.js"></script>
+        <script src="dist/js/co.js"></script>
+</body>
+<script>
+
+    domReady(function(require){
+      require("tab");
+        $('#tabs').tab();
+        $('#tabs').on('activate',function(evt,to){
+//            alert(to.id);
+        });
+        require("navigator");
+        var nav = $('#nav').navigator();
+        require("swipePage");
+        var swipe = $('#swipepage').swipepage({
+            itemHeight:500
+        });
+        $('#nav').on('select',function(e,index){
+            swipe.slideTo(index,1);
+        });
+        $('#swipepage').on('slideend',function(e,index){
+            nav.switchTo(index);
+        });
+        $('#swipepage').on('moveend',function(e,index){
+            console.log(index)
+        });
+    });
+</script>
+</html>

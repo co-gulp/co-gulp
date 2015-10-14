@@ -1,5 +1,5 @@
 /**
- * iscroll组件
+ * @file iscroll组件
  */
 (function() {
       // 给$.fn上挂iScroll方法

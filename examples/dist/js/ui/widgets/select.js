@@ -61,7 +61,7 @@
                 if (!id) {
                     opts = { ref : this,callback:callback};
                     id = ++$ui.uuid;
-                    $ui.data[id] = new $select(opts);
+                    selectObj = $ui.data[id] = new $select(opts);
                     this.setAttribute('data-select', id);
                 } else {
                     selectObj = $ui.data[id];

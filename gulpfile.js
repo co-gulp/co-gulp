@@ -42,6 +42,18 @@ var gulp = require('gulp'), //基础库
         co = {
             filename: 'co',
             jsFiles: [
+                // 'src/co-modules/js/base/dom/dom.js',
+                // 'src/co-modules/js/base/zepto/plugins/event.js', 
+                // 'src/co-modules/js/base/zepto/plugins/ajax.js',
+                // 'src/co-modules/js/base/zepto/plugins/fx.js',
+                // 'src/co-modules/js/base/zepto/plugins/fx_methods.js',
+                // 'src/co-modules/js/base/zepto/plugins/data.js',
+                // 'src/co-modules/js/base/zepto/plugins/highlight.js',
+                // 'src/co-modules/js/base/zepto/plugins/detect.js', 
+                // 'src/co-modules/js/base/zepto/plugins/touch.js',
+                // 'src/co-modules/js/base/zepto/plugins/matchMedia.js',
+                // 'src/co-modules/js/$extend.js',
+                // 'src/co-modules/js/base/zepto/plugins/ex-ortchange.js',
                 'src/co-modules/js/base/sea.js',
                 'src/co-modules/js/base/config.js',
                 'src/co-modules/js/wrap-start.js',
@@ -54,7 +66,6 @@ var gulp = require('gulp'), //基础库
         dom = {
             filename: 'dom',
             jsFiles: [
-                // 'src/co-modules/js/base/zepto/zepto.js',
                 'src/co-modules/js/base/dom/dom.js',
                 'src/co-modules/js/base/zepto/plugins/event.js', 
                 'src/co-modules/js/base/zepto/plugins/ajax.js',

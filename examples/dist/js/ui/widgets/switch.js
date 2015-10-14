@@ -1,5 +1,5 @@
 /**
- * switch组件
+ * @file switch组件
  */
 (function() {
         var CLASS_SWITCH = 'ui-switch',

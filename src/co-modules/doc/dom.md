@@ -76,7 +76,22 @@ PS. 参数中带有 [  ] 的意指可选的意思
 	-	[$.type](#$.type)
 	-	[$.parseUrlQuery](#$.parseUrlQuery)
 	-	[$.serializeObject](#$.serializeObject)
-
+	-   [$.cellPhone]($.cellPhone)
+	-   [$.email]($.email)
+	-   [$.isDigit]($.isDigit)
+	-   [$.isRegisterUserName]($.isRegisterUserName)
+	-   [$.registerPasswd]($.registerPasswd)
+	-   [$.charOne]($.charOne)
+	-   [$.upperCharOne]($.upperCharOne)
+	-   [$.idcard]($.idcard)
+	-   [$.getBytesLength]($.getBytesLength)
+	-   [$.chk]($.chk)
+	-   [$.formatStringToDate]($.formatStringToDate)
+	-   [$.formatDateToString]($.formatDateToString)
+	-   [$.getDays]($.getDays)
+	-   [$.milliseconds]($.milliseconds)
+	-   [$.msToDateStr]($.msToDateStr)
+	-   [$.daysBetween]($.daysBetween)
 
 
 *	[Event](#Event)
@@ -663,7 +678,7 @@ ps. 要读取DOM自身带有的属性如 checked和selected, 使用 prop。
 
 将url中传递的参数转换为JSON对象
 
-	var query = $$.parseUrlQuery('http://google.com/?id=5&foo=bar');
+	var query = $.parseUrlQuery('http://google.com/?id=5&foo=bar');
 	console.log(query); //-> {id: 5, foo: 'bar'}
 
 
@@ -673,7 +688,134 @@ ps. 要读取DOM自身带有的属性如 checked和selected, 使用 prop。
 将JSON对象转换为url中传递的参数
 
 	var params = {foo: 'bar', id: 5};
-	console.log($$.serializeObject(params)); //-> 'foo=bar&id=5'
+	console.log($.serializeObject(params)); //-> 'foo=bar&id=5'
+
+## <div id="$.cellPhone">$.cellPhone</div>
+*	$.cellPhone(str)   ⇒ boolean
+
+校验传入值是否符合手机号的规则
+
+	var str = 13788289938;
+	console.log($.cellPhone(str)); //-> true
+
+## <div id="$.email">$.email</div>
+*	$.email(str)   ⇒ boolean
+
+校验传入值是否符合邮箱的规则
+
+	var str = 123@163.com;
+	console.log($.email(str)); //-> true
+
+## <div id="$.isDigit">$.isDigit</div>
+*	$.isDigit(str)   ⇒ boolean
+
+校验传入值是否全部为数字
+
+	var str = 1232333
+	console.log($.isDigit(str)); //-> true
+
+## <div id="$.isRegisterUserName">$.isRegisterUserName</div>
+*	$.isRegisterUserName(str)   ⇒ boolean
+
+校验登录名：只能输入5-20个以字母开头、可带数字、“_”、“.”的字串 
+
+	var str = ssas312323_33
+	console.log($.isRegisterUserName(str)); //-> true
+
+## <div id="$.registerPasswd">$.registerPasswd</div>
+*	$.registerPasswd(str)   ⇒ boolean
+
+校验密码：只能输入6-20个字母、数字、下划线   
+
+	var str = ssas312323_33
+	console.log($.registerPasswd(str)); //-> true
+
+## <div id="$.charOne">$.charOne</div>
+*	$.charOne(str)   ⇒ boolean
+
+校验：至少一个小写字母
+
+	var str = ssas312323_33
+	console.log($.charOne(str)); //-> true
+
+## <div id="$.upperCharOne">$.upperCharOne</div>
+*	$.upperCharOne(str)   ⇒ boolean
+
+校验：至少一个大写字母
+
+	var str = ssAs312323_33
+	console.log($.upperCharOne(str)); //-> true
+
+
+## <div id="$.idcard">$.idcard</div>
+*	$.idcard(str)   ⇒ boolean
+
+身份证校验
+
+	var str = 110101199111111474
+	console.log($.idcard(str)); //-> true
+
+## <div id="$.getBytesLength">$.getBytesLength</div>
+*	$.getBytesLength(str)   ⇒ number
+
+获取字符串的字节长度
+
+	  var str = '110101199111111474';
+    console.log($.getBytesLength(str)) //-> 18
+
+## <div id="$.chk">$.chk</div>
+*	$.chk(obj)   ⇒ boolean
+
+判断传入对象是否为空（null，undefined，'undefined'，'null',''）
+
+	  var str = 'null';
+    console.log($.chk(str)) //-> flase
+
+## <div id="$.formatStringToDate">$.formatStringToDate</div>
+*	$.formatStringToDate(str)   ⇒ Date
+
+将字符串转化为Date对象
+
+	  var str = '2014-12-12';
+    $.formatStringToDate(str) //-> Date
+
+## <div id="$.formatDateToString">$.formatDateToString</div>
+*	$.formatDateToString(date,[format])   ⇒ String
+
+将Date对象格式化成制定格式（默认格式：yyyy-MM-dd HH:mm:ss）的日期字符串
+
+	  var date = new Date();
+    $.formatDateToString(date，'yyyy-MM-dd') //-> '2016-12-12'
+
+## <div id="$.getDays">$.getDays</div>
+*	$.getDays([format])   ⇒ String
+
+按指定格式（默认格式：yyyy-MM-dd HH:mm:ss）获取当前日期
+
+    $.getDays('yyyy-MM-dd') //-> '2016-12-12'
+
+## <div id="$.milliseconds">$.milliseconds</div>
+*	$.milliseconds(str)   ⇒ number
+
+获取指定日期字符串的距 1970 年 1 月 1 日之间的毫秒数
+
+	var str = '2014-12-12';
+    $.milliseconds(str) //-> number
+
+## <div id="$.msToDateStr">$.msToDateStr</div>
+*	$.msToDateStr(num，[format])   ⇒ String
+
+根据毫秒数获取指定格式（默认格式：yyyy-MM-dd HH:mm:ss）日期字符串
+
+	var ms = 111111111111;
+    $.msToDateStr(ms) //-> '2016-12-12'
+
+## <div id="$.daysBetween">$.daysBetween</div>
+*	$.daysBetween(dateStr，dateStr)   ⇒ Number
+
+获取两个日期之间的天数
+
+    $.daysBetween('2016-12-12','2016-02-12') //-> '2016-12-12'
 
 #<div id="Event">Event</div>
 ***

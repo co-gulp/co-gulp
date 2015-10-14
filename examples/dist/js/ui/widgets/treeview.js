@@ -7,12 +7,12 @@
         CLASS_COLLAPSE = 'ui-collapse',
         CLASS_TABLE_VIEW = 'ui-table-view',
         CLASS_NAVIGATE_RIGHT = 'ui-navigate-right',
-
+        CLASS_SCROLL = 'ui-scroll',
+        CLASS_SCROLL_WRAPPER = 'ui-scroll-wrapper',
         tarEl;
 
-    var CLASS_SCROLL = 'ui-scroll';
-    var CLASS_SCROLL_WRAPPER = 'ui-scroll-wrapper';
-
+    var SELECTOR_COLLAPSE = '.' + CLASS_COLLAPSE,
+        SELECTOR_ACTIVE = '.' + CLASS_ACTIVE;
     var render = function() {
         var _tv = this,
             opts = _tv.opts;
@@ -22,6 +22,7 @@
         }
         _tv._lis = [];
         _tv.renderData(opts.data);
+        opts.autoExpanded && _tv.ref.find(SELECTOR_COLLAPSE).addClass(CLASS_ACTIVE);
     };
 
     //绑定事件
@@ -49,8 +50,8 @@
         }).on(_tv.touchEve(), function(evt) {
             var ele = $(evt.target).closest('li.' + CLASS_TABLE_VIEW_CELL);
             if (!tarEl) {
-                if ($(evt.target).hasClass('ui-navigate-right')&&ele.hasClass(CLASS_COLLAPSE)) {
-                    if (!ele.hasClass(CLASS_ACTIVE)) { //展开时,需要收缩其他同类
+                if ($(evt.target).hasClass(CLASS_NAVIGATE_RIGHT)&&ele.hasClass(CLASS_COLLAPSE)) {
+                    if (opts.toggleClose && !ele.hasClass(CLASS_ACTIVE)) { //展开时,需要收缩其他同类
                         var collapse = ele[0].parentNode.querySelector('.' + CLASS_COLLAPSE + '.' + CLASS_ACTIVE);
                         if (collapse) {
                             collapse.classList.remove(CLASS_ACTIVE);
@@ -60,9 +61,7 @@
                     if (opts.iscroll) {
                         $(window).trigger('resize');
                     }
-                    if ($.isFunction(_tv.toggle)) {
-                        _tv.toggle.apply(_tv, [ele[0], evt, ele.hasClass(CLASS_ACTIVE)]);
-                    }
+                    _tv.ref.trigger('toggle',[ele[0], ele.hasClass(CLASS_ACTIVE)]);
                 }
             } else {
                 tarEl.removeClass(CLASS_ACTIVE);
@@ -107,6 +106,8 @@
              * 点击回调函数
              * @type {function}
              */
+            autoExpanded:false,
+            toggleClose:true,
             toggle: function() {}
 
         });

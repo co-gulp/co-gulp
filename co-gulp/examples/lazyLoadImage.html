@@ -1,0 +1,49 @@
+<!doctype html>
+<html>
+<head>
+    <title>Hello UI Fullpage</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <link rel="stylesheet" href="dist/css/co.css">
+    <style type="text/css">
+
+</style>
+</head>
+<body >
+    <div class="ui-lazy-loader">
+            <div class="ui-lazy-loader-content">
+                        <p> <img data-src="http://www.freeimageslive.co.uk/files/images006/wedding_background.preview.jpg" class="ui-lazy" /></p>
+                        
+                        <p> <img data-src="http://www.freeimageslive.co.uk/files/images009/raspeberry_meringue.thumbnail.jpg"  class="ui-lazy" /></p>
+                       
+                        <p> <img data-src="http://img2.imgtn.bdimg.com/it/u=2240096424,1462214810&fm=21&gp=0.jpg"  class="ui-lazy" /></p>
+                       
+                        <p> <img data-src="http://img2.imgtn.bdimg.com/it/u=1299131975,3391125139&fm=21&gp=0.jpg"  class="ui-lazy" /></p>
+                       
+                        <p> <img data-src="http://img0.imgtn.bdimg.com/it/u=2156731259,3475325729&fm=21&gp=0.jpg"  class="ui-lazy" /></p>
+                       
+                        <p> <img data-src="http://img1.imgtn.bdimg.com/it/u=660283700,3284528591&fm=21&gp=0.jpg"  class="ui-lazy" /></p>
+                        
+                        <p> <img data-src="http://img1.imgtn.bdimg.com/it/u=1258583651,2566394318&fm=21&gp=0.jpg"  class="ui-lazy" /></p>
+                        
+                        <p> <img data-src="http://img2.imgtn.bdimg.com/it/u=3279596799,2363118243&fm=21&gp=0.jpg"  class="ui-lazy" /></p>
+                        
+                        <p> <img data-src="http://img2.imgtn.bdimg.com/it/u=3184631534,1343677120&fm=21&gp=0.jpg"  class="ui-lazy" /></p>
+                       
+                        <p> <img data-src="http://img2.imgtn.bdimg.com/it/u=326007143,1405020537&fm=21&gp=0.jpg"  class="ui-lazy" /></p>
+                       
+                        <div data-background="img/1.jpg" class="ui-lazy"></div>
+                       
+            </div>
+    </div>
+        <script src="dist/js/dom.js"></script>
+        <script src="dist/js/co.js"></script>
+</body>
+<script>
+
+    domReady(function(require){
+        require("lazyLoadImage");
+        $('.ui-lazy-loader').lazyLoadImage();
+    });
+</script>
+</html>

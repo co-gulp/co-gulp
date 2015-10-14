@@ -1,5 +1,5 @@
 /**
- * Input(TODO resize)
+ * @file Input组件
  */
 (function(window, document) {
     var CLASS_ICON = 'ui-icon',

@@ -1,5 +1,5 @@
 /**
- * checkbox、radio组件
+ * @file checkbox、radio组件
  */
 (function() {   
 
@@ -45,7 +45,7 @@
                 if (!id) {
                     opts = { ref : this,type : 'checkbox',callback:callback};
                     id = ++$ui.uuid;
-                    $ui.data[id] = new $checkbox(opts);
+                    checkObj = $ui.data[id] = new $checkbox(opts);
                     this.setAttribute('data-checkbox', id);
                 } else {
                     checkObj = $ui.data[id];
@@ -62,7 +62,7 @@
                 if (!id) {
                     opts = { ref : this,type : 'radio',callback:callback};
                     id = ++$ui.uuid;
-                    $ui.data[id] = new $checkbox(opts);
+                    radioObj = $ui.data[id] = new $checkbox(opts);
                     this.setAttribute('data-radio', id);
                 } else {
                     radioObj = $ui.data[id];

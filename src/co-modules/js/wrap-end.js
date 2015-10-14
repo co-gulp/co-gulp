@@ -6,8 +6,6 @@ window.onerror = function(sMsg,sUrl,sLine,columnNumber,error){
   str+="URL: " + sUrl + "---------";
   str+="columnNumber: " + columnNumber + "---------";
   str+="error: " + error + "---------";
-  if (($.os.android || $.os.ios) && global.rd) {
-  	alert(str)
-  }
+  alert(str)
   return false;
 }

@@ -57,7 +57,12 @@
                 width: opts.width,
                 height: opts.height
             });
-            _dog._content[0].style.maxHeight = opts.contentMaxHeight+'px';
+            if(opts.contentMaxHeight){
+                _dog._content[0].style.maxHeight = opts.contentMaxHeight+'px';
+                _dog._content[0].style.overflowY = 'scroll'
+            }else{
+                _dog._content[0].style.overflowY = 'hidden'
+            }
         };
     /**
          * 设置弹出框标题
@@ -84,29 +89,26 @@
     var bind = function(){
             var _dog = this, match, wrap, opts = _dog.opts;
                 //bind events绑定事件
-            _dog._wrap.on(_dog.touchEve(), function(evt){
+            _dog._wrap.on(_dog.touchEnd(), function(evt){
                     var ele = evt.target;
                     wrap = _dog._wrap.get(0);
                     if( (match = $(ele).closest(SELECTOR_DIALOG_BTNS, wrap)) && match.length ) {
                         fn = opts.buttons[match.attr('data-key')];
                         fn && fn.apply(_dog, [ele,evt]);
                     }
+                    _dog.preventDefault(evt);
             });
-            _dog._mask && _dog._mask.on(_dog.touchEve(), function(evt){
+            _dog._mask && _dog._mask.on(_dog.touchEnd(), function(evt){
                     var ele = evt.currentTarget;
                     if ($.isFunction(opts.maskClick)) {
                         opts.maskClick.apply(_dog, [ele,evt]);
                     }else if(opts.touchMashClose){
                         _dog.close();
                     }
+                    _dog.preventDefault(evt);
             });
         };
 
-
-     var tmove = function(e){
-                var _dog = this, opts = _dog.opts;
-                opts.scrollMove && e.preventDefault();
-        };  
 
 
 
@@ -125,6 +127,7 @@
             size = _dog._wrap.offset();
             $win = $(window);
             ret.wrap = {
+                position:'fixed',
                 left: '50%',
                 marginLeft: -round(size.width/2) +'px',
                 top: isBody?round($win.height() / 2) + window.pageYOffset:'50%',
@@ -140,7 +143,6 @@
          */
     var destroy = function(){
             var _dog = this, opts = _dog.opts;
-            $(document).off('touchmove',tmove);
             _dog._wrap.off().remove();
             _dog._mask && _dog._mask.off().remove();
         };   
@@ -176,7 +178,7 @@
                  * @namespace options
                  */
                 height: 'auto',
-                contentMaxHeight: 'auto',
+                contentMaxHeight: null,
                 touchMashClose: 'true',
                 /**
                  * @property {String} [title=null] 弹出框标题
@@ -188,7 +190,7 @@
                  * @namespace options
                  */
                 content: null,
-                /**
+                 /**
                  * @property {Boolean} [scrollMove=true] 是否禁用掉scroll，在弹出的时候
                  * @namespace options
                  */
@@ -228,8 +230,6 @@
             _dog._mask && _dog._mask.css('display', 'block');
 
             _dog.refresh();
-
-            $(document).on('touchmove', $.proxy(tmove, _dog));
         };
 
         /**
@@ -245,6 +245,9 @@
                     ret = calculate.call(_dog);
                     ret.mask && _dog._mask.css(ret.mask);
                     _dog._wrap.css(ret.wrap);
+                    setTimeout(function(){
+                        opts.scrollMove && $(document.body).css('overflowY','hidden');
+                    }, 10);
                 }
 
                 //如果有键盘在，需要多加延时
@@ -273,6 +276,7 @@
             _dog._isOpen = false;
             _dog._wrap.css('display', 'none');
             _dog._mask && _dog._mask.css('display', 'none');
+            opts.scrollMove && $(document.body).css('overflowY','');
             destroy.call(_dog);
         };
         
