@@ -2,34 +2,44 @@
  * @file accordion 组件
  */
 (function() {
-    var CLASS_ACCORDION_ITEM = 'accordion-item',
-        CLASS_ACCORDION_ITEM_EXPANDED = 'accordion-item-expanded',
-        CLASS_ACCORDION_ITEM_LINK = 'accordion-item-link',
-        CLASS_ACCORDION_LIST = 'accordion-list',
-        CLASS_ACCORDION_ITEM_CONTENT = 'accordion-item-content';
+    var CLASS_ACCORDION_ITEM = 'ui-accordion-item',
+        CLASS_ACCORDION_ITEM_EXPANDED = 'ui-accordion-item-expanded',
+        CLASS_ACCORDION_ITEM_LINK = 'ui-accordion-item-link',
+        CLASS_ACCORDION = 'ui-accordion',
+        CLASS_ACCORDION_ITEM_CONTENT = 'ui-accordion-item-content',
+        CLASS_ACCORDION_ITEM_INNER = 'ui-accordion-item-inner',
+        CLASS_ACCORDION_ITEM_LINK_EXPANDED = 'ui-accordion-item-link-expanded';
 
     var SELECTOR_ACCORDION_ITEM = '.' + CLASS_ACCORDION_ITEM,
         SELECTOR_ACCORDION_ITEM_EXPANDED = '.' + CLASS_ACCORDION_ITEM_EXPANDED,
         SELECTOR_ACCORDION_ITEM_LINK = '.' + CLASS_ACCORDION_ITEM_LINK,
-        SELECTOR_ACCORDION_LIST = '.' + CLASS_ACCORDION_LIST,
+        SELECTOR_ACCORDION_ITEM_INNER = '.' + CLASS_ACCORDION_ITEM_INNER,
+        SELECTOR_ACCORDION = '.' + CLASS_ACCORDION,
         SELECTOR_ACCORDION_ITEM_CONTENT = '.' + CLASS_ACCORDION_ITEM_CONTENT;
 
     var render = function() {
         var _acd = this,
             opts = _acd.opts;
-        opts.autoExpanded && _acd.ref.find(SELECTOR_ACCORDION_ITEM).addClass(CLASS_ACCORDION_ITEM_EXPANDED);
+        var toggleClose = opts.toggleClose;
+        opts.toggleClose = false;
+        _acd.ref.find('li.' + CLASS_ACCORDION_ITEM_EXPANDED).each(function(index, item) {
+            _acd.accordionOpen(item);
+        })
+        opts.toggleClose = toggleClose;
     };
 
     //绑定事件
     var bind = function() {
         var _acd = this,
             opts = _acd.opts;
-        _acd.ref.find(SELECTOR_ACCORDION_ITEM_LINK).on(_acd.touchEve(), function(evt) {
-            var clicked = $(evt.currentTarget);
-            var accordionItem = clicked.parent(SELECTOR_ACCORDION_ITEM);
-            if (accordionItem.length === 0) accordionItem = clicked.parents(SELECTOR_ACCORDION_ITEM);
-            if (accordionItem.length === 0) accordionItem = clicked.parents('li');
-            _acd.accordionToggle(accordionItem);
+        _acd.ref.on(_acd.touchEve(), function(evt) {
+            if ($(evt.target).is(SELECTOR_ACCORDION_ITEM_INNER)) {
+                var clicked = $(evt.target).closest(SELECTOR_ACCORDION_ITEM_LINK);
+                var accordionItem = clicked.parent(SELECTOR_ACCORDION_ITEM);
+                if (accordionItem.length === 0) accordionItem = clicked.parents(SELECTOR_ACCORDION_ITEM);
+                if (accordionItem.length === 0) accordionItem = clicked.parents('li');
+                _acd.accordionToggle(accordionItem);
+            }
         })
     };
 
@@ -37,7 +47,6 @@
         var $ui = require("ui");
         //accordion
         var $accordion = $ui.define('Accordion', {
-            autoExpanded: false,
             toggleClose: true
         });
 
@@ -59,8 +68,9 @@
 
         $accordion.prototype.accordionOpen = function(item) {
             var _acd = this,
+                opts = _acd.opts,
                 item = $(item);
-            var list = item.parents(SELECTOR_ACCORDION_LIST).eq(0);
+            var list = item.parents(SELECTOR_ACCORDION).eq(0);
             var content = item.children(SELECTOR_ACCORDION_ITEM_CONTENT);
             if (content.length === 0) content = item.find(SELECTOR_ACCORDION_ITEM_CONTENT);
             var expandedItem = list.length > 0 && item.parent().children(SELECTOR_ACCORDION_ITEM_EXPANDED);
@@ -69,19 +79,14 @@
                 _acd.ref.trigger('toggle', [item, item.hasClass(CLASS_ACCORDION_ITEM_EXPANDED)]);
             }
             content.css('height', content[0].scrollHeight + 'px').transitionEnd(function() {
-                if (item.hasClass(CLASS_ACCORDION_ITEM_EXPANDED)) {
-                    content.transition(0);
-                    content.css('height', 'auto');
-                    var clientLeft = content[0].clientLeft;
-                    content.transition('');
-                    item.trigger('opened');
-                } else {
-                    content.css('height', '');
-                    item.trigger('closed');
-                }
+                content.transition(0);
+                content.css('height', 'auto');
+                content.transition('');
+                item.trigger('opened');
             });
             item.trigger('open');
             item.addClass(CLASS_ACCORDION_ITEM_EXPANDED);
+            $(item.children()[0]).addClass(CLASS_ACCORDION_ITEM_LINK_EXPANDED);
         };
 
         $accordion.prototype.accordionClose = function(item) {
@@ -89,26 +94,20 @@
                 item = $(item);
             var content = item.children(SELECTOR_ACCORDION_ITEM_CONTENT);
             if (content.length === 0) content = item.find(SELECTOR_ACCORDION_ITEM_CONTENT);
-            item.removeClass(CLASS_ACCORDION_ITEM_EXPANDED);
             content.transition(0);
             content.css('height', content[0].scrollHeight + 'px');
-            // Relayout
-            var clientLeft = content[0].clientLeft;
+            content[0].clientLeft;
             // Close
             content.transition('');
             content.css('height', '').transitionEnd(function() {
-                if (item.hasClass(CLASS_ACCORDION_ITEM_EXPANDED)) {
-                    content.transition(0);
-                    content.css('height', 'auto');
-                    var clientLeft = content[0].clientLeft;
-                    content.transition('');
-                    item.trigger('opened');
-                } else {
-                    content.css('height', '');
-                    item.trigger('closed');
-                }
+                content.transition(0);
+                content.css('height', '');
+                content.transition('');
+                item.trigger('closed');
             });
             item.trigger('close');
+            item.removeClass(CLASS_ACCORDION_ITEM_EXPANDED);
+            $(item.children()[0]).removeClass(CLASS_ACCORDION_ITEM_LINK_EXPANDED);
         };
 
 

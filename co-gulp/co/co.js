@@ -3075,10 +3075,6 @@
         return $.formatDateToString(new Date(), format);
     };
 
-    $.getMilliseconds = function(str) {
-        return $.formatStringToDate(str).getTime();
-    };
-
     $.milliseconds = function(str) {
         return $.formatStringToDate(str).getTime();
     };
@@ -4094,6 +4090,7 @@ seajs.config({
           'iscroll': 'libs/iscroll',
           'swipeout': 'libs/swipeout',
           'accordion' : 'ui/widgets/accordion',
+          'accordionList' : 'ui/widgets/accordionList',
           'button' : 'ui/widgets/button',
           'checkbox' : 'ui/widgets/checkbox',
           'dialog' : 'ui/widgets/dialog',
@@ -4106,10 +4103,10 @@ seajs.config({
           'sTouch':'ui/widgets/slider/touch',
           'sGestures':'ui/widgets/slider/gestures',
           'sMultiview':'ui/widgets/slider/multiview',
-          'listview' : 'ui/widgets/listview',
+          'swipelist' : 'ui/widgets/swipelist',
           'tab' : 'ui/widgets/tabs/tabs',
           'navigator' : 'ui/widgets/navigator',
-          'swipePage' : 'ui/widgets/swipePage/swipePage',
+          'swipePage' : 'ui/widgets/swipePage',
           'treeview' : 'ui/widgets/treeview',
           'refresh' : 'ui/widgets/refresh',
           'fullpage' : 'ui/widgets/fullpage',

@@ -5,54 +5,70 @@
     <meta charset="utf-8">
     <title>Hello UI Tabs</title>
    <link rel="stylesheet" href="dist/css/co.css">
+   <style type="text/css">
+
+
+</style>
 </head>
 <body>  
-    <header  class="ui-bar ui-bar-nav">
-            <h1 class="ui-title">Tabs</h1>
-            <a class="ui-action-back ui-icon ui-icon-left-nav ui-pull-left"></a>
-        </header>
-    <div id = "tabs1" class = 'ui-content'>
-        <nav class="ui-bar ui-bar-tab">
-            <a class="ui-tab-item" href="#slider">
+        <div class="ui-tab-bar">
+            <a class="ui-tab-item">
                 <span class="ui-icon ui-icon-home"></span>
                 <span class="ui-tab-label">首页</span>
             </a>
-            <a class="ui-tab-item" href="#wrapper">
-                <span class="ui-icon ui-icon-email"><span class="ui-badge">9</span></span>
+            <a class="ui-tab-item">
+                <span class="ui-icon ui-icon-email"></span>
                 <span class="ui-tab-label">消息</span>
             </a>
-            <a class="ui-tab-item" href="#contact">
+            <a class="ui-tab-item">
                 <span class="ui-icon ui-icon-contact"></span>
                 <span class="ui-tab-label">通讯录</span>
             </a>
-            <a class="ui-tab-item" href="#contor">
+            <a class="ui-tab-item">
                 <span class="ui-icon ui-icon-gear"></span>
                 <span class="ui-tab-label">设置</span>
             </a>
-        </nav>
-             <div id="slider" class="ui-control-content">
-                   1
-            </div>
-            <div id="wrapper" class ="ui-control-content">
-                2
-            </div>
-            <div id="contact" class ="ui-control-content">
-                3
-            </div>
-            <div id="contor" class ="ui-control-content">
-              4
+        </div>
+        <div class="ui-slider">
+            <div class="ui-slider-group">
+                <div class="ui-swipe-item">
+                    <div class="swipe-content">
+                        <img class="ui-slider-img" src="img/1.png">
+                    </div>
+                </div>
+                <div class="ui-swipe-item">
+                    <div class="swipe-content">
+                        <img class="ui-slider-img" src="img/2.png">
+                    </div>
+                </div>
+                <div class="ui-swipe-item">
+                    <div class="swipe-content">
+                        <img class="ui-slider-img" src="img/3.png">
+                    </div>
+                </div>
+                <div class="ui-swipe-item">
+                    <div class="swipe-content">
+                        <img class="ui-slider-img" src="img/4.png">
+                    </div>
+                </div>
             </div>
         </div>
-
         <script src="dist/js/dom.js"></script>
         <script src="dist/js/co.js"></script>
 </body>
 <script>
     domReady(function(require){
+            require("swipePage");
+            var swipe = $('.ui-slider').swipepage();
             require("tab");
-            $('#tabs1').tab();
-            $('#tabs1').on('activate',function(evt,to){
-                
+            var tab = $('.ui-tab-bar').tab()
+            tab.ref.on('activate',function(e,to,from){
+                swipe.slideTo(to);
+                console.log(to);
+            });
+            swipe.ref.on('slide',function(e,to,from){
+                tab.switchTo(to);
+                console.log(to);
             });
     });
 </script>   

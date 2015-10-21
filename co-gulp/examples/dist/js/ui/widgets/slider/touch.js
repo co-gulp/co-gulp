@@ -166,7 +166,9 @@
                                 _sl.width, opts.speed );
                     }
                 } else {
-                    
+                    if((_sl.index == 0 && dir == 1) || (_sl.index == (_sl.length - 1) && dir == -1)){//左右滑到尽头
+                        (!opts.loop) && _sl.ref.trigger('moveend', [_sl.index,dir]);
+                    }
                     // 滑回去
                     for ( i = index - viewNum, len = index + 2 * viewNum;
                         i < len; i++ ) {
@@ -175,7 +177,6 @@
                         _sl.translate( pos, slidePos[ pos ], 
                                 opts.speed );
                     }
-                    _sl.ref.trigger('moveend', [_sl.index]);
                 }
         };
 

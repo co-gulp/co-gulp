@@ -46,7 +46,7 @@ var data = [{
     name: "photoBrowser",
     tar: "photoBrowser.html"
 }, {
-    cont: '图片预加载',
+    cont: '图片懒加载',
     name: "lazyLoadImage",
     tar: "lazyLoadImage.html"
 }, {

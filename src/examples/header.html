@@ -9,25 +9,64 @@
     <title>Hello UI Header</title>
     <link rel="stylesheet" href="dist/css/co.css">
     <style type="text/css">
+.ui-nav-bar-inner{
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+}
+
+.ui-nav-bar .ui-nav-bar-link{
+  line-height: 44px;
+  height: 44px;
+  text-decoration: none;
+  position: relative;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-pack: start;
+  -ms-flex-pack: start;
+  -webkit-justify-content: flex-start;
+  justify-content: flex-start;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
+  -webkit-transition-duration: 300ms;
+  transition-duration: 300ms;
+}
 
 </style>
 </head>
 <body>
-    <header  class="ui-bar ui-bar-nav">
-        <h1 class="ui-title">导航栏</h1>
-        <a class="ui-icon ui-icon-bars ui-pull-right"></a>
-        <a class="ui-action-back ui-icon ui-icon-left-nav ui-pull-left"></a>
+    <header  class="ui-nav-bar">
+        <a class="ui-action-back ui-nav-bar-icon ui-nav-bar-left"></a>
+        <h1 class="ui-nav-bar-title">导航栏</h1>
+        <a class="ui-nav-bar-icon ui-nav-bar-right"></a>
     </header>
-    <header  class="ui-bar ui-bar-nav">
-       <h1 class="ui-title">导航栏</h1>
-       <button class="ui-action-back ui-btn ui-btn-blue ui-btn-link ui-btn-nav ui-pull-left">
-           <span class="ui-icon ui-icon-left-nav"></span>
-           首页
-       </button>
-       <button class="ui-btn ui-btn-blue ui-btn-link ui-pull-right">
-           编辑
-       </button>
-   </header>
+    <div class="ui-nav-bar">
+      <div class="ui-nav-bar-inner">
+        <div><a class="ui-action-back ui-nav-bar-link"><i class="ui-nav-bar-icon ui-nav-bar-left"></i><span>Back</span></a></div>
+        <div>Accordion</div>
+        <div><a class="ui-nav-bar-link"><i class="ui-nav-bar-icon ui-nav-bar-right"></i></a></div>
+      </div>
+    </div>
      <script src="dist/js/dom.js"></script>
      <script src="dist/js/co.js"></script>
 </body>

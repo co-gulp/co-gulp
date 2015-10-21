@@ -17,17 +17,10 @@
 		<div id='treeview' class = 'ui-content'>
 			<ul class="ui-table-view">
 				<li class="ui-table-view-cell">
-					<a class="ui-navigate-right">按钮</a>
-				</li>
-				<li class="ui-table-view-cell">
-					<a class="ui-navigate-right">多选框</a>
-				</li>
-				<li class="ui-table-view-cell">
 					<a class="ui-navigate-right">弹出框</a>
 				</li>
 				<li class="ui-table-view-cell ui-collapse">
 					<a class="ui-navigate-right">树列表</a>
-					<div class="ui-content">
 						<ul class="ui-table-view  ui-table-view-chevron">
 							<li class="ui-table-view-cell">
 								<a class="ui-navigate-right">按钮</a>
@@ -39,11 +32,9 @@
 								<a class="ui-navigate-right">弹出框</a>
 							</li>
 						</ul>
-					</div>
 				</li>
 				<li class="ui-table-view-cell ui-collapse">
 					<a class="ui-navigate-right">树列表</a>
-					<div>
 						<ul class="ui-table-view  ui-table-view-chevron">
 							<li class="ui-table-view-cell">
 								<a class="ui-navigate-right">按钮</a>
@@ -55,7 +46,6 @@
 								<a class="ui-navigate-right">弹出框</a>
 							</li>
 						</ul>
-					</div>
 				</li>
 			</ul>	
 		</div>
@@ -65,14 +55,7 @@
 <script>
 	domReady(function(require){
    		require("treeview");
-   		$('#treeview').treeview({
-   					callback:function(el,evt){
-   						//alert(el.innerHTML)
-   					},
-   					toggle:function(el,evt,isActive){
-   						// alert(el.innerHTML)
-   					}
-                });
+   		$('#treeview').treeview();
    })
    </script>
 </html>

@@ -16,92 +16,45 @@
             <a class="ui-action-back ui-icon ui-icon-left-nav ui-pull-left"></a>
         </header>
         <div class = 'ui-content'>
-    	<div class="list-block">
+    	<div class="ui-list-block">
             <ul>
-              <li><div class="item-content">
-                  <div class="item-inner"> 
-                    <div class="item-title">item</div>
-                    <div class="item-after">
+              <li><div class="ui-list-item-content">
+                  <div class="ui-list-item-inner"> 
+                    <div class="ui-list-item-title">item</div>
+                    <div class="ui-list-item-after">
                       <div class="ui-switch ui-active">
                         <div class="ui-switch-handle"></div>
                       </div></div>
                   </div>
                   </div>
               </li>
-              <li><div class="item-link item-content">
-                  <div class="item-inner"> 
-                    <div class="item-title">item</div>
-                    <div class="item-after">你的iPhone</div>
+              <li><div class="item-link ui-list-item-content">
+                  <div class="ui-list-item-inner"> 
+                    <div class="ui-list-item-title">item</div>
+                    <div class="ui-list-item-after">你的iPhone</div>
                   </div>
                   </div>
               </li>
-              <li><div class="item-link item-content">
-                  <div class="item-inner"> 
-                    <div class="item-title">item</div>
-                    <div class="item-after"><span class="ui-badge ui-badge-danger">15</span></div>
+              <li><div class="item-link ui-list-item-content">
+                  <div class="ui-list-item-inner"> 
+                    <div class="ui-list-item-title">item</div>
+                    <div class="ui-list-item-after"><span class="ui-badge ui-badge-red">15</span></div>
                   </div>
                   </div>
               </li>
-              <li><div class="item-link item-content">
-                  <div class="item-inner"> 
-                    <div class="item-title">item</div>
-                    <div class="item-after"><span class="ui-badge ui-badge-purple">5</span></div>
-                  </div>
-                  </div>
-              </li>
-              <li><div class="item-link item-content">
-                  <div class="item-inner"> 
-                    <div class="item-title">item</div>
-                    <div class="item-after"><span class="ui-badge ui-badge-warning">5</span></div>
-                  </div>
-                  </div>
-              </li>
-              <li><div class="item-link item-content">
-                  <div class="item-inner"> 
-                    <div class="item-title">item</div>
-                    <div class="item-after"><span class="ui-badge">5</span></div>
-                  </div>
-                  </div>
-              </li>
-              <li><div class="item-link item-content">
-                  <div class="item-inner"> 
-                    <div class="item-title">item</div>
-                    <div class="item-after"><span class="ui-badge ui-badge-primary">14</span></div>
-                  </div>
-                  </div>
-              </li>
-              <li><div class="item-link item-content">
-                  <div class="item-inner"> 
-                    <div class="item-title">item</div>
-                    <div class="item-after"><span class="ui-badge ui-badge-success">1</span></div>
+              <li><div class="item-link ui-list-item-content">
+                  <div class="ui-list-item-inner"> 
+                    <div class="ui-list-item-title">item</div>
+                    <div class="ui-list-item-after">
+                      <button type="button" class="ui-btn ui-btn-blue">
+                        蓝色
+                      </button>
+                    </div>
                   </div>
                   </div>
               </li>
             </ul>
       </div>
-
-      <div class="list-block">
-            <ul>
-              <li><div class="item-content">
-                  <div class="item-inner"> 
-                    <div class="item-title">item</div>
-                    <div class="item-after">
-                      <div class="ui-switch ui-switch-blue ui-switch-mini ui-active">
-                        <div class="ui-switch-handle"></div>
-                      </div>
-                    </div>
-                  </div></div></li>
-              <li><div class="item-content">
-                  <div class="item-inner"> 
-                    <div class="item-title">item</div>
-                    <div class="item-after">
-                     <button type="button" class="ui-btn ui-btn-primary">
-                        蓝色
-                    </button>
-                    </div>
-                  </div></div></li>    
-            </ul>
-          </div>
       </div>
    <script src="../dist/js/dom.js"></script>
 	<script src="../dist/js/co.js"></script>
@@ -109,10 +62,6 @@
 <script>
 
 	domReady(function(require){
-		require("listview");
-    $('.list-block').listview({});
-    require("switch");
-    $('.ui-switch').switch();
 	});
 </script>
 </html>

@@ -3075,10 +3075,6 @@
         return $.formatDateToString(new Date(), format);
     };
 
-    $.getMilliseconds = function(str) {
-        return $.formatStringToDate(str).getTime();
-    };
-
     $.milliseconds = function(str) {
         return $.formatStringToDate(str).getTime();
     };

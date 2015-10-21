@@ -19,6 +19,10 @@
     var inner = '<div class="' + CLASS_FULLPAGE_INNER + '"></div>';
     var defDots = '<p class="' + CLASS_FULLPAGE_DOTS + '"><%= new Array( len + 1 )' +
         '.join("<i></i>") %></p>';
+
+    $(document).on('touchmove', function(e) {
+        e.preventDefault();
+    });
     //渲染组件
     var render = function() {
         var _fp = this,
@@ -26,16 +30,16 @@
         _fp.curIndex = 0;
         _fp.startY = 0;
         _fp.movingFlag = false;
-
+        opts.der = 0.1;
         _fp.ref.children().wrapAll(inner);
         _fp._inner = _fp.ref.find(SELECTOR_FULLPAGE_INNER);
         _fp._pages = _fp.ref.find(SELECTOR_FULLPAGE_PAGE);
         _fp.pagesLength = _fp._pages.length;
         opts.dots && initDots.call(_fp);
-        _fp.update();
+        update.call(_fp);
         _fp.status = 1;
         opts.arrow && (_fp._arrow = $(arrow).appendTo(_fp.ref));
-        opts.drag && (opts.loop = false)
+        opts.gesture && (opts.loop = false)
     };
     //绑定事件
     var bind = function() {
@@ -65,10 +69,10 @@
             var sub = (e.changedTouches[0].pageY - _fp.startY) / _fp.height;
             var der = (sub > opts.der || sub < -opts.der) ? sub > 0 ? -1 : 1 : 0;
 
-            _fp.moveTo(_fp.curIndex + der, true);
+            _fp.moveTo(_fp.curIndex + der);
 
         });
-        if (opts.drag) {
+        if (opts.gesture) {
             _fp._inner.on('touchmove', function(e) {
                 if (!_fp.status) {
                     return 1;
@@ -90,27 +94,31 @@
                 // move.call(_fp, dist);
 
                 _fp._inner.css({
-                        '-webkit-transform': 'translate3d(' + 0 + 'px , ' + dist + 'px , 0px);',
-                        'transform': 'translate3d(' + 0 + 'px , ' + dist + 'px , 0px);'
-                    });
+                    '-webkit-transform': 'translate3d(' + 0 + 'px , ' + dist + 'px , 0px);',
+                    'transform': 'translate3d(' + 0 + 'px , ' + dist + 'px , 0px);'
+                });
             });
         }
 
         // 翻转屏幕提示
         // ==============================      
         // 转屏事件检测
-        $(window).on('ortchange', function() {
-            if (window.orientation === 180 || window.orientation === 0) {
-                opts.orientationchange('portrait');
-            }
-            if (window.orientation === 90 || window.orientation === -90) {
-                opts.orientationchange('landscape');
-            }
+        $(window).on('ortchange', function(evt) {
+            opts.ortchange();
         });
 
         window.addEventListener("resize", function() {
-            _fp.update();
+            update.call(_fp);
         }, false);
+    };
+
+    var update = function() {
+        var _fp = this,
+            opts = _fp.opts;
+        _fp.height = _fp._inner.height();
+        _fp._pages.height(_fp.height);
+
+        moveTo.call(_fp,_fp.curIndex);
     };
 
     var initDots = function() {
@@ -153,7 +161,7 @@
 
 
         return cur;
-    }
+    };
 
     var move = function(car) {
         var _fp = this;
@@ -169,8 +177,57 @@
         _fp._pages[next].style.cssText += cssPrefix + 'transition-duration:' + 0 +
             'ms;' + cssPrefix + 'transform: translate(0,' +
             (0 - _fp._pages[next].offsetTop + _fp.height) + 'px)' + translateZ + ';';
+    };
 
-    }
+    var moveTo = function(next, anim) {
+        var _fp = this,
+            opts = _fp.opts;
+        var cur = _fp.curIndex;
+
+        next = fix.call(_fp, next, _fp.pagesLength, opts.loop);
+
+        if (anim) {
+            _fp._inner.addClass('anim');
+        } else {
+            _fp._inner.removeClass('anim');
+        }
+
+        if (next !== cur) {
+            var flag = opts.beforeChange.call(_fp, cur, next);
+
+            // beforeChange 显示返回false 可阻止滚屏的发生
+            if (flag === false) {
+                return 1;
+            }
+        }
+
+        _fp.movingFlag = true;
+        _fp.curIndex = next;
+        // move.call(_fp, _fp._inner, -next * _fp.height);
+        if (!opts.gesture) {
+            move.call(_fp, next);
+        } else {
+            _fp._inner.css({
+                '-webkit-transform': 'translate3d(' + 0 + 'px , ' + (-next * _fp.height) + 'px , 0px);',
+                'transform': 'translate3d(' + 0 + 'px , ' + (-next * _fp.height) + 'px , 0px);'
+            });
+        }
+
+        if (next !== cur) {
+            opts.change.call(_fp, cur, next);
+        }
+
+        window.setTimeout(function() {
+            _fp.movingFlag = false;
+            if (next !== cur) {
+                opts.afterChange.call(_fp, cur, next);
+                _fp._pages.removeClass('active').eq(next).addClass('active');
+                opts.dots && updateDots.apply(_fp, [next, cur]);
+            }
+        }, 200);
+
+        return this;
+    };
 
 
     define(function(require, exports, module) {
@@ -178,17 +235,14 @@
 
         //fullpage
         var $fullpage = $ui.define('Fullpage', {
-            start: 0,
-            duration: 200,
             loop: false,
-            drag: false,
+            gesture: false,
             dots: false,
-            der: 0.1,
             arrow: false,
-            change: function(data) {},
-            beforeChange: function(data) {},
-            afterChange: function(data) {},
-            orientationchange: function(orientation) {}
+            change: function(cur, next) {},
+            beforeChange: function(cur, next) {},
+            afterChange: function(cur, next) {},
+            ortchange: function(orientation) {}
         });
 
         //初始化
@@ -198,84 +252,25 @@
         };
 
         $.extend($fullpage.prototype, {
-            update: function() {
-                var _fp = this,
-                    opts = _fp.opts;
-                _fp.height = _fp._inner.height();
-                _fp._pages.height(_fp.height);
-
-                _fp.moveTo(_fp.curIndex < 0 ? opts.start : _fp.curIndex);
-            },
-
             start: function() {
                 this.status = 1;
+                return this;
             },
             stop: function() {
                 this.status = 0;
+                return this;
             },
-            moveTo: function(next, anim) {
-                var _fp = this,
-                    opts = _fp.opts;
-                var cur = _fp.curIndex;
-
-                next = fix.call(_fp, next, _fp.pagesLength, opts.loop);
-
-                if (anim) {
-                    _fp._inner.addClass('anim');
-                } else {
-                    _fp._inner.removeClass('anim');
-                }
-
-                if (next !== cur) {
-                    var flag = opts.beforeChange({
-                        next: next,
-                        cur: cur
-                    });
-
-                    // beforeChange 显示返回false 可阻止滚屏的发生
-                    if (flag === false) {
-                        return 1;
-                    }
-                }
-
-                _fp.movingFlag = true;
-                _fp.curIndex = next;
-                // move.call(_fp, _fp._inner, -next * _fp.height);
-                if (!opts.drag) {
-                    move.call(_fp, next);
-                } else {
-                    _fp._inner.css({
-                        '-webkit-transform': 'translate3d(' + 0 + 'px , ' + (-next * _fp.height) + 'px , 0px);',
-                        'transform': 'translate3d(' + 0 + 'px , ' + (-next * _fp.height) + 'px , 0px);'
-                    });
-                }
-
-                if (next !== cur) {
-                    opts.change({
-                        prev: cur,
-                        cur: next
-                    });
-                }
-
-                window.setTimeout(function() {
-                    _fp.movingFlag = false;
-                    if (next !== cur) {
-                        opts.afterChange({
-                            prev: cur,
-                            cur: next
-                        });
-                        _fp._pages.removeClass('active').eq(next).addClass('active');
-                        opts.dots && updateDots.apply(_fp, [next, cur]);
-                    }
-                }, opts.duration);
-
-                return 0;
+            moveTo: function(next) {
+                moveTo.call(this,next,true);
+                return this;
             },
-            movePrev: function(anim) {
-                this.moveTo(this.curIndex - 1, anim);
+            prev: function() {
+                this.moveTo(this.curIndex - 1);
+                return this;
             },
-            moveNext: function(anim) {
-                this.moveTo(this.curIndex + 1, anim);
+            next: function() {
+                this.moveTo(this.curIndex + 1);
+                return this;
             },
             getCurIndex: function() {
                 return this.curIndex;

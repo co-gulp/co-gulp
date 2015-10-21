@@ -7,18 +7,6 @@
     <link rel="stylesheet" href="dist/css/co.css">
     <style type="text/css">
 
-.ui-fullpage-arrow b:before {
-  color: black;
-}
-.page2{
-    background: url(img/2.png);;
-}
-.page3{
-    background: url(img/3.png);;
-}
-.page4{
-    background: url(img/4.png);;
-}
 </style>
 </head>
 <body >
@@ -48,7 +36,10 @@
             dots:true,
             arrow:true,
             loop: true,
-            drag: false
+            gesture: true,
+            change: function(cur, next) {
+                // this.stop();
+            }
         });
     });
 </script>

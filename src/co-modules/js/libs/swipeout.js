@@ -6,13 +6,13 @@
     var allowSwipeout = true;
     define(function(require, exports, module) {
         var initSwipe = function(swipeOutEl){
-            var isTouched, isMoved, isScrolling, touchesStart = {},touchesEnd = {}, touchStartTime, touchesDiff, swipeOutEl, swipeOutContent, actionsRight, actionsLeft, actionsLeftWidth, actionsRightWidth, translate, opened, openedActions, buttonsLeft, buttonsRight, direction, overswipeLeftButton, overswipeRightButton, overswipeLeft, overswipeRight, noFoldLeft, noFoldRight;
+            var swipe, swipeouts ,isTouched, isMoved, isScrolling, touchesStart = {},touchesEnd = {}, touchStartTime, touchesDiff, swipeOutEl, swipeOutContent, actionsRight, actionsLeft, actionsLeftWidth, actionsRightWidth, translate, opened, openedActions, buttonsLeft, buttonsRight, direction, overswipeLeftButton, overswipeRightButton, overswipeLeft, overswipeRight, noFoldLeft, noFoldRight;
             $(document).on('touchstart', function (e) {
                 if (swipeoutOpenedEl) {
                     var target = $(e.target);
                     if (!(
                         swipeoutOpenedEl.is(target[0]) ||
-                        target.parents('.swipeout').is(swipeoutOpenedEl) 
+                        target.parents('.ui-swipeout').is(swipeoutOpenedEl) 
                         )) {
                         console.log('close');
                         swipeClose(swipeoutOpenedEl);
@@ -46,33 +46,33 @@
                 // console.log(angle(touchesStart,touchesEnd));
                 if(Math.abs(angle(touchesStart,touchesEnd)) > 20)return;
                 if (!isMoved) {
-                    if ($('.list-block.sortable-opened').length > 0) return;
+                    if ($('.ui-list-block.sortable-opened').length > 0) return;
                     /*jshint validthis:true */
                     swipeOutEl = $(this);
-                    swipeOutContent = swipeOutEl.find('.swipeout-content');
-                    actionsRight = swipeOutEl.find('.swipeout-actions-right');
-                    actionsLeft = swipeOutEl.find('.swipeout-actions-left');
+                    swipeOutContent = swipeOutEl.find('.ui-swipeout-content');
+                    actionsRight = swipeOutEl.find('.ui-swipeout-actions-right');
+                    actionsLeft = swipeOutEl.find('.ui-swipeout-actions-left');
                     actionsLeftWidth = actionsRightWidth = buttonsLeft = buttonsRight = overswipeRightButton = overswipeLeftButton = null;
-                    noFoldLeft = actionsLeft.hasClass('swipeout-actions-no-fold') || false;
-                    noFoldRight = actionsRight.hasClass('swipeout-actions-no-fold') || false;
+                    noFoldLeft = actionsLeft.hasClass('ui-swipeout-actions-no-fold') || false;
+                    noFoldRight = actionsRight.hasClass('ui-swipeout-actions-no-fold') || false;
                     if (actionsLeft.length > 0) {
                         actionsLeftWidth = actionsLeft.outerWidth();
                         buttonsLeft = actionsLeft.children('span');
-                        overswipeLeftButton = actionsLeft.find('.swipeout-overswipe');
+                        overswipeLeftButton = actionsLeft.find('.ui-swipeout-overswipe');
                     }
                     if (actionsRight.length > 0) {
                         actionsRightWidth = actionsRight.outerWidth();
                         buttonsRight = actionsRight.children('span');
-                        overswipeRightButton = actionsRight.find('.swipeout-overswipe');
+                        overswipeRightButton = actionsRight.find('.ui-swipeout-overswipe');
                     }
-                    opened = swipeOutEl.hasClass('swipeout-opened');
+                    opened = swipeOutEl.hasClass('ui-swipeout-opened');
                     if (opened) {
-                        openedActions = swipeOutEl.find('.swipeout-actions-left.swipeout-actions-opened').length > 0 ? 'left' : 'right';
+                        openedActions = swipeOutEl.find('.ui-swipeout-actions-left.ui-swipeout-actions-opened').length > 0 ? 'left' : 'right';
                     }
                     swipeOutEl.removeClass('transitioning');
                     if (!false) {
-                        swipeOutEl.find('.swipeout-actions-opened').removeClass('swipeout-actions-opened');
-                        swipeOutEl.removeClass('swipeout-opened');
+                        swipeOutEl.find('.ui-swipeout-actions-opened').removeClass('ui-swipeout-actions-opened');
+                        swipeOutEl.removeClass('ui-swipeout-opened');
                     }
                 }
                 isMoved = true;
@@ -122,7 +122,7 @@
                         }
                         buttonOffset = buttonsRight[i]._buttonOffset;
                         $button = $(buttonsRight[i]);
-                        if (overswipeRightButton.length > 0 && $button.hasClass('swipeout-overswipe')) {
+                        if (overswipeRightButton.length > 0 && $button.hasClass('ui-swipeout-overswipe')) {
                             $button.css({left: (overswipeRight ? -buttonOffset : 0) + 'px'});
                         }
                         $button.transform('translate3d(' + (translate - buttonOffset * (1 + Math.max(progress, -1))) + 'px,0,0)');
@@ -143,7 +143,7 @@
                         }
                         buttonOffset = buttonsLeft[i]._buttonOffset;
                         $button = $(buttonsLeft[i]);
-                        if (overswipeLeftButton.length > 0 && $button.hasClass('swipeout-overswipe')) {
+                        if (overswipeLeftButton.length > 0 && $button.hasClass('ui-swipeout-overswipe')) {
                             $button.css({left: (overswipeLeft ? buttonOffset : 0) + 'px'});
                         }
                         if (buttonsLeft.length > 1) {
@@ -187,10 +187,10 @@
                 if (action === 'open') {
                     swipeoutOpenedEl = swipeOutEl;
                     swipeOutEl.trigger('open');
-                    swipeOutEl.addClass('swipeout-opened transitioning');
+                    swipeOutEl.addClass('ui-swipeout-opened transitioning');
                     var newTranslate = direction === 'to-left' ? -actionsWidth : actionsWidth;
                     swipeOutContent.transform('translate3d(' + newTranslate + 'px,0,0)');
-                    actions.addClass('swipeout-actions-opened');
+                    actions.addClass('ui-swipeout-actions-opened');
                     buttons = direction === 'to-left' ? buttonsRight : buttonsLeft;
                     if (buttons) {
                         for (i = 0; i < buttons.length; i++) {
@@ -198,18 +198,18 @@
                         }
                     }
                     if (overswipeRight) {
-                        actionsRight.find('.swipeout-overswipe')[0].click();
+                        actionsRight.find('.ui-swipeout-overswipe')[0].click();
                     }
                     if (overswipeLeft) {
-                        actionsLeft.find('.swipeout-overswipe')[0].click();
+                        actionsLeft.find('.ui-swipeout-overswipe')[0].click();
                     }
                 }
                 else {
                     swipeOutEl.trigger('close');
                     swipeoutOpenedEl = undefined;
-                    swipeOutEl.addClass('transitioning').removeClass('swipeout-opened');
+                    swipeOutEl.addClass('transitioning').removeClass('ui-swipeout-opened');
                     swipeOutContent.transform('');
-                    actions.removeClass('swipeout-actions-opened');
+                    actions.removeClass('ui-swipeout-actions-opened');
                 }
                 
                 var buttonOffset;
@@ -257,9 +257,18 @@
                         break;
                 }
             }; 
-            $('.list-block li.swipeout',swipeOutEl).on('touchstart', handleEvent);
-            $('.list-block li.swipeout',swipeOutEl).on('touchmove', handleEvent);
-            $('.list-block li.swipeout',swipeOutEl).on('touchend', handleEvent);
+
+            swipeouts = $('.ui-list-block li.ui-swipeout',swipeOutEl);
+            swipeouts.on('touchstart', handleEvent);
+            swipeouts.on('touchmove', handleEvent);
+            swipeouts.on('touchend', handleEvent);
+
+            swipe = this;
+
+            swipeouts.find('.ui-swipeout-delete').on('tap',function(evt){
+                swipe.swipeDelete($(this).parents('.ui-swipeout'));
+            });
+            return swipe;
         }
         var swipeOpen = function(el, dir, callback){
             el = $(el);
@@ -271,16 +280,16 @@
 
             if (el.length === 0) return;
             if (el.length > 1) el = $(el[0]);
-            if (!el.hasClass('swipeout') || el.hasClass('swipeout-opened')) return;
+            if (!el.hasClass('ui-swipeout') || el.hasClass('ui-swipeout-opened')) return;
             if (!dir) {
-                if (el.find('.swipeout-actions-right').length > 0) dir = 'right';
+                if (el.find('.ui-swipeout-actions-right').length > 0) dir = 'right';
                 else dir = 'left';
             }
-            var swipeOutActions = el.find('.swipeout-actions-' + dir);
+            var swipeOutActions = el.find('.ui-swipeout-actions-' + dir);
             if (swipeOutActions.length === 0) return;
-            var noFold = swipeOutActions.hasClass('swipeout-actions-no-fold') || false;
-            el.trigger('open').addClass('swipeout-opened').removeClass('transitioning');
-            swipeOutActions.addClass('swipeout-actions-opened');
+            var noFold = swipeOutActions.hasClass('ui-swipeout-actions-no-fold') || false;
+            el.trigger('open').addClass('ui-swipeout-opened').removeClass('transitioning');
+            swipeOutActions.addClass('ui-swipeout-actions-opened');
             var buttons = swipeOutActions.children('span');
             var swipeOutActionsWidth = swipeOutActions.outerWidth();
             var translate = dir === 'right' ? -swipeOutActionsWidth : swipeOutActionsWidth;
@@ -300,7 +309,7 @@
             for (i = 0; i < buttons.length; i++) {
                 $(buttons[i]).transform('translate3d(' + (translate) + 'px,0,0)');
             }
-            el.find('.swipeout-content').transform('translate3d(' + translate + 'px,0,0)').transitionEnd(function () {
+            el.find('.ui-swipeout-content').transform('translate3d(' + translate + 'px,0,0)').transitionEnd(function () {
                 el.trigger('opened');
                 if (callback) callback.call(el[0]);
             });
@@ -309,15 +318,15 @@
         var swipeClose = function(el, callback){
             el = $(el);
             if (el.length === 0) return;
-            if (!el.hasClass('swipeout-opened')) return;
-            var dir = el.find('.swipeout-actions-opened').hasClass('swipeout-actions-right') ? 'right' : 'left';
-            var swipeOutActions = el.find('.swipeout-actions-opened').removeClass('swipeout-actions-opened');
-            var noFold = swipeOutActions.hasClass('swipeout-actions-no-fold') || false;
+            if (!el.hasClass('ui-swipeout-opened')) return;
+            var dir = el.find('.ui-swipeout-actions-opened').hasClass('ui-swipeout-actions-right') ? 'right' : 'left';
+            var swipeOutActions = el.find('.ui-swipeout-actions-opened').removeClass('ui-swipeout-actions-opened');
+            var noFold = swipeOutActions.hasClass('ui-swipeout-actions-no-fold') || false;
             var buttons = swipeOutActions.children('span');
             var swipeOutActionsWidth = swipeOutActions.outerWidth();
             allowSwipeout = false;
             el.trigger('close');
-            el.removeClass('swipeout-opened').addClass('transitioning');
+            el.removeClass('ui-swipeout-opened').addClass('transitioning');
 
             var closeTO;
             function onSwipeoutClose() {
@@ -327,7 +336,7 @@
                 if (callback) callback.call(el[0]);
                 if (closeTO) clearTimeout(closeTO);
             }
-            el.find('.swipeout-content').transform('translate3d(' + 0 + 'px,0,0)').transitionEnd(onSwipeoutClose);
+            el.find('.ui-swipeout-content').transform('translate3d(' + 0 + 'px,0,0)').transitionEnd(onSwipeoutClose);
             closeTO = setTimeout(onSwipeoutClose, 500);
             
             for (var i = 0; i < buttons.length; i++) {
@@ -363,7 +372,7 @@
                 }
             });
             var translate = '-100%';
-            el.find('.swipeout-content').transform('translate3d(' + translate + ',0,0)');
+            el.find('.ui-swipeout-content').transform('translate3d(' + translate + ',0,0)');
         }
 
         module.exports.initSwipe = initSwipe;

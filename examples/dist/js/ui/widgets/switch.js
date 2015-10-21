@@ -34,13 +34,6 @@
             element.on('swiperight', $.proxy(handleEvent, _tog));
             element.on('touchend', $.proxy(handleEvent, _tog));
             element.on('touchcancel', $.proxy(handleEvent, _tog));
-            element.on('toggle', function(evt,isActive) {
-                    //event.detail.isActive 可直接获取当前状态
-                    var ele = evt.currentTarget;
-                if ($.isFunction(_tog.callback)) {
-                    _tog.callback.apply(_tog, [ele,evt,isActive]);
-                }
-            });
         };   
 
 

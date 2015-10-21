@@ -1,81 +1,154 @@
 <!DOCTYPE html>
 <html>
 
-	<head>
-		<meta charset="utf-8">
-		<title>Hello UI Accordion</title>
-		<meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
-		<meta name="apple-mobile-web-app-capable" content="yes">
-		<meta name="apple-mobile-web-app-status-bar-style" content="black">
-		<link rel="stylesheet" href="dist/css/co.css">
-		<style type="text/css">
-.accordion-item-link {
-  background-color: #DBDBDF;
-}
-.list-block ul {
-   background: #EFEFF4; 
-}
+<head>
+    <meta charset="utf-8">
+    <title>Hello UI Accordion</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black">
+    <link rel="stylesheet" href="dist/css/co.css">
+    <style type="text/css">
 
-.ui-table-view-cell:after ,
-.list-block .item-content:after ,
-.list-block ul:after {
-  height: 0px;
-}
+    </style>
+</head>
 
-.ui-navigate-right{
-	background-color:#E5E5E5;
-}
-
-.list-block .item-content{
-	min-height: 46px;
-}
-.accordion-item-content{
-	margin-bottom:10px;
-	margin-top:10px;
-}
-		</style>
-	</head>
-	<body>
-		<header  class="ui-bar ui-bar-nav">
-            <h1 class="ui-title">Accordion</h1>
-            <a class="ui-action-back ui-icon ui-icon-left-nav ui-pull-left"></a>
-        </header>
-		
-      <div class="list-block accordion-list">
-        <ul>
-          <li class="accordion-item"><a class="accordion-item-link item-content">
-              <div class="item-inner"> 
-                <div class="item-title">第十三章 内能</div>
-              </div></a>
-            <div class="accordion-item-content">
-              <img src="img/3.png" width="100%"/>
-            </div>
-          </li>
-          <li class="accordion-item"><a class="accordion-item-link item-content">
-              <div class="item-inner"> 
-                <div class="item-title">第十四章 内能的利用</div>
-              </div></a>
-            <div class="accordion-item-content">
-      			<img src="img/1.png" width="100%"/>
-            </div>
-          </li>
-          <li class="accordion-item"><a class="accordion-item-link item-content">
-              <div class="item-inner"> 
-                <div class="item-title">第十三章 电流和电力</div>
-              </div></a>
-            <div class="accordion-item-content">
-             	<img src="img/2.png" width="100%"/>
-            </div>
-          </li>
+<body>
+    <div class="ui-accordion">
+        <ul class="ui-accordion-level1">
+            <li class="ui-accordion-item">
+                <a class="ui-accordion-item-link">
+                    <div class="ui-accordion-item-inner">
+                        <div class="ui-accordion-item-title">第十三章 内能</div>
+                    </div>
+                </a>
+                <div class="ui-accordion-item-content">
+                    <ul class="ui-accordion-level2">
+                        <li class="ui-accordion-item">
+                            <a class="ui-accordion-item-link">
+                                <div class="ui-accordion-item-inner">
+                                    <div class="ui-accordion-item-title">第十三章 内能</div>
+                                </div>
+                            </a>
+                            <div class="ui-accordion-item-content">
+                                <ul class="ui-accordion-level3">
+                                    <li class="ui-accordion-item">
+                                        <a class="ui-accordion-item-link">
+                                            <div class="ui-accordion-item-inner">
+                                                <div class="ui-accordion-item-title">第十三章 内能</div>
+                                            </div>
+                                        </a>
+                                        <div class="ui-accordion-item-content">
+                                            <ul class="ui-accordion-level3">
+                                                <li class="ui-accordion-item">
+                                                    <a class="ui-accordion-item-link">
+                                                        <div class="ui-accordion-item-inner">
+                                                            <div class="ui-accordion-item-title">第十三章 内能</div>
+                                                        </div>
+                                                    </a>
+                                                    <div class="ui-accordion-item-content">
+                                                        <img src="img/3.png" width="100%" />
+                                                    </div>
+                                                </li>
+                                                <li class="ui-accordion-item">
+                                                    <a class="ui-accordion-item-link">
+                                                        <div class="ui-accordion-item-inner">
+                                                            <div class="ui-accordion-item-title">第十四章 内能的利用</div>
+                                                        </div>
+                                                    </a>
+                                                    <div class="ui-accordion-item-content">
+                                                        <img src="img/1.png" width="100%" />
+                                                    </div>
+                                                </li>
+                                                <li class="ui-accordion-item">
+                                                    <a class="ui-accordion-item-link">
+                                                        <div class="ui-accordion-item-inner">
+                                                            <div class="ui-accordion-item-title">第十三章 电流和电力</div>
+                                                        </div>
+                                                    </a>
+                                                    <div class="ui-accordion-item-content">
+                                                        <img src="img/2.png" width="100%" />
+                                                    </div>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </li>
+                                    <li class="ui-accordion-item">
+                                        <a class="ui-accordion-item-link">
+                                            <div class="ui-accordion-item-inner">
+                                                <div class="ui-accordion-item-title">第十四章 内能的利用</div>
+                                            </div>
+                                        </a>
+                                        <div class="ui-accordion-item-content">
+                                            <img src="img/1.png" width="100%" />
+                                        </div>
+                                    </li>
+                                    <li class="ui-accordion-item">
+                                        <a class="ui-accordion-item-link">
+                                            <div class="ui-accordion-item-inner">
+                                                <div class="ui-accordion-item-title">第十三章 电流和电力</div>
+                                            </div>
+                                        </a>
+                                        <div class="ui-accordion-item-content">
+                                            <img src="img/2.png" width="100%" />
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </li>
+                        <li class="ui-accordion-item">
+                            <a class="ui-accordion-item-link">
+                                <div class="ui-accordion-item-inner">
+                                    <div class="ui-accordion-item-title">第十四章 内能的利用</div>
+                                </div>
+                            </a>
+                            <div class="ui-accordion-item-content">
+                                <img src="img/1.png" width="100%" />
+                            </div>
+                        </li>
+                        <li class="ui-accordion-item">
+                            <a class="ui-accordion-item-link">
+                                <div class="ui-accordion-item-inner">
+                                    <div class="ui-accordion-item-title">第十三章 电流和电力</div>
+                                </div>
+                            </a>
+                            <div class="ui-accordion-item-content">
+                                <img src="img/2.png" width="100%" />
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="ui-accordion-item">
+                <a class="ui-accordion-item-link">
+                    <div class="ui-accordion-item-inner">
+                        <div class="ui-accordion-item-title">第十四章 内能的利用</div>
+                    </div>
+                </a>
+                <div class="ui-accordion-item-content">
+                    <img src="img/1.png" width="100%" />
+                </div>
+            </li>
+            <li class="ui-accordion-item">
+                <a class="ui-accordion-item-link">
+                    <div class="ui-accordion-item-inner">
+                        <div class="ui-accordion-item-title">第十三章 电流和电力</div>
+                    </div>
+                </a>
+                <div class="ui-accordion-item-content">
+                    <img src="img/2.png" width="100%" />
+                </div>
+            </li>
         </ul>
-      </div>
-		<script src="dist/js/dom.js"></script>
-		<script src="dist/js/co.js"></script>
+    </div>
+    <script src="dist/js/dom.js"></script>
+    <script src="dist/js/co.js"></script>
 </body>
 <script>
-	domReady(function(require){
-   		require("accordion");
-   		$('.accordion-list').accordion({});
-   })
-   </script>
+domReady(function(require) {
+    require("accordion");
+    $('.ui-accordion').accordion({});
+})
+</script>
+
 </html>

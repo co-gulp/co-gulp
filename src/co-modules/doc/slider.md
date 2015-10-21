@@ -1,184 +1,210 @@
 
-##Slider##
+# slider
+***
+	轮播图组件
 
-	轮播图组件使开发者可以通过数据快速构建轮播图对象
-
-ui组件底层基于[zepto](https://github.com/madrobby/zepto)([api](http://www.css88.com/doc/zeptojs_api/))来构建。
-
-	domReady(function(require){
-	        require("slider");
-			$(selector).slider(options) 
-	});
+$(selector).slider(opts) 
 
 *	返回值：轮播图对象（多个时返回数组）
 
-###options###
-	配置对象--JSON
-*	loop
-*	speed
-*	index
-*	autoPlay
-*	interval
-*	dots
-*	data
-*	tpl
 
-
->###loop###
-
-*	是否连续滑动 
-*	true/false 
-*	默认值：false
-
->###speed###
-
-*	动画执行速度 
-*	默认值：400
-
->###index###
-
-*	初始位置 
-*	默认值：0
-
-
->###autoPlay###
-
-*	是否开启自动播放 
-*	true/false
-*	默认值：true
-
->###interval###
-
-*	是否显示点
-*	默认值：4000
-
->###interval###
-
-*	自动播放的间隔时间（毫秒）
-*	true/false
-*	默认值：true
-
->###data###
-
-数据对象，包含每张图片对应的数据。通过与模板结合达到展现效果，每项的key需要与模板中需要替换的一一对应
-
-例：
-
-			var data = data:[{
-                        pic:'image1.png',
-                        title:'1,让Coron的太阳把自己晒黑—小天',
-                        href:'http://www.baidu.com/'
-                    },{
-                        pic:'image2.png',
-                        title:'2,让Coron的太阳把自己晒黑—小天',
-                        href:'http://www.baidu.com/'
-                    },{
-                        pic:'image3.png',
-                        title:'3,让Coron的太阳把自己晒黑—小天',
-                        href:'http://www.baidu.com/'
-                    },{
-                        pic:'image4.png',
-                        title:'4,让Coron的太阳把自己晒黑—小天',
-                        href:'http://www.baidu.com/'
-                    }] ;
-
->####tpl####
->>*	item
-
->>*	dots
-
-模板对象可通过配置item配置每个图片对应的显示效果、dots配置轮播点的显示效果
-
-tpl默认值：
-
-	tpl : {
-                    item: '<div class="'+CLASS_SLIDER_ITEM+'"><a <% if( href ) { %>href="<%= href %>" <% } %>>' +
-                            '<img src="<%= pic %>" /></a>' +
-                            '<% if( title ) { %><p><%= title %></p><% } %>' +
-                            '</div>',
-                    dots: '<p class="'+CLASS_SLIDER_DOTS+'"><%= new Array( len + 1 )' +
-                            '.join("<b></b>") %></p>'        
-                }
-
-##组件构成##
+# 组件构成
 * html+css
 * js
 
-###html+css###
-	<div class="ui-content" id="slider">
-    </div>
+# html+css
+			<div class="ui-slider">
+                <div class="ui-slider-group">
+                    <div class="ui-slider-item">
+                        <img class="ui-slider-img" src="img/1.png">
+                    </div>
+                    <div class="ui-slider-item">
+                        <img class="ui-slider-img" src="img/2.png">
+                    </div>
+                    <div class="ui-slider-item">
+                        <img class="ui-slider-img" src="img/3.png">
+                    </div>
+                    <div class="ui-slider-item">
+                        <img class="ui-slider-img" src="img/4.png">
+                    </div>
+                </div>
+            </div> 
 
-###js###
-			seajs.use(['slider'], function(){
-               var slider =  $('#slider').slider( { 
-                    loop:true,
-                    data:data 
-                });
-            });
+# js
+			domReady(function(require){
+		        require("slider");
+		        $('.ui-slider').slider( { 
+		            loop:true,
+		            dots:true,
+		            gestur:true
+		        }).ref.on('slide',function(){
+		           console.log('slide');
+		        }).on('moveend',function(){
+		           console.log('moveend');
+		        });
+		    });
 
-##接口##
-* play
-* stop
-* slideTo
-* getIndex
+# 索引
+*	[options](#options)
+	-	[loop](#loop)
+	-	[speed](#speed)
+	-	[index](#index)
+	-	[autoPlay](#autoPlay)
+	-	[interval](#interval)
+	-	[dots](#dots)
+	-	[guide](#guide)
+	-	[gestur](#gestur)
+	-	[mulViewNum](#mulViewNum)
+	-	[space](#space)
 
+*	[接口](#接口)
+	-	[play](#play)
+	-	[stop](#stop)
+	-	[next](#next)
+	-	[prev](#prev)
+	-	[slideTo](#slideTo)
+	-	[getIndex](#getIndex)
 
-###play###
+*	[事件](#事件)
+	-	[slide](#slide)
+	-	[moveend](#moveend)
 	
-*	返回值：返回调用者本身
-*	说明：该方法会使轮播图自动播放
-###代码###
-		slider.play();
+*	[样式说明](#样式说明)
+*	[注意事项](#注意事项)
+
+## <div id="options">options</div>
+	配置对象--JSON
+
+### <div id="loop">loop</div>
+
+*	是否连续滑动
+*	true/false 
+*	默认值：false
+
+### <div id="speed">speed</div>
+
+*	动画执行速度
+*	number 
+*	默认值：100
+
+### <div id="index">index</div>
+
+*	初始位置
+*	number 
+*	默认值：0
+
+### <div id="autoPlay">autoPlay</div>
+
+*	是否开启自动播放
+*	true/false 
+*	默认值：false
+
+### <div id="interval">interval</div>
+
+*	自动播放的间隔时间（毫秒）
+*	number 
+*	默认值：4000
+
+### <div id="dots">dots</div>
+
+*	是否显示轮播点
+*	true/false 
+*	默认值：false
+
+### <div id="guide">guide</div>
+
+*	是否显示导向按钮
+*	true/false 
+*	默认值：false
+
+### <div id="gestur">gestur</div>
+
+*	是否添加手势事件
+*	true/false 
+*	默认值：false
+
+### <div id="mulViewNum">mulViewNum</div>
+
+*	用来指定一页显示多少个图片
+*	number
+*	默认值：1
+
+### <div id="space">space</div>
+
+*	图片之间的间隔
+*	number
+*	默认值：0
 
 
-###stop###
+## <div id="接口">接口</div>
+	对外提供方法--function
+	调用对象 : var sl = $(selector).slider(opts)
+
+
+###  <div id="play">play</div>
 	
-*	返回值：返回调用者本身
-*	说明：该方法会使轮播图停止播放（针对启动了自动播放的情况）
-###代码###
-		slider.stop();
+*	sl.play()   ⇒ self
 
-###slideTo###
+使轮播图处于自动播放状态
+
+###  <div id="stop">stop</div>
 	
-*	参数
-	*	to {number} 目标slide的序号
-	*	speed {number} [可选]切换的速度 
-*	返回值：返回本身
-*	说明：切换到第几个slide
-###代码###
-		slider.slideTo(to ，speed);
-###getIndex###
+*	sl.stop()   ⇒ self
+
+停止自动播放
+
+###  <div id="next">next</div>
 	
-*	参数
-	*	index {number} 当前的silde序号
-*	返回值：number
-*	说明：返回当前显示的第几个slide
-###代码###
-		slider.getIndex(index);
+*	sl.next()   ⇒ self
 
+切换到下一个slide
 
-##插件##
-*	sliderbtn：图片轮播剪头按钮插件
-
-####使用方式####
-
-在页面依赖部分添加sliderbtn，如seajs.use(['slider','sliderbtn'])
-
-##接口##
-* next
-* prev
-
-###next###
+###  <div id="prev">prev</div>
 	
+*	sl.prev()   ⇒ self
+
+切换到上一个slide
+
+###  <div id="slideTo">slideTo</div>
 	
-*	返回值：返回本身
-*	说明：切换到下一个slide
-###代码###
-		slider.next();
-###prev###
+*	sl.slideTo(to, [speed])   ⇒ self
+
+切换到第几个slide
+
+	sl.slideTo(2, 400) //以400的速度切换到第3个（下标从0开始）slide
+
+###  <div id="getIndex">getIndex</div>
 	
+*	sl.getIndex()   ⇒ number
+
+返回当前显示的第几个slide
+
+## <div id="事件">事件</div>
+	对外提供事件--Event
+	调用对象	: var sl = $(selector).slider(opts)
+			$(selector).on(Event,function(e){})  或  sc.ref.on(Event,function(e){})
+
+###  <div id="slide">slide</div>
 	
-*	返回值：返回本身
-*	说明：切换到上一个slide
-###代码###
-		slider.prev();
+*	$(selector).on('slide',function(e,to,from){})
+	-	to : 当前下标
+	-	from ：原来下标	
+
+当轮播图完成轮播，并切换到下一个对象时触发
+
+###  <div id="moveend">moveend</div>
+	
+*	$(selector).on('moveend',function(e,index,dir){})
+	-	index : 当前下标
+	-	dir ：移动方向，-1 向右 1 向左	
+
+当轮播图播放到尽头时触发（只有在loop为false时触发）
+
+## <div id="样式说明">样式说明</div>
+
+*	ui-slider ： 组件顶层标示
+*	ui-slider-group ： 轮播图容器对象
+*	ui-slider-item ： 轮播图单个对象容器
+*	ui-slider-img ： 轮播图对象，无论使用何种标签，轮播对象必须包含该样式，否则组件无法定位轮播对象
+
+## <div id="注意事项">注意事项</div>

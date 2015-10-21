@@ -15,11 +15,17 @@
         CLASS_SEARCHBAR_OVERLAY_ACTIVE = 'ui-searchbar-overlay-active',
         CLASS_SEARCHBAR_NOT_EMPTY = 'ui-searchbar-not-empty',
         CLASS_HIDDEN_BY_SEARCHBAR = 'ui-hidden-by-searchbar',
-        CLASS_SEARCHBAR_CLEAR = 'ui-searchbar-clear';
+        CLASS_SEARCHBAR_CLEAR = 'ui-searchbar-clear',
+        CLASS_SEARCHBAR_ITEM = 'ui-searchbar-item',
+        CLASS_SEARCHBAR_KEY = 'ui-searchbar-key',
+        CLASS_SEARCHBAR_IGNORE = 'ui-searchbar-ignore';
 
     var SELECTOR_SEARCHBAR_CONTAINER = '.' + CLASS_SEARCHBAR_CONTAINER,
         SELECTOR_SEARCHBAR_CONTENT = '.' + CLASS_SEARCHBAR_CONTENT,
-        SELECTOR_SEARCHBAR_LIST = '.' + CLASS_SEARCHBAR_LIST;
+        SELECTOR_SEARCHBAR_LIST = '.' + CLASS_SEARCHBAR_LIST,
+        SELECTOR_SEARCHBAR_ITEM = '.' + CLASS_SEARCHBAR_ITEM,
+        SELECTOR_SEARCHBAR_KEY = '.' + CLASS_SEARCHBAR_KEY,
+        SELECTOR_SEARCHBAR_IGNORE = '.' + CLASS_SEARCHBAR_IGNORE;
 
     var notFound = '<div class="list-block ' + CLASS_SEARCHBAR_NOT_FOUND + '"> <ul >' +
         '<li class = "item-content" >' +
@@ -46,7 +52,7 @@
         _sc._cancelButton = $(cancel).appendTo(container);
 
         // Search List
-        _sc._searchList = opts.searchList ? $(opts.searchList) : _sc.ref.find(SELECTOR_SEARCHBAR_LIST);
+        _sc._searchList = _sc.ref.find(SELECTOR_SEARCHBAR_LIST);
         _sc._overlay = $(overlay).appendTo(_sc.ref);
 
         // Found and not found
@@ -355,23 +361,13 @@
     };
 
 
-    var removeDiacritics = function(str) {
-        return str.replace(/[^\u0000-\u007E]/g, function(a) {
-            return diacriticsMap[a] || a;
-        });
-    };
-
-
 
     define(function(require, exports, module) {
         var $ui = require("ui");
 
         //searchbar
         var $searchbar = $ui.define('Searchbar', {
-            searchKey: '.item-title',
-            ignore: '.searchbar-ignore',
-            customSearch: false,
-            removeDiacritics: false
+            customSearch: false
         });
 
         //初始化
@@ -381,15 +377,18 @@
         };
 
         // Enable/disalbe
-        $searchbar.prototype.enable = function() {
+        $searchbar.prototype.enable = function(e) {
             var _sc = this,
                 opts = _sc.opts,
                 container = _sc._container;
 
             function _enable() {
+                if(_sc.active)return;
+                console.log(_sc.active);
                 if (_sc._searchList.length && !container.hasClass(CLASS_SEARCHBAR_ACTIVE)) _sc._overlay.addClass(CLASS_SEARCHBAR_OVERLAY_ACTIVE);
                 container.addClass(CLASS_SEARCHBAR_ACTIVE);
                 _sc._cancelButton.transition(0).show();
+                (!e && !_sc.active) && (_sc.active = true && _sc._input.focus())
                 if (_sc._cancelButton.length > 0) _sc._cancelButton.css('margin-right', '0px');
                 $(document.body).css('overflowY', 'hidden');
                 _sc._content.css('overflowY', 'hidden');
@@ -403,6 +402,7 @@
             } else {
                 _enable();
             }
+            return this;
         };
 
         $searchbar.prototype.disable = function() {
@@ -430,6 +430,7 @@
             } else {
                 _disable();
             }
+            return this;
         };
 
         // Clear
@@ -437,6 +438,7 @@
             var _sc = this;
             _sc._input.val('').trigger('change').focus();
             _sc.ref.trigger('clearSearch');
+            return this;
         };
 
 
@@ -456,25 +458,17 @@
                     container.addClass(CLASS_SEARCHBAR_NOT_EMPTY);
                     if (_sc._searchList.length && container.hasClass(CLASS_SEARCHBAR_ACTIVE)) _sc._overlay.removeClass(CLASS_SEARCHBAR_OVERLAY_ACTIVE);
                 }
-                if (_sc._searchList.length > 0 && (opts.searchKey)) _sc.search(value, true);
+                if (_sc._searchList.length > 0) _sc.search(value);
             }, 0);
         };
 
-        $searchbar.prototype.search = function(query, internal) {
+        $searchbar.prototype.search = function(query) {
             var _sc = this,
                 opts = _sc.opts,
                 container = _sc._container;
             if (query.trim() === previousQuery) return;
             previousQuery = query.trim();
 
-            if (!internal) {
-                if (!_sc.active) {
-                    _sc.enable();
-                }
-                if (!internal) {
-                    _sc._input.val(query);
-                }
-            }
 
             if (opts.customSearch) {
                 _sc.ref.trigger('search', [query]);
@@ -483,17 +477,12 @@
 
             var foundItems = [];
 
-            var values;
-            if (opts.removeDiacritics) values = removeDiacritics(query.trim().toLowerCase()).split(' ');
-            else {
-                values = query.trim().toLowerCase().split(' ');
-            }
-            _sc._searchList.find('li').removeClass(CLASS_HIDDEN_BY_SEARCHBAR).each(function(index, el) {
+            var values = query.trim().toLowerCase().split(' ');
+            _sc._searchList.find(SELECTOR_SEARCHBAR_ITEM).removeClass(CLASS_HIDDEN_BY_SEARCHBAR).each(function(index, el) {
                 el = $(el);
                 var compareWithText = [];
-                el.find(opts.searchKey).each(function() {
+                el.find(SELECTOR_SEARCHBAR_KEY).each(function() {
                     var itemText = $(this).text().trim().toLowerCase();
-                    if (opts.removeDiacritics) itemText = removeDiacritics(itemText);
                     compareWithText.push(itemText);
                 });
                 compareWithText = compareWithText.join(' ');
@@ -501,7 +490,7 @@
                 for (var i = 0; i < values.length; i++) {
                     if (compareWithText.indexOf(values[i]) >= 0) wordsMatch++;
                 }
-                if (wordsMatch !== values.length && !(opts.ignore && el.is(opts.ignore))) {
+                if (wordsMatch !== values.length && !(el.is(SELECTOR_SEARCHBAR_IGNORE))) {
                     el.addClass(CLASS_HIDDEN_BY_SEARCHBAR);
                 } else {
                     foundItems.push(el[0]);
@@ -516,6 +505,7 @@
                 _sc._notFound.hide();
                 _sc._found.show();
             }
+            return this;
         };
 
         $searchbar.prototype.destroy = function() {

@@ -185,25 +185,34 @@
 
         $.extend($photoBrowser.prototype, {
             open: function(index) {
+                this.ref.removeClass(CLASS_PHOTO_BROWSER_OUT).addClass(CLASS_PHOTO_BROWSER_IN);
+                this.moveTo(index);
+                return this;
+            },
+            moveTo:function(next){
                 var _pb = this,
                     opts = _pb.opts;
-                _pb.ref.removeClass(CLASS_PHOTO_BROWSER_OUT).addClass(CLASS_PHOTO_BROWSER_IN);
-                if ($.chk(index)) {
+                if ($.chk(next)) {
                     if ($.chk(_pb.slider)) {
-                        _pb.slider.slideTo(index);
+                        _pb.slider.slideTo(next);
                     } else {
-                        opts.index = index;
+                        opts.index = next;
+                        _pb._captions[next] && (_pb._captions.removeClass(CLASS_PHOTO_BROWSER_CAPTION_ACTIVE) && $(_pb._captions[next]).addClass(CLASS_PHOTO_BROWSER_CAPTION_ACTIVE));
                     }
                 }
+                return this;
             },
             prev: function() {
                 this.slider.prev();
+                return this;
             },
             next: function() {
                 this.slider.next();
+                return this;
             },
             close: function() {
                 this.ref.removeClass(CLASS_PHOTO_BROWSER_IN).addClass(CLASS_PHOTO_BROWSER_OUT);
+                return this;
             }
         });
 

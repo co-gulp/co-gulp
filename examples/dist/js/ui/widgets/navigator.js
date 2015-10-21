@@ -61,14 +61,15 @@
         var list = _nav.$list.children(),
             cur;
                 
-        _nav.ref.trigger('beforeselect', [list.get( to )]);
+        _nav.ref.trigger('beforeselect', [to,list.get( to )]);
 
         cur = list.removeClass( 'ui-state-active' )
                     .eq( to )
                     .addClass( 'ui-state-active' );
 
         _nav.index = to;
-        return _nav.ref.trigger( 'select', [to, cur[ 0 ]] );
+        _nav.ref.trigger( 'select', [to, cur[ 0 ]] );
+        return _nav;
     };    
 
     /**

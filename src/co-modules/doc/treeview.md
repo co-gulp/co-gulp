@@ -1,16 +1,35 @@
 
-##Treeview##
+# treeview
 
-	树形列表组件使开发者可以通过数据与模板创建各种复杂的列表控件
+	树形列表组件
 
-ui组件底层基于[zepto](https://github.com/madrobby/zepto)([api](http://www.css88.com/doc/zeptojs_api/))来构建。
-
-	domReady(function(require){
-	   		require("treeview");
-			$(selector).treeview(options);
-	});
+$(selector).treeview(options);
 
 *	返回值：树形列表对象(多个时返回数组)
+
+
+# 组件构成
+* html+css
+* js
+
+# html+css
+	<div class="ui-content" id='treeview'>
+				
+		</div>
+
+# js
+			domReady(function(require){
+	   			require("treeview");
+   				$('#treeview').treeview({
+   					callback:function(el,evt){
+   						console(el.innerHTML)
+   					},
+   					toggle:function(el,evt,isActive){
+   						console(el.innerHTML)
+   					},
+                	data:data
+                });
+   			})
 
 ###options###
 	配置对象--JSON
@@ -91,28 +110,7 @@ tpl默认值：
 	*	el :点击的对象
 	*	evt：事件对象
 
-##组件构成##
-* html+css
-* js
 
-###html+css###
-	<div class="ui-content" id='treeview'>
-				
-		</div>
-
-###js###
-			domReady(function(require){
-	   			require("treeview");
-   				$('#treeview').treeview({
-   					callback:function(el,evt){
-   						console(el.innerHTML)
-   					},
-   					toggle:function(el,evt,isActive){
-   						console(el.innerHTML)
-   					},
-                	data:data
-                });
-   			})
 
 ##接口##
 * renderData

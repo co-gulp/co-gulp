@@ -63,6 +63,8 @@
             domReady(function(require){
                 var Dialog = require("dialog");
                 $('#alertBtn').button(function(btn,el){
+                        var str = 'null';
+    console.log($.chk(str))
                          Dialog.init({
                             title:'消息框',
                             width: 288,
@@ -85,14 +87,6 @@
                             autoOpen: false,
                             closeBtn: true,
                             scrollMove: false,
-                            buttons: {
-                                '取消': function(){
-                                    this.close();
-                                },
-                                '确定': function(){
-                                    this.close();
-                                }
-                            },
                             content:  '<div  class="vote-dialog" style="display:block"><p class="vote"></p><p>星级从1到5，获得越多星星，表示等级越高</p></div>'
                         });
                 });

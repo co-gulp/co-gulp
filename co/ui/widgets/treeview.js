@@ -107,8 +107,7 @@
              * @type {function}
              */
             autoExpanded:false,
-            toggleClose:true,
-            toggle: function() {}
+            toggleClose:true
 
         });
 
@@ -116,7 +115,6 @@
         $treeview.prototype.init = function() {
             var _tv = this,
                 opts = _tv.opts;
-            _tv.toggle = opts.toggle;
             render.call(this);
             bind.call(this);
             if (opts.iscroll) {

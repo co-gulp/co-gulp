@@ -1,31 +1,30 @@
-.ui-tab-bar{
+/* === tab-bar === */
+.ui-tab-bar {
   position: fixed;
   bottom: 0;
   display: table;
   width: 100%;
-  height: 50px;
-  padding: 0;
-  table-layout: fixed;
-}
-.ui-bar-tab {
-  position: fixed;
-  bottom: 0;
-  display: table;
-  width: 100%;
-  height: 50px;
   padding: 0;
   table-layout: fixed;
   border-top: 0;
+  right: 0;
+  left: 0;
+  z-index: 10;
+  height: 44px;
+  padding-right: 10px;
+  padding-left: 10px;
+  background-color: rgba(247, 247, 247, .98);
   border-bottom: 0;
+  -webkit-box-shadow: 0 0 1px rgba(0, 0, 0, .85);
+          box-shadow: 0 0 1px rgba(0, 0, 0, .85);
 
-  -webkit-touch-callout: none;
+  -webkit-backface-visibility: hidden;
+          backface-visibility: hidden;
 }
 
-.ui-bar-tab .ui-tab-item.ui-active {
-  color: #007aff;
-}
 
-.ui-bar-tab .ui-tab-item {
+
+.ui-tab-bar .ui-tab-item {
   display: table-cell;
   width: 1%;
   height: 50px;
@@ -37,7 +36,10 @@
   vertical-align: middle;
 }
 
-.ui-bar-tab .ui-tab-item .ui-icon {
+.ui-tab-bar .ui-tab-item.ui-active {
+  color: #007aff;
+}
+.ui-tab-bar .ui-tab-item .ui-icon {
   top: 3px;
   width: 24px;
   height: 24px;
@@ -46,18 +48,13 @@
 }
 
 
-.ui-bar-tab .ui-tab-item .ui-icon ~ .ui-tab-label {
+.ui-tab-bar .ui-tab-item .ui-icon ~ .ui-tab-label {
   display: block;
   overflow: hidden;
   font-size: 11px;
   text-overflow: ellipsis;
 }
 
-.ui-control-content {
-  position: relative;
-  text-align: center;
-  display: none;
-}
-.ui-control-content.ui-active {
-  display: block;
+.ui-tab-bar ~ .ui-slider {
+  bottom: 44px;
 }

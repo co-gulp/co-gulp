@@ -31,12 +31,14 @@
     domReady(function(require){
         require("slider");
         $('#slider').slider( { 
-            loop:true,
+            loop:false,
             dots:true,
             gestur:true,
             mulViewNum:1
-        }).ref.on('hiChange',function(e,h){
-           
+        }).ref.on('slide',function(){
+           console.log('slide');
+        }).on('moveend',function(){
+           console.log('moveend');
         });
     });
 </script>

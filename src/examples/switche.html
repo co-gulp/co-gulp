@@ -77,10 +77,13 @@
                     callback:function(el,evt,isActive){
                         el.parentNode.querySelector('span').innerText = '状态：' + ( isActive? 'true' : 'false');
                     }
-                })[0].toggle();
+                })[0];
                 $('.ui-switch').each(function() { //循环所有toggle
 					this.parentNode.querySelector('span').innerText = '状态：' + (this.classList.contains('ui-active') ? 'true' : 'false');
 				});
+				$('.ui-switch').on('toggle',function(active){
+					sw.toggle();
+				})
 		});
 		</script>
 	</body>

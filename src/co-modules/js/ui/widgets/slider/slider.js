@@ -188,7 +188,7 @@
             interval: 4000,
 
             /**
-             * @property {Boolean} [dots=true] 是否显示点
+             * @property {Boolean} [dots=true] 是否显示轮播点
              * @namespace options
              */
             dots: false,
@@ -198,7 +198,7 @@
              */
             guide: false,
             /**
-             * @property {Number} [mulViewNum=2] 当slider为multiview模式时，用来指定一页显示多少个图片。
+             * @property {Boolean} [gestur=true] 是否添加手势事件。
              * @namespace options
              */
             gestur: false,
@@ -207,6 +207,10 @@
              * @namespace options
              */
             mulViewNum: 1,
+            /**
+             * @property {Number} [space=10] 图片之间的间隔
+             * @namespace options
+             */
             space: 0
 
         });
