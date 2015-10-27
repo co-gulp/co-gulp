@@ -2,7 +2,7 @@
 
 ;(function($){
   var data = {}, dataAttr = $.fn.data, camelize = $.camelCase,
-    exp = $.expando = 'Zepto' + (+new Date()), emptyArray = []
+    exp = $.expando = 'Dom' + (+new Date()), emptyArray = []
 
   // Get value from node:
   // 1. first try key as given,
@@ -35,7 +35,7 @@
     $.each(node.attributes || emptyArray, function(i, attr){
       if (attr.name.indexOf('data-') == 0)
         store[camelize(attr.name.replace('data-', ''))] =
-          $.zepto.deserializeValue(attr.value)
+          $.deserializeValue(attr.value)
     })
     return store
   }

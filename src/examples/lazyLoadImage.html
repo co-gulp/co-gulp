@@ -1,7 +1,7 @@
 <!doctype html>
 <html>
 <head>
-    <title>Hello UI Fullpage</title>
+    <title>Hello UI LazyLoadImage</title>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
     <link rel="stylesheet" href="dist/css/co.css">
@@ -10,7 +10,17 @@
 </style>
 </head>
 <body >
-    <div class="ui-lazy-loader">
+    <header class="ui-nav-bar">
+        <div class="ui-nav-bar-inner">
+            <a class="ui-action-back ui-nav-bar-link">
+                <i class="ui-nav-bar-icon ui-nav-bar-left ui-icon-left-nav"><span class="ui-nav-bar-des">Back</span>
+          </i>
+            </a>
+            <h1 class="ui-nav-bar-title">LazyLoadImage</h1>
+            <a class="ui-nav-bar-link"><i class="ui-nav-bar-icon ui-nav-bar-right ui-icon-bars"></i></a>
+        </div>
+    </header>
+    <div class="ui-lazy-loader ui-content">
             <div class="ui-lazy-loader-content">
                         <p> <img data-src="http://www.freeimages.co.uk/galleries/sports/relaxation/thumbs/peaceful_bamboo_grove.jpg" class="ui-lazy" /></p>
                         

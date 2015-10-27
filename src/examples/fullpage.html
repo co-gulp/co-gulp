@@ -23,6 +23,15 @@
             <div class="ui-fullpage-page">
                 <img class = "ui-fullpage-pageinner" src="img/4.png"></img>
             </div>
+            <div class="ui-fullpage-page">
+                <img class = "ui-fullpage-pageinner" src="img/4.png"></img>
+            </div>
+            <div class="ui-fullpage-page">
+                <img class = "ui-fullpage-pageinner" src="img/4.png"></img>
+            </div>
+            <div class="ui-fullpage-page">
+                <img class = "ui-fullpage-pageinner" src="img/4.png"></img>
+            </div>
     </div>
     
         <script src="dist/js/dom.js"></script>
@@ -33,13 +42,8 @@
     domReady(function(require){
         require("fullpage");
         $('.ui-fullpage').fullpage({
-            dots:true,
-            arrow:true,
-            loop: true,
-            gesture: true,
-            change: function(cur, next) {
-                // this.stop();
-            }
+            // loop:true
+            // gesture:true
         });
     });
 </script>

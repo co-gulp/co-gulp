@@ -6,12 +6,10 @@
     position: relative;
     -webkit-user-select: none;
     -webkit-touch-callout: none;
-    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-    display: -webkit-box !important;         
 }
 .ui-fullPage-inner{   
-    -webkit-transform: translate3d(0,0,0);     
-    transform: translate3d(0,0,0);     
+    // -webkit-transform: translate3d(0,0,0);     
+    // transform: translate3d(0,0,0);     
 }
 .ui-fullPage-inner:after {
     display: block;
@@ -24,9 +22,6 @@
     transition: all 500ms ease-out 0s; 
 }
 .ui-fullpage-page{
-    font-size: 72px;
-    line-height: 320px;
-    text-align: center;
     display: block;
     overflow: hidden;
 }
@@ -48,11 +43,12 @@
 }
 
 .ui-fullpage-dots .ui-state-active {
-  color: white;
+  color: #95F7CC;
 }
 
 .ui-fullpage-pageinner{
     width: 100%;
+    height: 100%;
     display: -webkit-box !important;
     display: box !important;
     display: -webkit-flex;

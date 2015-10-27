@@ -29,25 +29,25 @@
                 <span class="ui-tab-label">设置</span>
             </a>
         </div>
-        <div class="ui-slider">
-            <div class="ui-slider-group">
+        <div class="ui-swipe">
+            <div class="ui-swipe-group">
                 <div class="ui-swipe-item">
-                    <div class="swipe-content">
+                    <div class="ui-swipe-content">
                         <img class="ui-slider-img" src="img/1.png">
                     </div>
                 </div>
                 <div class="ui-swipe-item">
-                    <div class="swipe-content">
+                    <div class="ui-swipe-content">
                         <img class="ui-slider-img" src="img/2.png">
                     </div>
                 </div>
                 <div class="ui-swipe-item">
-                    <div class="swipe-content">
+                    <div class="ui-swipe-content">
                         <img class="ui-slider-img" src="img/3.png">
                     </div>
                 </div>
                 <div class="ui-swipe-item">
-                    <div class="swipe-content">
+                    <div class="ui-swipe-content">
                         <img class="ui-slider-img" src="img/4.png">
                     </div>
                 </div>
@@ -59,7 +59,7 @@
 <script>
     domReady(function(require){
             require("swipePage");
-            var swipe = $('.ui-slider').swipepage();
+            var swipe = $('.ui-swipe').swipepage();
             require("tab");
             var tab = $('.ui-tab-bar').tab()
             tab.ref.on('activate',function(e,to,from){

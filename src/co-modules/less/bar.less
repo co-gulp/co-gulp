@@ -33,29 +33,36 @@
    -webkit-transform: scaleY(0.5);
   transform: scaleY(0.5);
 }
-
-.ui-nav-bar ~ .ui-content {
-  position: fixed;
-  overflow: scroll;
-  top: 44px;
-  bottom: 0px;
+.ui-nav-bar-inner{
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-box-pack: justify;
+  -ms-flex-pack: justify;
+  -webkit-justify-content: space-between;
+  justify-content: space-between;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  -webkit-align-items: center;
+  align-items: center;
 }
 
-.ui-nav-bar ~ .ui-scroll-wrapper {
-  top: 44px;
+.ui-nav-bar .ui-nav-bar-link{
+  line-height: 44px;
+  height: 44px;
+  display: inline-block;
 }
-
-.ui-nav-bar-IOS7 {
-  height: 64px;
-  padding-top: 20px;
+.ui-nav-bar .ui-nav-bar-des{
+  font-size: 0.8em;
 }
-.ui-content-IOS7 {
-  top: 64px;
-}
-.ui-nav-bar-IOS7 ~ .ui-scroll-wrapper {
-  top: 64px;
-}
-
 .ui-nav-bar-title {
   position: absolute;
   display: block;
@@ -93,17 +100,32 @@
 }
 .ui-nav-bar .ui-nav-bar-left{
   float: left;
-  margin-left: 5px;
+  margin-left: 10px;
 }
 .ui-nav-bar .ui-nav-bar-right{
   float: right;
   margin-right: 17px;
 }
 
-.ui-nav-bar .ui-nav-bar-left:after{
-  content: "\e471";
+.ui-nav-bar ~ .ui-content {
+  position: fixed;
+  overflow-y: scroll;
+  top: 44px;
+  bottom: 0px;
 }
-.ui-nav-bar .ui-nav-bar-right:after{
-  content: "\e563";
+
+.ui-nav-bar ~ .ui-scroll-wrapper {
+  top: 44px;
+}
+
+.ui-nav-bar-IOS7 {
+  height: 64px;
+  padding-top: 20px;
+}
+.ui-nav-bar-IOS7 ~ .ui-content {
+  top: 64px;
+}
+.ui-nav-bar-IOS7 ~ .ui-scroll-wrapper {
+  top: 64px;
 }
 

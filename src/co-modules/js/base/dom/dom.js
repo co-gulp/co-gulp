@@ -1,6 +1,6 @@
  /* ===========================
-                                Dom Library
-                            ===========================*/
+                                 Dom Library
+                             ===========================*/
  var Dom = (function() {
      var emptyArray = [],
          concat = emptyArray.concat,
@@ -8,6 +8,7 @@
          slice = emptyArray.slice,
          document = window.document,
          readyRE = /complete|loaded|interactive/,
+         capitalRE = /([A-Z])/g,
          cssNumber = {
              'column-count': 1,
              'columns': 1,
@@ -358,6 +359,15 @@
                  }
                  return this;
              }
+         },
+         data: function(name, value) {
+             var attrName = 'data-' + name.replace(capitalRE, '-$1').toLowerCase()
+
+             var data = (1 in arguments) ?
+                 this.attr(attrName, value) :
+                 this.attr(attrName)
+
+             return data !== null ? deserializeValue(data) : undefined
          },
          val: function(value) {
              if (typeof value === 'undefined') {

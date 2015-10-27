@@ -35,10 +35,7 @@ $(selector).fullpage(opts)
             dots:true,
             arrow:true,
             loop: true,
-            drag: false,
-			change: function(cur, next) {
-				console.log(cur)
-			}
+            drag: false
         });
     });
 
@@ -48,10 +45,6 @@ $(selector).fullpage(opts)
 	-	[gesture](#gesture)
 	-	[dots](#dots)
 	-	[arrow](#arrow)
-	-	[change](#change)
-	-	[beforeChange](#beforeChange)
-	-	[afterChange](#afterChange)
-	-	[ortchange](#ortchange)
 
 *	[接口](#接口)
 	-	[start](#start)
@@ -60,6 +53,11 @@ $(selector).fullpage(opts)
 	-	[prev](#prev)
 	-	[next](#next)
 	-	[getCurIndex](#getCurIndex)
+
+*	[事件](#事件)
+	-	[beforeChange](#beforeChange)
+	-	[change](#change)
+	-	[afterChange](#afterChange)
 
 *	[样式说明](#样式说明)
 *	[注意事项](#注意事项)
@@ -90,27 +88,6 @@ $(selector).fullpage(opts)
 *	是否显示向上指示箭头 
 *	true/false 
 *	默认值：false
-
-###  <div id="change">change</div>
-
-*	当前显示发生变化时的回调方法
-*	function(cur, next) {}
-	-	cur：当前选中页码
-	-	next：目前页码
-
-###  <div id="beforeChange">beforeChange</div>
-
-*	当前显示发生变化前的回调方法，返回false时，可阻止滚屏的发生
-*	function(cur, next) {}
-	-	cur：当前选中页码
-	-	next：目前页码
-
-###  <div id="afterChange">afterChange</div>
-
-*	当前显示发生变化后的回调方法
-*	function(cur, next) {}
-	-	cur：当前选中页码
-	-	next：目前页码
 
 
 
@@ -155,6 +132,36 @@ $(selector).fullpage(opts)
 *	fp.getCurIndex()   ⇒ number
 
 获取当前选中序号
+
+## <div id="事件">事件</div>
+	对外提供事件--Event
+	调用对象	: var fp = $(selector).fullpage(opts)
+			$(selector).on(Event,function(e){})  或  fp.ref.on(Event,function(e){})
+
+
+###  <div id="beforeChange">beforeChange</div>
+
+*	$(selector).on('beforeChange',function(e, cur, next){})
+	-	cur：当前选中页码
+	-	next：目前页码
+
+当前显示发生变化前触发
+
+###  <div id="change">change</div>
+
+*	$(selector).on('change',function(e, cur, next){})
+	-	cur：当前选中页码
+	-	next：目前页码
+
+当前显示发生变化时触发
+
+###  <div id="afterChange">afterChange</div>
+
+*	$(selector).on('afterChange',function(e, cur, next){})
+	-	cur：当前选中页码
+	-	next：目前页码
+
+当前显示发生变化后触发
 
 ## <div id="样式说明">样式说明</div>
 

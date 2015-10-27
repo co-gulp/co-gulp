@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>Hello UI Dialog</title>
+        <title>Hello UI Request</title>
         <meta name="viewport" content="width=device-width, initial-scale=1,maximum-scale=1,user-scalable=no">
         <meta name="apple-mobile-web-app-capable" content="yes">
         <meta name="apple-mobile-web-app-status-bar-style" content="black">
@@ -14,10 +14,11 @@
         
     </head>
     <body>
-        <header  class="ui-bar ui-bar-nav">
-            <h1 class="ui-title">Dialog</h1>
-            <a class="ui-action-back ui-icon ui-icon-left-nav ui-pull-left"></a>
-        </header>
+        <header class="ui-nav-bar">
+        <div class="ui-nav-bar-inner">
+            <h1 class="ui-nav-bar-title">Request</h1>
+        </div>
+    </header>
             <a id='alertBtn' class="button button-block button-rounded button-primary button-large">新建一个表</a>
             <a id='confirmBtn' class="button button-block button-rounded button-action button-large">评分框</a>
             <a id='promptBtn' class="button button-block button-rounded button-highlight button-large">提示框</a>
@@ -29,7 +30,6 @@
     </body>
      <script>
             $(function(require){
-                require("button");
                 $('#alertBtn').tap(function(btn,el){
                       RQ.newTable({
                         appID:'781',

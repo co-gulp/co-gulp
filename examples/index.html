@@ -10,38 +10,223 @@
 
 		<link rel="stylesheet" href="dist/css/co.min.css">
     <style type="text/css">
-      .ui-title {
-        font-weight: bold;
-      }
-        .ui-bar-nav.ui-bar .ui-icon {
-         margin-right: 0px;
-         margin-left: 0px;
-      }        
 </style>
 	</head>
 	<body>
-    <header  class="ui-nav-bar">
+    <header class="ui-nav-bar">
+      <div class="ui-nav-bar-inner">
+        <a class="ui-action-back ui-nav-bar-link"><i class="ui-nav-bar-icon ui-nav-bar-left ui-icon-bars"></i></a>
         <h1 class="ui-nav-bar-title">CO  Widgets</h1>
-        <a class="ui-icon ui-icon-bars ui-pull-left"></a>
-        <a id="info" class="ui-icon ui-icon-info-filled ui-pull-right" style="color: #999;"></a>
-    </header>
-			<div id='treeview' class = 'ui-content'>
-         
+        <a class="ui-nav-bar-link"><i class="ui-nav-bar-icon ui-nav-bar-right ui-icon-info-filled" style="color: #999;"></i></a>
       </div>
+    </header>
+    <div class="ui-accordion-list ui-content">
+        <ul>
+            <li class="ui-accordion-list-item" data-target="accordion.html">
+                <a class="ui-accordion-list-item-link">
+                    <div class="ui-accordion-list-item-inner">
+                        accordion
+                    </div>
+                </a>
+            </li>
+            <li class="ui-accordion-list-item" data-target="accordionList.html">
+                <a class="ui-accordion-list-item-link">
+                    <div class="ui-accordion-list-item-inner">
+                        折叠列表
+                    </div>
+                </a>
+            </li>
+            <li class="ui-accordion-list-item" data-target="button.html">
+                <a class="ui-accordion-list-item-link">
+                    <div class="ui-accordion-list-item-inner">
+                        按钮
+                    </div>
+                </a>
+            </li>
+            <li class="ui-accordion-list-item">
+                <a class="ui-accordion-list-item-link">
+                    <div class="ui-accordion-list-item-inner">
+                        列表
+                    </div>
+                </a>
+                <div class="ui-accordion-list-item-content">
+                    <ul>
+                        <li class="ui-accordion-list-item" data-target="listview/deflistview.html">
+                            <a class="ui-accordion-list-item-link">
+                                <div class="ui-accordion-list-item-inner">
+                                    deflistview
+                                </div>
+                            </a>
+                        </li>
+                       <li class="ui-accordion-list-item" data-target="listview/medialistview.html">
+                            <a class="ui-accordion-list-item-link">
+                                <div class="ui-accordion-list-item-inner">
+                                    medialistview
+                                </div>
+                            </a>
+                        </li>
+                        <li class="ui-accordion-list-item" data-target="listview/customlistview.html">
+                            <a class="ui-accordion-list-item-link">
+                                <div class="ui-accordion-list-item-inner">
+                                    customlistview
+                                </div>
+                            </a>
+                        </li>
+                        <li class="ui-accordion-list-item" data-target="listview/swipelistview.html">
+                            <a class="ui-accordion-list-item-link">
+                                <div class="ui-accordion-list-item-inner">
+                                    swipelistview
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="ui-accordion-list-item" data-target="header.html">
+                <a class="ui-accordion-list-item-link">
+                    <div class="ui-accordion-list-item-inner">
+                        导航
+                    </div>
+                </a>
+            </li>
+            <li class="ui-accordion-list-item" data-target="dialog.html">
+                <a class="ui-accordion-list-item-link">
+                    <div class="ui-accordion-list-item-inner">
+                        弹出框
+                    </div>
+                </a>
+            </li>
+            <li class="ui-accordion-list-item" data-target="cards.html">
+                <a class="ui-accordion-list-item-link">
+                    <div class="ui-accordion-list-item-inner">
+                        cards
+                    </div>
+                </a>
+            </li>
+            <li class="ui-accordion-list-item" data-target="fullpage.html">
+                <a class="ui-accordion-list-item-link">
+                    <div class="ui-accordion-list-item-inner">
+                        滚屏
+                    </div>
+                </a>
+            </li>
+            <li class="ui-accordion-list-item" data-target="searchbar.html">
+                <a class="ui-accordion-list-item-link">
+                    <div class="ui-accordion-list-item-inner">
+                        搜索框
+                    </div>
+                </a>
+            </li>
+            <li class="ui-accordion-list-item" data-target="photoBrowser.html">
+                <a class="ui-accordion-list-item-link">
+                    <div class="ui-accordion-list-item-inner">
+                        图片浏览器
+                    </div>
+                </a>
+            </li>
+            <li class="ui-accordion-list-item" data-target="lazyLoadImage.html">
+                <a class="ui-accordion-list-item-link">
+                    <div class="ui-accordion-list-item-inner">
+                        图片懒加载
+                    </div>
+                </a>
+            </li>
+            <li class="ui-accordion-list-item">
+                <a class="ui-accordion-list-item-link">
+                    <div class="ui-accordion-list-item-inner">
+                        refresh
+                    </div>
+                </a>
+                <div class="ui-accordion-list-item-content">
+                    <ul>
+                        <li class="ui-accordion-list-item" data-target="refresh.html">
+                            <a class="ui-accordion-list-item-link">
+                                <div class="ui-accordion-list-item-inner">
+                                    滚屏刷新
+                                </div>
+                            </a>
+                        </li>
+                       <li class="ui-accordion-list-item"  data-target="refreshList.html">
+                            <a class="ui-accordion-list-item-link">
+                                <div class="ui-accordion-list-item-inner">
+                                    列表刷新
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </li>
+            <li class="ui-accordion-list-item" data-target="input.html">
+                <a class="ui-accordion-list-item-link">
+                    <div class="ui-accordion-list-item-inner">
+                        文本框
+                    </div>
+                </a>
+            </li>
+            <li class="ui-accordion-list-item" data-target="slider.html">
+                <a class="ui-accordion-list-item-link">
+                    <div class="ui-accordion-list-item-inner">
+                        轮播图
+                    </div>
+                </a>
+            </li>
+            <li class="ui-accordion-list-item" data-target="progressBar/progressbar.html">
+                <a class="ui-accordion-list-item-link">
+                    <div class="ui-accordion-list-item-inner">
+                        进度条
+                    </div>
+                </a>
+            </li>
+            <li class="ui-accordion-list-item" data-target="request/request.html">
+                <a class="ui-accordion-list-item-link">
+                    <div class="ui-accordion-list-item-inner">
+                        request
+                    </div>
+                </a>
+            </li>
+            <li class="ui-accordion-list-item" data-target="switche.html">
+                <a class="ui-accordion-list-item-link">
+                    <div class="ui-accordion-list-item-inner">
+                        开关
+                    </div>
+                </a>
+            </li>
+            <li class="ui-accordion-list-item" data-target="tabs.html">
+                <a class="ui-accordion-list-item-link">
+                    <div class="ui-accordion-list-item-inner">
+                        Tab bar
+                    </div>
+                </a>
+            </li>
+             <li class="ui-accordion-list-item" data-target="navigator.html">
+                <a class="ui-accordion-list-item-link">
+                    <div class="ui-accordion-list-item-inner">
+                        Nav bar
+                    </div>
+                </a>
+            </li>
+             <li class="ui-accordion-list-item" data-target="swipePage.html">
+                <a class="ui-accordion-list-item-link">
+                    <div class="ui-accordion-list-item-inner">
+                        swipePage
+                    </div>
+                </a>
+            </li>
+            
+        </ul>
+    </div>
+			
        <script src="dist/js/dom.js"></script>
 		   <script src="dist/js/co.js"></script>
        <script src="data-index.js"></script>
 </body>
 <script>
   domReady(function(require){
-        require("treeview");
-        $('#treeview').treeview({
-                    // iscroll:true,
-                    callback:function(el,evt){
-                       $local.Win.openWin($(el).attr('tar'));
-                    },
-                    data:data
-                });
+      require("accordionList");
+      $('.ui-accordion-list').accordionList({});
+      $('.ui-accordion-list').on('tapped',function(e,el){
+        $local.Win.openWin(el.data('target'));
+      })
   })
    </script>
 </html>

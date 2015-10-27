@@ -8,12 +8,14 @@
         CLASS_ACCORDION = 'ui-accordion',
         CLASS_ACCORDION_ITEM_CONTENT = 'ui-accordion-item-content',
         CLASS_ACCORDION_ITEM_INNER = 'ui-accordion-item-inner',
+        CLASS_ACCORDION_ITEM_TITLE = 'ui-accordion-item-title',
         CLASS_ACCORDION_ITEM_LINK_EXPANDED = 'ui-accordion-item-link-expanded';
 
     var SELECTOR_ACCORDION_ITEM = '.' + CLASS_ACCORDION_ITEM,
         SELECTOR_ACCORDION_ITEM_EXPANDED = '.' + CLASS_ACCORDION_ITEM_EXPANDED,
         SELECTOR_ACCORDION_ITEM_LINK = '.' + CLASS_ACCORDION_ITEM_LINK,
         SELECTOR_ACCORDION_ITEM_INNER = '.' + CLASS_ACCORDION_ITEM_INNER,
+        SELECTOR_ACCORDION_ITEM_TITLE = '.' + CLASS_ACCORDION_ITEM_TITLE,
         SELECTOR_ACCORDION = '.' + CLASS_ACCORDION,
         SELECTOR_ACCORDION_ITEM_CONTENT = '.' + CLASS_ACCORDION_ITEM_CONTENT;
 
@@ -26,6 +28,7 @@
             _acd.accordionOpen(item);
         })
         opts.toggleClose = toggleClose;
+        // _acd.ref.width()
     };
 
     //绑定事件
@@ -33,11 +36,8 @@
         var _acd = this,
             opts = _acd.opts;
         _acd.ref.on(_acd.touchEve(), function(evt) {
-            if ($(evt.target).is(SELECTOR_ACCORDION_ITEM_INNER)) {
-                var clicked = $(evt.target).closest(SELECTOR_ACCORDION_ITEM_LINK);
-                var accordionItem = clicked.parent(SELECTOR_ACCORDION_ITEM);
-                if (accordionItem.length === 0) accordionItem = clicked.parents(SELECTOR_ACCORDION_ITEM);
-                if (accordionItem.length === 0) accordionItem = clicked.parents('li');
+            if ($(evt.target).is(SELECTOR_ACCORDION_ITEM_INNER) || $(evt.target).is(SELECTOR_ACCORDION_ITEM_TITLE) || $(evt.target).is(SELECTOR_ACCORDION_ITEM_LINK)) {
+                var accordionItem = $(evt.target).closest(SELECTOR_ACCORDION_ITEM);
                 _acd.accordionToggle(accordionItem);
             }
         })
@@ -81,10 +81,11 @@
             content.css('height', content[0].scrollHeight + 'px').transitionEnd(function() {
                 content.transition(0);
                 content.css('height', 'auto');
+                var clientLeft = content[0].clientLeft;
                 content.transition('');
-                item.trigger('opened');
+                _acd.ref.trigger('opened', [item]);
             });
-            item.trigger('open');
+            _acd.ref.trigger('open', [item]);
             item.addClass(CLASS_ACCORDION_ITEM_EXPANDED);
             $(item.children()[0]).addClass(CLASS_ACCORDION_ITEM_LINK_EXPANDED);
         };
@@ -103,9 +104,9 @@
                 content.transition(0);
                 content.css('height', '');
                 content.transition('');
-                item.trigger('closed');
+                _acd.ref.trigger('closed', [item]);
             });
-            item.trigger('close');
+            _acd.ref.trigger('close', [item]);
             item.removeClass(CLASS_ACCORDION_ITEM_EXPANDED);
             $(item.children()[0]).removeClass(CLASS_ACCORDION_ITEM_LINK_EXPANDED);
         };

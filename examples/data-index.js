@@ -3,6 +3,10 @@ var data = [{
     name: "accordion",
     tar: "accordion.html"
 }, {
+    cont: '折叠列表',
+    name: "accordion",
+    tar: "accordionList.html"
+},{
     cont: "按钮",
     name: "control",
     tar: "button.html"

@@ -2,7 +2,6 @@
  *  @file 实现了通用highlight方法。
  *  @name Highlight
  *  @desc 点击高亮效果
- *  @import zepto.js
  */
 ;(function( $ ) {
     var $doc = $( document ),

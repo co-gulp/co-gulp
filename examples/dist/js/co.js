@@ -1069,7 +1069,7 @@ var domReady = function(factory) {
     loader.use(deps, function() {
       if (($.os.android || $.os.ios) && global.rd) {
         if (($.os.ios) && (parseFloat($.os.version) >= 7)) {
-          $(document).find('.ui-bar-nav').addClass('ui-bar-nav-IOS7');
+          $(document).find('.ui-nav-bar').addClass('ui-nav-bar-IOS7');
           $(document).find('.ui-content').css('top','64px');
         }
         // if(false){
@@ -1083,7 +1083,6 @@ var domReady = function(factory) {
       } else {
         factory.call(null, loader.require);
       }
-
 
       $(document).find('.ui-action-back').button(function(evt) {
         this.back();
@@ -1169,14 +1168,15 @@ $.fn.ready = function(callback) {
 /*===============================================================================
 ************   $.fn extend end ************
 ===============================================================================*/    
-})(this,seajs);
-
-window.onerror = function(sMsg,sUrl,sLine,columnNumber,error){
-  var str = "Error: " + sMsg + "----------";
-  str+="Line: " + sLine + "-----------";
-  str+="URL: " + sUrl + "---------";
-  str+="columnNumber: " + columnNumber + "---------";
-  str+="error: " + error + "---------";
-  alert(str)
-  return false;
+})(this, seajs);
+if (($.os.android || $.os.ios) && window.rd) {
+	window.onerror = function(sMsg, sUrl, sLine, columnNumber, error) {
+		var str = "Error: " + sMsg + "----------";
+		str += "Line: " + sLine + "-----------";
+		str += "URL: " + sUrl + "---------";
+		str += "columnNumber: " + columnNumber + "---------";
+		str += "error: " + error + "---------";
+		alert(str)
+		return false;
+	}
 }

@@ -11,11 +11,17 @@
 	</head>
 
 	<body>
-     <header  class="ui-bar ui-bar-nav">
-            <h1 class="ui-title">MediaListView</h1>
-            <a class="ui-action-back ui-icon ui-icon-left-nav ui-pull-left"></a>
-        </header>
-        <div class = 'ui-content'>
+     <header class="ui-nav-bar">
+        <div class="ui-nav-bar-inner">
+            <a class="ui-action-back ui-nav-bar-link">
+                <i class="ui-nav-bar-icon ui-nav-bar-left ui-icon-left-nav"><span class="ui-nav-bar-des">Back</span>
+          </i>
+            </a>
+            <h1 class="ui-nav-bar-title">MediaListView</h1>
+            <a class="ui-nav-bar-link"><i class="ui-nav-bar-icon ui-nav-bar-right ui-icon-bars"></i></a>
+        </div>
+    </header>
+    <div class = 'ui-content'>
   	<div class="ui-list-block ui-media-list">
           <ul>
             <li><div class="ui-list-item-link ui-list-item-content">
@@ -166,6 +172,7 @@
           </ul>
         </div>
       </div>
+    </div>
        <script src="../dist/js/dom.js"></script>
 	<script src="../dist/js/co.js"></script>
 </body>

@@ -60,7 +60,7 @@ var domReady = function(factory) {
     loader.use(deps, function() {
       if (($.os.android || $.os.ios) && global.rd) {
         if (($.os.ios) && (parseFloat($.os.version) >= 7)) {
-          $(document).find('.ui-bar-nav').addClass('ui-bar-nav-IOS7');
+          $(document).find('.ui-nav-bar').addClass('ui-nav-bar-IOS7');
           $(document).find('.ui-content').css('top','64px');
         }
         // if(false){
@@ -74,7 +74,6 @@ var domReady = function(factory) {
       } else {
         factory.call(null, loader.require);
       }
-
 
       $(document).find('.ui-action-back').button(function(evt) {
         this.back();

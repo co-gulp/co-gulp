@@ -18,6 +18,7 @@ PS. 参数中带有 [  ] 的意指可选的意思
 	-	[toggleClass](#toggleClass) 
 	-	[attr](#attr) 
 	-	[removeAttr](#removeAttr) 
+	-	[data](#data) 
 	-	[prop](#prop) 
 	-	[val](#val) 
 	-	[width](#width) 
@@ -213,7 +214,11 @@ ps. 要读取DOM自身带有的属性如 checked和selected, 使用 prop。
 
 读取或设置dom元素的属性值。它在读取属性值的情况下优先于 attr，因为这些属性值会因为用户的交互发生改变，如checked 和 selected。
 
+##<div id="data">data</div>
+*	data(name)   ⇒ value
+*	data(name, value)   ⇒ self
 
+读取或写入dom的 data-* 属性。行为有点像 attr ，但是属性名称前面加上 data-。
 
 ##<div id="val">val</div>
 *	val()   ⇒ string
