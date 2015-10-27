@@ -5,7 +5,7 @@ if (global.co) {
 var co = global.co = {
   // The current version of co.js being used
   version: "1.0.1",
-  verticalSwipe: true  //是否可以纵向滑动
+  verticalSwipe: true //是否可以纵向滑动
 }
 
 function isType(type) {
@@ -36,34 +36,17 @@ function parseDependencies(code) {
 
   return ret
 }
-
-if (!global.requestAnimationFrame) {
-  var lastTime = 0;
-  global.requestAnimationFrame = global.webkitRequestAnimationFrame || function(callback, element) {
-    var currTime = new Date().getTime();
-    var timeToCall = Math.max(0, 16.7 - (currTime - lastTime));
-    var id = global.setTimeout(function() {
-      callback(currTime + timeToCall);
-    }, timeToCall);
-    lastTime = currTime + timeToCall;
-    return id;
-  };
-  global.cancelAnimationFrame = global.webkitCancelAnimationFrame || global.webkitCancelRequestAnimationFrame || function(id) {
-    clearTimeout(id);
-  };
-};
-
+if (($.os.android || $.os.ios)) {
+  if (($.os.ios) && (parseFloat($.os.version) >= 7)) {
+    $(document.body).addClass('ui-ios7');
+  }
+}
 
 var domReady = function(factory) {
   if (isFunction(factory)) {
     var deps = parseDependencies(factory.toString())
     loader.use(deps, function() {
       if (($.os.android || $.os.ios) && global.rd) {
-        if (($.os.ios) && (parseFloat($.os.version) >= 7)) {
-          $(document).find('.ui-nav-bar').addClass('ui-nav-bar-IOS7');
-          $(document).find('.ui-content').css('top','64px');
-        }
-        // if(false){
         setTimeout(function() {
           if (domReady.isReady) {
             factory.call(null, loader.require);

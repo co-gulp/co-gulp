@@ -1014,7 +1014,7 @@ if (global.co) {
 var co = global.co = {
   // The current version of co.js being used
   version: "1.0.1",
-  verticalSwipe: true  //是否可以纵向滑动
+  verticalSwipe: true //是否可以纵向滑动
 }
 
 function isType(type) {
@@ -1045,34 +1045,17 @@ function parseDependencies(code) {
 
   return ret
 }
-
-if (!global.requestAnimationFrame) {
-  var lastTime = 0;
-  global.requestAnimationFrame = global.webkitRequestAnimationFrame || function(callback, element) {
-    var currTime = new Date().getTime();
-    var timeToCall = Math.max(0, 16.7 - (currTime - lastTime));
-    var id = global.setTimeout(function() {
-      callback(currTime + timeToCall);
-    }, timeToCall);
-    lastTime = currTime + timeToCall;
-    return id;
-  };
-  global.cancelAnimationFrame = global.webkitCancelAnimationFrame || global.webkitCancelRequestAnimationFrame || function(id) {
-    clearTimeout(id);
-  };
-};
-
+if (($.os.android || $.os.ios)) {
+  if (($.os.ios) && (parseFloat($.os.version) >= 7)) {
+    $(document.body).addClass('ui-ios7');
+  }
+}
 
 var domReady = function(factory) {
   if (isFunction(factory)) {
     var deps = parseDependencies(factory.toString())
     loader.use(deps, function() {
       if (($.os.android || $.os.ios) && global.rd) {
-        if (($.os.ios) && (parseFloat($.os.version) >= 7)) {
-          $(document).find('.ui-nav-bar').addClass('ui-nav-bar-IOS7');
-          $(document).find('.ui-content').css('top','64px');
-        }
-        // if(false){
         setTimeout(function() {
           if (domReady.isReady) {
             factory.call(null, loader.require);
@@ -1109,55 +1092,87 @@ $.fn.ready = function(callback) {
 /*===============================================================================
 ************   ui native window   ************
 ===============================================================================*/
-    
-    var $local = global.$local = {};
-    (function($L,global) {
-       $L.Win = {
-          openWin : function(url,id,options,type){
-              if(co.plus){
-                id = id||url;
-                type = type||0;
-                options = options||{type:$N.window.ANIMATION_TYPE_PUSH,time:150,curve:$N.window.ANIMATION_CURVE_LINEAR};
-                $N.window.openWindow(id,type,url,options);
-              }else{
-                global.location.href=url;
-              }
-              return this;
-            },
 
-          backWin : function(id,options){
-              if(co.plus){
-                options = options||{type:$N.window.ANIMATION_TYPE_PUSH,time:150,curve:$N.window.ANIMATION_CURVE_LINEAR};
-                $N.window.backToWindow(id,options);
-              }else{
-                if(global.history.length > 1) {
-                  global.history.back();
-                }
-              }
-              return this;
-            }  
-       }
-    }($local,global));
+var Native = function () {
+    
+};
+
+Native.genericize = function (object, property, check) {
+    if ((!check || !object[property]) && typeof object.prototype[property] == 'function') object[property] = function () {
+        var args = Array.prototype.slice.call(arguments);
+        return object.prototype[property].apply(args.shift(), args);
+    };
+};
+
+Native.implement = function (objects, properties) {
+    for (var i = 0, l = objects.length; i < l; i++) objects[i].implement(properties);
+};
+
+Native.typize = function (object, family) {
+    if (!object.type) object.type = function (item) {
+        return ($type(item) === family);
+    };
+};
+
+(function () {
+    var natives = {'Array':Array, 'Date':Date, 'Function':Function, 'Number':Number, 'RegExp':RegExp, 'String':String};
+    for (var n in natives) new Native({name:n, initialize:natives[n], protect:true});
+
+    var types = {'boolean':Boolean, 'native':Native, 'object':Object};
+    for (var t in types) Native.typize(types[t], t);
+
+    var generics = {
+        'Array':["concat", "indexOf", "join", "lastIndexOf", "pop", "push", "reverse", "shift", "slice", "sort", "splice", "toString", "unshift", "valueOf"],
+        'String':["charAt", "charCodeAt", "concat", "indexOf", "lastIndexOf", "match", "replace", "search", "slice", "split", "substr", "substring", "toLowerCase", "toUpperCase", "valueOf"]
+    };
+    for (var g in generics) {
+        for (var i = generics[g].length; i--;) Native.genericize(window[g], generics[g][i], true);
+    }
+    ;
+})();
+
+(function(global) {
+  var $L = function(){
+      return this;
+  }
+  $L.prototype = {
+    openWin: function(url, id, options, type) {
+      if (co.plus) {
+        id = id || url;
+        type = type || 0;
+        options = options || {
+          type: $N.window.ANIMATION_TYPE_PUSH,
+          time: 150,
+          curve: $N.window.ANIMATION_CURVE_LINEAR
+        };
+        $N.window.openWindow(id, type, url, options);
+      } else {
+        global.location.href = url;
+      }
+      return this;
+    },
+
+    backWin: function(id, options) {
+      if (co.plus) {
+        options = options || {
+          type: $N.window.ANIMATION_TYPE_PUSH,
+          time: 150,
+          curve: $N.window.ANIMATION_CURVE_LINEAR
+        };
+        $N.window.backToWindow(id, options);
+      } else {
+        if (global.history.length > 1) {
+          global.history.back();
+        }
+      }
+      return this;
+    }
+  }
+  global.$local = new $L();
+}(global));
 /*===============================================================================
 ************   ui native window end  ************
-===============================================================================*/    
-    
-    (function(global) {
-       var $A = {
-          fullIos7Bar : function(){
-             
-          },
-
-          fullStatusBar : function(){
-             
-          },
-
-          toast : function(){
-             
-          }
-       }
-       global.$app = $A;
-    }(global));
+===============================================================================*/
 /*===============================================================================
 ************   $.fn extend   ************
 ===============================================================================*/

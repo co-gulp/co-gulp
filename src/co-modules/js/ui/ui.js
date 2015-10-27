@@ -126,10 +126,10 @@ define(function(require, exports, module) {
     };  
   Base.back = function(id,ottions) {
         id = id||'root';
-       $local.Win.backWin(id,ottions);
+       $local.backWin(id,ottions);
     }; 
   Base.openWin = function(url,id,options,type) {
-       $local.Win.openWin(url,id,options,type);
+       $local.openWin(url,id,options,type);
     };   
 
   $ui.define = function( name, options) {

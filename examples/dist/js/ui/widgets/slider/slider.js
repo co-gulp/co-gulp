@@ -287,7 +287,6 @@
         $slider.prototype.play = function() {
             var _sl = this,
                 opts = _sl.opts;
-
             if (opts.autoPlay && !_sl._timer) {
                 _sl._timer = setTimeout(function() {
                     _sl.slideTo(_sl.index + 1);
