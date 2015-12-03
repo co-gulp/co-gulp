@@ -1,6 +1,5 @@
-
-
-;(function($){
+;
+(function($) {
   var touch = {},
     touchTimeout, tapTimeout, swipeTimeout, longTapTimeout,
     longTapDelay = 750,
@@ -33,19 +32,20 @@
     touch = {}
   }
 
-  function isPrimaryTouch(event){
+  function isPrimaryTouch(event) {
     return (event.pointerType == 'touch' ||
-      event.pointerType == event.MSPOINTER_TYPE_TOUCH)
-      && event.isPrimary
+      event.pointerType == event.MSPOINTER_TYPE_TOUCH) && event.isPrimary
   }
 
-  function isPointerEventType(e, type){
-    return (e.type == 'pointer'+type ||
-      e.type.toLowerCase() == 'mspointer'+type)
+  function isPointerEventType(e, type) {
+    return (e.type == 'pointer' + type ||
+      e.type.toLowerCase() == 'mspointer' + type)
   }
 
-  $(document).ready(function(){
-    var now, delta, deltaX = 0, deltaY = 0, firstTouch, _isPointerType
+  $(document).ready(function() {
+    var now, delta, deltaX = 0,
+      deltaY = 0,
+      firstTouch, _isPointerType
 
     if ('MSGesture' in window) {
       gesture = new MSGesture()
@@ -53,16 +53,16 @@
     }
 
     $(document)
-      .bind('MSGestureEnd', function(e){
+      .bind('MSGestureEnd', function(e) {
         var swipeDirectionFromVelocity =
           e.velocityX > 1 ? 'Right' : e.velocityX < -1 ? 'Left' : e.velocityY > 1 ? 'Down' : e.velocityY < -1 ? 'Up' : null;
         if (swipeDirectionFromVelocity) {
           touch.el.trigger('swipe')
-          touch.el.trigger('swipe'+ swipeDirectionFromVelocity)
+          touch.el.trigger('swipe' + swipeDirectionFromVelocity)
         }
       })
-      .on('touchstart MSPointerDown pointerdown', function(e){
-        if((_isPointerType = isPointerEventType(e, 'down')) &&
+      .on('touchstart MSPointerDown pointerdown', function(e) {
+        if ((_isPointerType = isPointerEventType(e, 'down')) &&
           !isPrimaryTouch(e)) return
         firstTouch = _isPointerType ? e : e.touches[0]
         if (e.touches && e.touches.length === 1 && touch.x2) {
@@ -81,11 +81,11 @@
         if (delta > 0 && delta <= 250) touch.isDoubleTap = true
         touch.last = now
         longTapTimeout = setTimeout(longTap, longTapDelay)
-        // adds the current touch contact for IE gesture recognition
+          // adds the current touch contact for IE gesture recognition
         if (gesture && _isPointerType) gesture.addPointer(e.pointerId);
       })
-      .on('touchmove MSPointerMove pointermove', function(e){
-        if((_isPointerType = isPointerEventType(e, 'move')) &&
+      .on('touchmove MSPointerMove pointermove', function(e) {
+        if ((_isPointerType = isPointerEventType(e, 'move')) &&
           !isPrimaryTouch(e)) return
         firstTouch = _isPointerType ? e : e.touches[0]
         cancelLongTap()
@@ -95,25 +95,27 @@
         deltaX += Math.abs(touch.x1 - touch.x2)
         deltaY += Math.abs(touch.y1 - touch.y2)
       })
-      .on('touchend MSPointerUp pointerup', function(e){
-        if((_isPointerType = isPointerEventType(e, 'up')) &&
+      .on('touchend MSPointerUp pointerup', function(e) {
+        if ((_isPointerType = isPointerEventType(e, 'up')) &&
           !isPrimaryTouch(e)) return
         cancelLongTap()
 
         // swipe
         if ((touch.x2 && Math.abs(touch.x1 - touch.x2) > 30) ||
-            (touch.y2 && Math.abs(touch.y1 - touch.y2) > 30))
+          (touch.y2 && Math.abs(touch.y1 - touch.y2) > 30))
 
           swipeTimeout = setTimeout(function() {
+          if (touch && touch.el) {
             touch.el.trigger('swipe')
             touch.el.trigger('swipe' + (swipeDirection(touch.x1, touch.x2, touch.y1, touch.y2)))
             touch = {}
-          }, 0)
+          }
+        }, 0)
 
         // normal tap
         else if ('last' in touch)
-          // don't fire tap when delta position changed by more than 30 pixels,
-          // for instance when moving to a point and back to origin
+        // don't fire tap when delta position changed by more than 30 pixels,
+        // for instance when moving to a point and back to origin
           if (deltaX < 30 && deltaY < 30) {
             // delay by one tick so we can cancel the 'tap' event if 'scroll' fires
             // ('tap' fires before 'scroll')
@@ -133,7 +135,7 @@
 
               // trigger single tap after 250ms of inactivity
               else {
-                touchTimeout = setTimeout(function(){
+                touchTimeout = setTimeout(function() {
                   touchTimeout = null
                   if (touch.el) touch.el.trigger('singleTap')
                   touch = {}
@@ -143,7 +145,7 @@
           } else {
             touch = {}
           }
-          deltaX = deltaY = 0
+        deltaX = deltaY = 0
 
       })
       // when the browser window loses focus,
@@ -156,8 +158,12 @@
     $(window).on('scroll', cancelAll)
   })
 
-  ;['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown',
-    'doubleTap', 'tap', 'singleTap', 'longTap'].forEach(function(eventName){
-    $.fn[eventName] = function(callback){ return this.on(eventName, callback) }
+  ;
+  ['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown',
+    'doubleTap', 'tap', 'singleTap', 'longTap'
+  ].forEach(function(eventName) {
+    $.fn[eventName] = function(callback) {
+      return this.on(eventName, callback)
+    }
   })
 })(Dom);

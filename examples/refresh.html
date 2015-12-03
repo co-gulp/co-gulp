@@ -471,7 +471,7 @@
 
 		        $(document.body).on('beforeRefresh',function(){
 		        	fp.stop();
-		        }).on('afterRefresh',function(){
+		        }).on('afterRefresh cancelRefresh',function(){
 		        	fp.start();
 		        })
 		    });

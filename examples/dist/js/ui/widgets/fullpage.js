@@ -65,10 +65,12 @@
             if (_fp.movingFlag) {
                 return 0;
             }
-
+            console.log(e.changedTouches[0].pageY - _fp.startY);
             var sub = (e.changedTouches[0].pageY - _fp.startY) / _fp.height;
-            var der = (sub > opts.der || sub < -opts.der) ? sub > 0 ? -1 : 1 : 0;
-            _fp.dir = sub > 0 ? 1 : -1 // -1 向上 1 向下
+            console.log(sub);
+            var der = ((sub > 0 && sub > opts.der) || (sub < 0&&sub < -opts.der)) ? sub > 0 ? -1 : 1 : 0;
+            _fp.dir = -der // -1 向上 1 向下
+            console.log(_fp.dir);
             moveTo.call(_fp, _fp.curIndex + der, true);
 
         });
@@ -118,9 +120,10 @@
         var _fp = this,
             opts = _fp.opts;
         if (opts.fullPage) {
+            $(document.body).css('position','absolute');
             _fp.height = $(document.body).height();
         } else {
-            _fp.height = _fp._inner.height();
+            _fp.height = _fp.ref.parent().height();
         }
         _fp.ref.height(_fp.height);
         _fp._pages.height(_fp.height);
@@ -173,8 +176,8 @@
 
         return cur;
     };
-
     var move = function(car, speed) {
+        isMove = true;
         var _fp = this,
             opts = _fp.opts;
         var pre = car - 1 > -1 ? car - 1 : _fp.pagesLength - 1;
@@ -189,16 +192,52 @@
         } else {
             speedNext = 0;
         }
-
-        _fp._pages[pre].style.cssText += cssPrefix + 'transition-duration:' + speedPre +
-            'ms;' + cssPrefix + 'transform: translate(0,' +
-            (0 - _fp._pages[pre].offsetTop - _fp.height) + 'px)' + translateZ + ';';
-        _fp._pages[car].style.cssText += cssPrefix + 'transition-duration:' + speed +
-            'ms;' + cssPrefix + 'transform: translate(0,' +
-            (0 - _fp._pages[car].offsetTop) + 'px)' + translateZ + ';';
-        _fp._pages[next].style.cssText += cssPrefix + 'transition-duration:' + speedNext +
-            'ms;' + cssPrefix + 'transform: translate(0,' +
-            (0 - _fp._pages[next].offsetTop + _fp.height) + 'px)' + translateZ + ';';
+        console.log(_fp.dir);
+        if (_fp.pagesLength == 1) {
+            _fp._pages[car].style.cssText += cssPrefix + 'transition-duration:' + speed +
+                'ms;' + cssPrefix + 'transform: translate(0,' +
+                (0 - _fp._pages[car].offsetTop) + 'px)' + translateZ + ';';
+        } else if (_fp.pagesLength == 2) {
+            if (typeof _fp.dir === 'undefined') {
+                _fp._pages[car].style.cssText += cssPrefix + 'transition-duration:' + speed +
+                    'ms;' + cssPrefix + 'transform: translate(0,' +
+                    (0 - _fp._pages[car].offsetTop) + 'px)' + translateZ + ';';
+                _fp._pages[next].style.cssText += cssPrefix + 'transition-duration:' + 0 +
+                    'ms;' + cssPrefix + 'transform: translate(0,' +
+                    (0 - _fp._pages[next].offsetTop + _fp.height) + 'px)' + translateZ + ';';
+            } else if (_fp.dir == -1) { //向上
+                _fp._pages[car].style.cssText += cssPrefix + 'transition-duration:' + 0 +
+                    'ms;' + cssPrefix + 'transform: translate(0,' +
+                    (0 - _fp._pages[car].offsetTop + _fp.height) + 'px)' + translateZ + ';';
+                _fp._pages[pre].style.cssText += cssPrefix + 'transition-duration:' + speed +
+                    'ms;' + cssPrefix + 'transform: translate(0,' +
+                    (0 - _fp._pages[pre].offsetTop - _fp.height) + 'px)' + translateZ + ';';
+                _fp._pages[car].style.cssText += cssPrefix + 'transition-duration:' + speed +
+                    'ms;' + cssPrefix + 'transform: translate(0,' +
+                    (0 - _fp._pages[car].offsetTop) + 'px)' + translateZ + ';';
+                
+            } else if (_fp.dir == 1) { //向下
+                _fp._pages[car].style.cssText += cssPrefix + 'transition-duration:' + 0 +
+                    'ms;' + cssPrefix + 'transform: translate(0,' +
+                    (0 - _fp._pages[car].offsetTop - _fp.height - _fp.height) + 'px)' + translateZ + ';';
+                _fp._pages[pre].style.cssText += cssPrefix + 'transition-duration:' + speed +
+                    'ms;' + cssPrefix + 'transform: translate(0,' +
+                    (0 - _fp._pages[pre].offsetTop + _fp.height) + 'px)' + translateZ + ';';
+                _fp._pages[car].style.cssText += cssPrefix + 'transition-duration:' + speed +
+                    'ms;' + cssPrefix + 'transform: translate(0,' +
+                    (0 - _fp._pages[car].offsetTop) + 'px)' + translateZ + ';';
+            }
+        } else {
+            _fp._pages[pre].style.cssText += cssPrefix + 'transition-duration:' + speedPre +
+                'ms;' + cssPrefix + 'transform: translate(0,' +
+                (0 - _fp._pages[pre].offsetTop - _fp.height) + 'px)' + translateZ + ';';
+            _fp._pages[car].style.cssText += cssPrefix + 'transition-duration:' + speed +
+                'ms;' + cssPrefix + 'transform: translate(0,' +
+                (0 - _fp._pages[car].offsetTop) + 'px)' + translateZ + ';';
+            _fp._pages[next].style.cssText += cssPrefix + 'transition-duration:' + speedNext +
+                'ms;' + cssPrefix + 'transform: translate(0,' +
+                (0 - _fp._pages[next].offsetTop + _fp.height) + 'px)' + translateZ + ';';
+        }
     };
 
     var moveTo = function(next, anim) {
@@ -216,6 +255,8 @@
 
         if (next !== cur) {
             _fp.ref.trigger('beforeChange', [cur, next]);
+        }else{
+            return;
         }
 
         _fp.movingFlag = true;
@@ -239,7 +280,7 @@
                 _fp._pages.removeClass('active').eq(next).addClass('active');
                 opts.dots && updateDots.apply(_fp, [next, cur]);
             }
-        }, opts.speed);
+        }, opts.speed+100);
 
         return this;
     };

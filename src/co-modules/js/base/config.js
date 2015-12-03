@@ -2,14 +2,9 @@ seajs.config({
       alias: {
           'ui': 'ui/ui',
           'iscroll': 'libs/iscroll',
-          'swipeout': 'libs/swipeout',
           'accordion' : 'ui/widgets/accordion',
           'accordionList' : 'ui/widgets/accordionList',
-          'button' : 'ui/widgets/button',
-          'checkbox' : 'ui/widgets/checkbox',
           'dialog' : 'ui/widgets/dialog',
-          'radio' : 'ui/widgets/checkbox',
-          'select' : 'ui/widgets/select',
           'input' : 'ui/widgets/input',
           'switch':'ui/widgets/switch',
           'slider':'ui/widgets/slider/slider',
@@ -20,14 +15,15 @@ seajs.config({
           'swipelist' : 'ui/widgets/swipelist',
           'tab' : 'ui/widgets/tabs/tabs',
           'navigator' : 'ui/widgets/navigator',
-          'swipePage' : 'ui/widgets/swipePage',
+          'swipepage' : 'ui/widgets/swipepage',
           'treeview' : 'ui/widgets/treeview',
           'refresh' : 'ui/widgets/refresh',
           'fullpage' : 'ui/widgets/fullpage',
           'searchbar' : 'ui/widgets/searchbar',
-          'photoBrowser' : 'ui/widgets/photoBrowser',
-          'lazyLoadImage' : 'ui/widgets/lazyLoadImage',
-          'scroll' : 'ui/widgets/iscroll'
+          'photobrowser' : 'ui/widgets/photobrowser',
+          'lazyloadimage' : 'ui/widgets/lazyloadimage',
+          'scroll' : 'ui/widgets/iscroll',
+          'debug' : 'debug'
       },
-      preload: ['ui','button','checkbox','select','input']
+      preload: ['ui','input']
   });

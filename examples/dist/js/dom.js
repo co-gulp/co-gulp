@@ -1,6 +1,6 @@
  /* ===========================
-                                 Dom Library
-                             ===========================*/
+                                      Dom Library
+                                  ===========================*/
  var Dom = (function() {
      var emptyArray = [],
          concat = emptyArray.concat,
@@ -18,6 +18,9 @@
              'z-index': 1,
              'zoom': 1
          },
+         fragmentRE = /^\s*<(\w+|!)[^>]*>/,
+         singleTagRE = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
+         adjacencyOperators = ['after', 'prepend', 'before', 'append'],
          simpleSelectorRE = /^[\w-]*$/,
          isAndroid = (/android/gi).test(navigator.appVersion),
          elementDisplay = {},
@@ -25,6 +28,15 @@
          classCache = {},
          table = document.createElement('table'),
          tableRow = document.createElement('tr'),
+         containers = {
+             'tr': document.createElement('tbody'),
+             'tbody': table,
+             'thead': table,
+             'tfoot': table,
+             'td': tableRow,
+             'th': tableRow,
+             '*': document.createElement('div')
+         },
          toString = class2type.toString,
          isArray = Array.isArray ||
          function(object) {
@@ -168,6 +180,16 @@
          temp && tempParent.removeChild(element)
          return match
      };
+
+     var fragment = function(html, name) {
+         if (name === undefined) name = fragmentRE.test(html) && RegExp.$1
+         if (!(name in containers)) name = '*'
+         var container = containers[name]
+         container.innerHTML = '' + html
+         return $.each(slice.call(container.childNodes), function() {
+             container.removeChild(this)
+         })
+     }
 
      var Dom = function(arr) {
          var _this = this,
@@ -471,6 +493,16 @@
                  return null;
              }
          },
+         map: function(fn) {
+             return $($.map(this, function(el, i) {
+                 return fn.call(el, i, el)
+             }))
+         },
+         clone: function() {
+             return this.map(function() {
+                 return this.cloneNode(true)
+             })
+         },
          hide: function() {
              return this.css("display", "none")
          },
@@ -661,79 +693,6 @@
              var el = this[this.length - 1]
              return el && !isObject(el) ? el : $(el)
          },
-         append: function(newChild) {
-             var i, j;
-             for (i = 0; i < this.length; i++) {
-                 if (typeof newChild === 'string') {
-                     var tempDiv = document.createElement('div');
-                     tempDiv.innerHTML = newChild;
-                     while (tempDiv.firstChild) {
-                         this[i].appendChild(tempDiv.firstChild);
-                     }
-                 } else if (newChild instanceof Dom) {
-                     for (j = 0; j < newChild.length; j++) {
-                         this[i].appendChild(newChild[j]);
-                     }
-                 } else {
-                     this[i].appendChild(newChild);
-                 }
-             }
-             return this;
-         },
-         appendTo: function(target) {
-             $(target).append(this);
-             return this;
-         },
-         prepend: function(newChild) {
-             var i, j;
-             for (i = 0; i < this.length; i++) {
-                 if (typeof newChild === 'string') {
-                     var tempDiv = document.createElement('div');
-                     tempDiv.innerHTML = newChild;
-                     for (j = tempDiv.childNodes.length - 1; j >= 0; j--) {
-                         this[i].insertBefore(tempDiv.childNodes[j], this[i].childNodes[0]);
-                     }
-                     // this[i].insertAdjacentHTML('afterbegin', newChild);
-                 } else if (newChild instanceof Dom) {
-                     for (j = 0; j < newChild.length; j++) {
-                         this[i].insertBefore(newChild[j], this[i].childNodes[0]);
-                     }
-                 } else {
-                     this[i].insertBefore(newChild, this[i].childNodes[0]);
-                 }
-             }
-             return this;
-         },
-         prependTo: function(target) {
-             $(target).prepend(this);
-             return this;
-         },
-         insertBefore: function(selector) {
-             var before = $(selector);
-             for (var i = 0; i < this.length; i++) {
-                 if (before.length === 1) {
-                     before[0].parentNode.insertBefore(this[i], before[0]);
-                 } else if (before.length > 1) {
-                     for (var j = 0; j < before.length; j++) {
-                         before[j].parentNode.insertBefore(this[i].cloneNode(true), before[j]);
-                     }
-                 }
-             }
-             return this;
-         },
-         insertAfter: function(selector) {
-             var after = $(selector);
-             for (var i = 0; i < this.length; i++) {
-                 if (after.length === 1) {
-                     after[0].parentNode.insertBefore(this[i], after[0].nextSibling);
-                 } else if (after.length > 1) {
-                     for (var j = 0; j < after.length; j++) {
-                         after[j].parentNode.insertBefore(this[i].cloneNode(true), after[j].nextSibling);
-                     }
-                 }
-             }
-             return this;
-         },
          next: function(selector) {
              if (this.length > 0) {
                  if (selector) {
@@ -906,7 +865,54 @@
          }
      })
 
+     function insert(operator, target, node) {
+         var parent = (operator % 2) ? target : target.parentNode
+         parent ? parent.insertBefore(node, !operator ? target.nextSibling : // after
+                 operator == 1 ? parent.firstChild : // prepend
+                 operator == 2 ? target : // before
+                 null) : // append
+             $(node).remove()
+     }
+
+     function traverseNode(node, fun) {
+         fun(node)
+         for (var i = 0, len = node.childNodes.length; i < len; i++)
+             traverseNode(node.childNodes[i], fun)
+     }
+
+     // Generate the `after`, `prepend`, `before`, `append`,
+     // `insertAfter`, `insertBefore`, `appendTo`, and `prependTo` methods.
+     adjacencyOperators.forEach(function(key, operator) {
+         $.fn[key] = function() {
+             // arguments can be nodes, arrays of nodes, Zepto objects and HTML strings
+             var nodes = $.map(arguments, function(n) {
+                 return isObject(n) ? n : fragment(n)
+             })
+             if (nodes.length < 1) return this
+             var size = this.length,
+                 copyByClone = size > 1,
+                 inReverse = operator < 2
+
+             return this.each(function(index, target) {
+                 for (var i = 0; i < nodes.length; i++) {
+                     var node = nodes[inReverse ? nodes.length - i - 1 : i]
+                     traverseNode(node, function(node) {
+                         if (node.nodeName != null && node.nodeName.toUpperCase() === 'SCRIPT' && (!node.type || node.type === 'text/javascript'))
+                             window['eval'].call(window, node.innerHTML)
+                     })
+                     if (copyByClone && index < size - 1) node = node.cloneNode(true)
+                     insert(operator, target, node)
+                 }
+             })
+         }
+         $.fn[(operator % 2) ? key + 'To' : 'insert' + (operator ? 'Before' : 'After')] = function(html) {
+             $(html)[key](this)
+             return this
+         }
+     })
+
      // DOM Library Utilites
+     $.uuid = 0
      $.type = type
      $.isFunction = isFunction
      $.isWindow = isWindow
@@ -2133,9 +2139,8 @@
 
 })(Dom)
 
-
-
-;(function($){
+;
+(function($) {
   var touch = {},
     touchTimeout, tapTimeout, swipeTimeout, longTapTimeout,
     longTapDelay = 750,
@@ -2168,19 +2173,20 @@
     touch = {}
   }
 
-  function isPrimaryTouch(event){
+  function isPrimaryTouch(event) {
     return (event.pointerType == 'touch' ||
-      event.pointerType == event.MSPOINTER_TYPE_TOUCH)
-      && event.isPrimary
+      event.pointerType == event.MSPOINTER_TYPE_TOUCH) && event.isPrimary
   }
 
-  function isPointerEventType(e, type){
-    return (e.type == 'pointer'+type ||
-      e.type.toLowerCase() == 'mspointer'+type)
+  function isPointerEventType(e, type) {
+    return (e.type == 'pointer' + type ||
+      e.type.toLowerCase() == 'mspointer' + type)
   }
 
-  $(document).ready(function(){
-    var now, delta, deltaX = 0, deltaY = 0, firstTouch, _isPointerType
+  $(document).ready(function() {
+    var now, delta, deltaX = 0,
+      deltaY = 0,
+      firstTouch, _isPointerType
 
     if ('MSGesture' in window) {
       gesture = new MSGesture()
@@ -2188,16 +2194,16 @@
     }
 
     $(document)
-      .bind('MSGestureEnd', function(e){
+      .bind('MSGestureEnd', function(e) {
         var swipeDirectionFromVelocity =
           e.velocityX > 1 ? 'Right' : e.velocityX < -1 ? 'Left' : e.velocityY > 1 ? 'Down' : e.velocityY < -1 ? 'Up' : null;
         if (swipeDirectionFromVelocity) {
           touch.el.trigger('swipe')
-          touch.el.trigger('swipe'+ swipeDirectionFromVelocity)
+          touch.el.trigger('swipe' + swipeDirectionFromVelocity)
         }
       })
-      .on('touchstart MSPointerDown pointerdown', function(e){
-        if((_isPointerType = isPointerEventType(e, 'down')) &&
+      .on('touchstart MSPointerDown pointerdown', function(e) {
+        if ((_isPointerType = isPointerEventType(e, 'down')) &&
           !isPrimaryTouch(e)) return
         firstTouch = _isPointerType ? e : e.touches[0]
         if (e.touches && e.touches.length === 1 && touch.x2) {
@@ -2216,11 +2222,11 @@
         if (delta > 0 && delta <= 250) touch.isDoubleTap = true
         touch.last = now
         longTapTimeout = setTimeout(longTap, longTapDelay)
-        // adds the current touch contact for IE gesture recognition
+          // adds the current touch contact for IE gesture recognition
         if (gesture && _isPointerType) gesture.addPointer(e.pointerId);
       })
-      .on('touchmove MSPointerMove pointermove', function(e){
-        if((_isPointerType = isPointerEventType(e, 'move')) &&
+      .on('touchmove MSPointerMove pointermove', function(e) {
+        if ((_isPointerType = isPointerEventType(e, 'move')) &&
           !isPrimaryTouch(e)) return
         firstTouch = _isPointerType ? e : e.touches[0]
         cancelLongTap()
@@ -2230,25 +2236,27 @@
         deltaX += Math.abs(touch.x1 - touch.x2)
         deltaY += Math.abs(touch.y1 - touch.y2)
       })
-      .on('touchend MSPointerUp pointerup', function(e){
-        if((_isPointerType = isPointerEventType(e, 'up')) &&
+      .on('touchend MSPointerUp pointerup', function(e) {
+        if ((_isPointerType = isPointerEventType(e, 'up')) &&
           !isPrimaryTouch(e)) return
         cancelLongTap()
 
         // swipe
         if ((touch.x2 && Math.abs(touch.x1 - touch.x2) > 30) ||
-            (touch.y2 && Math.abs(touch.y1 - touch.y2) > 30))
+          (touch.y2 && Math.abs(touch.y1 - touch.y2) > 30))
 
           swipeTimeout = setTimeout(function() {
+          if (touch && touch.el) {
             touch.el.trigger('swipe')
             touch.el.trigger('swipe' + (swipeDirection(touch.x1, touch.x2, touch.y1, touch.y2)))
             touch = {}
-          }, 0)
+          }
+        }, 0)
 
         // normal tap
         else if ('last' in touch)
-          // don't fire tap when delta position changed by more than 30 pixels,
-          // for instance when moving to a point and back to origin
+        // don't fire tap when delta position changed by more than 30 pixels,
+        // for instance when moving to a point and back to origin
           if (deltaX < 30 && deltaY < 30) {
             // delay by one tick so we can cancel the 'tap' event if 'scroll' fires
             // ('tap' fires before 'scroll')
@@ -2268,7 +2276,7 @@
 
               // trigger single tap after 250ms of inactivity
               else {
-                touchTimeout = setTimeout(function(){
+                touchTimeout = setTimeout(function() {
                   touchTimeout = null
                   if (touch.el) touch.el.trigger('singleTap')
                   touch = {}
@@ -2278,7 +2286,7 @@
           } else {
             touch = {}
           }
-          deltaX = deltaY = 0
+        deltaX = deltaY = 0
 
       })
       // when the browser window loses focus,
@@ -2291,12 +2299,15 @@
     $(window).on('scroll', cancelAll)
   })
 
-  ;['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown',
-    'doubleTap', 'tap', 'singleTap', 'longTap'].forEach(function(eventName){
-    $.fn[eventName] = function(callback){ return this.on(eventName, callback) }
+  ;
+  ['swipe', 'swipeLeft', 'swipeRight', 'swipeUp', 'swipeDown',
+    'doubleTap', 'tap', 'singleTap', 'longTap'
+  ].forEach(function(eventName) {
+    $.fn[eventName] = function(callback) {
+      return this.on(eventName, callback)
+    }
   })
 })(Dom);
-
 /**
  * @file 媒体查询
  */
@@ -3120,3 +3131,48 @@ $(function () {
         $(window).trigger('ortchange');
     });
 });
+/*===============================================================================
+************   $.fn extend   ************
+===============================================================================*/
+(function($) {
+	$.fn.button = function(callback) {
+		var self = this;
+		self.on('tab', function(evt) {
+			var ele = evt.currentTarget;
+			if ($.isFunction(callback)) {
+				callback.apply(self, [ele, evt]);
+			}
+		});
+		return self;
+	};
+
+
+	['checkbox', 'radio'].forEach(function(eventName) {
+		$.fn[eventName] = function(callback) {
+			var self = this;
+			var els = eventName == 'checkbox' ? self.find('input[type=checkbox]') : self.find('input[type=radio]');
+			els.on('change', function(evt) {
+				var ele = evt.currentTarget;
+				if ($.isFunction(callback)) {
+					callback.apply(self, [ele, evt]);
+				}
+			});
+			return self;
+		}
+	});
+
+	$.fn.select = function(callback) {
+		var self = this;
+		self.find('select').on("change", function(evt) {
+			var sel = evt.currentTarget;
+			if ($.isFunction(callback)) {
+				callback.apply(self, [sel.options[sel.selectedIndex], evt]);
+			}
+		});
+		return self;
+	};
+}($));
+
+/*===============================================================================
+************   $.fn extend end ************
+===============================================================================*/

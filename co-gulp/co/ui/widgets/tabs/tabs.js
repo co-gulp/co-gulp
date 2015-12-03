@@ -6,11 +6,9 @@
         CLASS_TAB_BAR = 'ui-tab-bar',
         CLASS_TAB_ITEM = 'ui-tab-item',
         CLASS_ACTIVE = 'ui-active',
-        CLASS_SCROLL_WRAPPER = 'ui-scroll-wrapper',
         CLASS_CONTROL_CONTENT = 'ui-control-content';
 
-    var SELECTOR_ACTIVE = '.'+CLASS_ACTIVE,
-        SELECTOR_SCROLL_WRAPPER = '.'+CLASS_SCROLL_WRAPPER;
+    var SELECTOR_ACTIVE = '.'+CLASS_ACTIVE;
 
         _uid = 1,
         uid = function(){

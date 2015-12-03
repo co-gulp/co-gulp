@@ -103,7 +103,7 @@
 
         };
         //注册$插件
-        $.fn.lazyLoadImage = function(opts) {
+        $.fn.lazyloadimage = function(opts) {
             var lazyLoadImageObjs = [];
             opts || (opts = {});
             this.each(function() {

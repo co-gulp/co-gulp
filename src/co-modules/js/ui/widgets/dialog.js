@@ -2,6 +2,8 @@
  * @file 弹出框组件
  */
 (function() {
+    var toast;
+    var clearT;
     var CLASS_MASK = 'ui-mask',
         CLASS_DIALOG_TITLE = 'ui-dialog-title',
         CLASS_DIALOG = 'ui-dialog',
@@ -29,7 +31,14 @@
                 '<% } %>' +
                 '</div> '
         };
-
+    var buttons = {
+        '取消': function() {
+            this.close();
+        },
+        '确定': function() {
+            this.close();
+        }
+    }
 
     //渲染组件
     var render = function() {
@@ -37,10 +46,11 @@
             opts = _dog.opts,
             btns, i = 0,
             vars = {};
+        !opts.buttons && (opts.buttons = buttons)
         _dog._container = $(opts.container || document.body);
         (_dog._cIsBody = _dog._container.is('body')) || _dog._container.addClass(CLASS_DIALOG_CONTAINER);
         vars.btns = btns = [];
-        opts.buttons && $.each(opts.buttons, function(key) {
+        $.each(opts.buttons, function(key) {
             btns.push({
                 index: ++i,
                 text: key,
@@ -173,14 +183,7 @@
              * @property {Array} [buttons=null] 弹出框上的按钮
              * @namespace options
              */
-            buttons: {
-                '取消': function() {
-                    this.close();
-                },
-                '确定': function() {
-                    this.close();
-                }
-            },
+            buttons: null,
             /**
              * @property {Boolean} [mask=true] 是否有遮罩层
              * @namespace options
@@ -223,10 +226,7 @@
         //初始化
         $dialog.prototype.init = function() {
             var _dog = this,
-                opts = _dog.opts,
-                btns, i = 0,
-                vars = {};
-
+                opts = _dog.opts;
             render.call(_dog);
             bind.call(_dog);
             _dog.open();
@@ -309,11 +309,12 @@
                 return new $dialog(opts);
             },
             showToast: function(opts) {
+                $.chk(toast) && toast.remove();
+                window.clearTimeout(clearT);
                 opts = $.extend(true, {
                     time: 2000,
                     message: ''
                 }, opts);
-                var toast;
                 if (opts.message) {
                     toast = $('<div class="ui-toast"><span class="ui-toast-message">' + opts.message + '</span></div>').appendTo($('body'));
                     var tWidth = toast.width();
@@ -323,9 +324,10 @@
                 } else {
                     toast = $('<div class="ui-toast"><span class="ui-toast-white ui-spinner"></span></div>').appendTo($('body'));
                 }
-                setTimeout(function() {
+                clearT = setTimeout(function() {
                     toast.remove();
                 }, opts.time);
+                return toast;
             }
         }
 

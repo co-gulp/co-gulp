@@ -13,7 +13,8 @@
         CLASS_SWIPEOUT_ACTIONS_NO_FOLD = 'ui-swipeout-actions-no-fold',
         CLASS_SWIPEOUT_OVERSWIPE = 'ui-swipeout-overswipe',
         CLASS_SWIPEOUT_OPENED = 'ui-swipeout-opened',
-        CLASS_SWIPEOUT_TRANSITIONING = 'transitioning';
+        CLASS_SWIPEOUT_DELETING = 'ui-swipeout-deleting',
+        CLASS_SWIPEOUT_TRANSITIONING = 'ui-swipeout-transitioning';
 
     var SELECTOR_SWIPEOUT = '.' + CLASS_SWIPEOUT,
         SELECTOR_SWIPEOUT_DELETE = '.' + CLASS_SWIPEOUT_DELETE,
@@ -428,7 +429,7 @@
             var clientLeft = el[0].clientLeft;
             el.css({
                 height: 0 + 'px'
-            }).addClass('deleting '+CLASS_SWIPEOUT_TRANSITIONING).transitionEnd(function() {
+            }).addClass(CLASS_SWIPEOUT_DELETING+ '  ' +CLASS_SWIPEOUT_TRANSITIONING).transitionEnd(function() {
                 el.trigger('deleted');
                 if (callback) callback.call(el[0]);
                 if (el.parents('.virtual-list').length > 0) {

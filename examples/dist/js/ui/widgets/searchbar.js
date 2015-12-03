@@ -384,7 +384,6 @@
 
             function _enable() {
                 if(_sc.active)return;
-                console.log(_sc.active);
                 if (_sc._searchList.length && !container.hasClass(CLASS_SEARCHBAR_ACTIVE)) _sc._overlay.addClass(CLASS_SEARCHBAR_OVERLAY_ACTIVE);
                 container.addClass(CLASS_SEARCHBAR_ACTIVE);
                 _sc._cancelButton.transition(0).show();

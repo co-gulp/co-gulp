@@ -74,9 +74,9 @@
                     if (opts.speechActionClass) {
                         _ip._speechAction = createAction.apply(_ip,[row, opts.speechActionClass, opts.speechActionSelector]);
                         _ip._speechAction.addEventListener('click', _ip.stopPropagation);
-                        _ip._speechAction.addEventListener(_ip.touchEve(), function(evt) {
-                            speechActionClick.call(_ip,evt);
-                        });
+                        // _ip._speechAction.addEventListener(_ip.touchEve(), function(evt) {
+                        //     speechActionClick.call(_ip,evt);
+                        // });
                     }
                     if (opts.clearActionClass) {
                         _ip._clearAction = createAction.apply(_ip,[row, opts.clearActionClass, opts.clearActionSelector]);

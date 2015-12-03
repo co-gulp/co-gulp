@@ -1,9 +1,5 @@
 define(function(require, exports, module) {
 	var $ui = {},Base = {};
-   /*
-        判断是否存在原生插件对象
-    */
-  Base.isPlus = !!$N;
 
   Base.eachObj = function( obj, iterator ) {
         obj && Object.keys( obj ).forEach(function( key ) {
@@ -60,31 +56,31 @@ define(function(require, exports, module) {
         return (('ontouchstart' in window) || window.DocumentTouch && document instanceof DocumentTouch);
   };
 
-  Base.touchEve = function(str, data){
-    return this.isTouchScreen()? "tap" : "mousedown"
+  Base.touchEve = function(){
+    return this.isTouchScreen()? "tap" : "click"
   };
 
-  Base.touchStart = function(str, data){
+  Base.touchStart = function(){
     return this.isTouchScreen()? "touchstart" : "mousedown"
   };
 
-  Base.touchEnd = function(str, data){
+  Base.touchEnd = function(){
     return this.isTouchScreen()? "touchend" : "mouseup"
   };
 
-  Base.touchCancel = function(str, data){
+  Base.touchCancel = function(){
     return this.isTouchScreen()? "touchcancel" : "mouseup"
   };
 
-  Base.touchMove = function(str, data){
+  Base.touchMove = function(){
     return this.isTouchScreen()? "touchmove" : "mouseup"
   };
 
-  Base.longTap = function(str, data){
+  Base.longTap = function(){
     return this.isTouchScreen()? "longTap" : "mouseup"
   };
 
-  Base.touchOver = function(str, data){
+  Base.touchOver = function(){
     return this.isTouchScreen()? "touchend touchmove" : "mouseup"
   };
 
@@ -123,14 +119,7 @@ define(function(require, exports, module) {
             element.focus();
         }
         return this;
-    };  
-  Base.back = function(id,ottions) {
-        id = id||'root';
-       $local.backWin(id,ottions);
     }; 
-  Base.openWin = function(url,id,options,type) {
-       $local.openWin(url,id,options,type);
-    };   
 
   $ui.define = function( name, options) {
         if($ui[ name ])return $ui[ name ];
@@ -153,7 +142,7 @@ define(function(require, exports, module) {
             this.ref = $(this.opts.ref);
             this.callback = this.opts.callback;
             this.$family = {name:name}
-            this.init($N);
+            this.init();
         }
         $ui[ name ] = Base.extend.call(klass,Base);
         $ui[ name ].prototype.options = $.extend(defOpts, options); 

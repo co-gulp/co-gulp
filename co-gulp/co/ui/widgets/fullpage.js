@@ -68,8 +68,8 @@
 
             var sub = (e.changedTouches[0].pageY - _fp.startY) / _fp.height;
             var der = (sub > opts.der || sub < -opts.der) ? sub > 0 ? -1 : 1 : 0;
-
-            _fp.moveTo(_fp.curIndex + der);
+            _fp.dir = sub > 0 ? 1 : -1 // -1 向上 1 向下
+            moveTo.call(_fp, _fp.curIndex + der, true);
 
         });
         if (opts.gesture) {
@@ -77,7 +77,6 @@
                 if (!_fp.status) {
                     return 1;
                 }
-                //e.preventDefault();
                 if (_fp.movingFlag) {
                     _fp.startX = e.targetTouches[0].pageX;
                     _fp.startY = e.targetTouches[0].pageY;
@@ -86,13 +85,11 @@
 
                 var y = e.changedTouches[0].pageY - _fp.startY;
                 if ((_fp.curIndex == 0 && y > 0) || (_fp.curIndex === _fp.pagesLength - 1 && y < 0)) y /= 2;
-                var x = e.changedTouches[0].pageX - _fp.startX;
-                if ((_fp.curIndex == 0 && x > 0) || (_fp.curIndex === _fp.pagesLength - 1 && x < 0)) x /= 2;
+                if ((_fp.curIndex == 0 && y > 0) || (_fp.curIndex == _fp.pagesLength - 1 && y < 0)) {
+                    y = 0;
+                }
                 var dist = (-_fp.curIndex * _fp.height + y);
-                _fp.moveY = y;
                 _fp._inner.removeClass('anim');
-                // move.call(_fp, dist);
-
                 _fp._inner.css({
                     '-webkit-transform': 'translate3d(' + 0 + 'px , ' + dist + 'px , 0px);',
                     'transform': 'translate3d(' + 0 + 'px , ' + dist + 'px , 0px);'
@@ -104,21 +101,35 @@
         // ==============================      
         // 转屏事件检测
         $(window).on('ortchange', function(evt) {
-            opts.ortchange();
+            _fp.ref.trigger('ortchange');
         });
 
-        window.addEventListener("resize", function() {
-            update.call(_fp);
-        }, false);
+        _fp._inner.on(transitionEnd,
+            $.proxy(tansitionEnd, _fp));
+    };
+
+    var tansitionEnd = function(evt) {
+        var _fp = this,
+            opts = _fp.opts;
+        _fp.ref.trigger('afterChange', [_fp.curIndex]);
     };
 
     var update = function() {
         var _fp = this,
             opts = _fp.opts;
-        _fp.height = _fp._inner.height();
+        if (opts.fullPage) {
+            _fp.height = $(document.body).height();
+        } else {
+            _fp.height = _fp._inner.height();
+        }
+        _fp.ref.height(_fp.height);
         _fp._pages.height(_fp.height);
-
-        moveTo.call(_fp,_fp.curIndex);
+        if (!opts.gesture) {
+            $.each(_fp._pages, function(index, el) {
+                move.call(_fp, index, 0);
+            })
+            move.call(_fp, _fp.curIndex, 0);
+        }
     };
 
     var initDots = function() {
@@ -163,18 +174,29 @@
         return cur;
     };
 
-    var move = function(car) {
-        var _fp = this;
+    var move = function(car, speed) {
+        var _fp = this,
+            opts = _fp.opts;
         var pre = car - 1 > -1 ? car - 1 : _fp.pagesLength - 1;
         var next = car + 1 < _fp.pagesLength ? car + 1 : 0;
+        if (speed == 0) {
+            speed = speedPre = speedNext = 0;
+        } else {
+            speed = speedPre = speedNext = opts.speed
+        }
+        if (_fp.dir == 1) { //向下
+            speedPre = 0;
+        } else {
+            speedNext = 0;
+        }
 
-        _fp._pages[pre].style.cssText += cssPrefix + 'transition-duration:' + 0 +
+        _fp._pages[pre].style.cssText += cssPrefix + 'transition-duration:' + speedPre +
             'ms;' + cssPrefix + 'transform: translate(0,' +
             (0 - _fp._pages[pre].offsetTop - _fp.height) + 'px)' + translateZ + ';';
-        _fp._pages[car].style.cssText += cssPrefix + 'transition-duration:' + 500 +
+        _fp._pages[car].style.cssText += cssPrefix + 'transition-duration:' + speed +
             'ms;' + cssPrefix + 'transform: translate(0,' +
             (0 - _fp._pages[car].offsetTop) + 'px)' + translateZ + ';';
-        _fp._pages[next].style.cssText += cssPrefix + 'transition-duration:' + 0 +
+        _fp._pages[next].style.cssText += cssPrefix + 'transition-duration:' + speedNext +
             'ms;' + cssPrefix + 'transform: translate(0,' +
             (0 - _fp._pages[next].offsetTop + _fp.height) + 'px)' + translateZ + ';';
     };
@@ -193,17 +215,11 @@
         }
 
         if (next !== cur) {
-            var flag = opts.beforeChange.call(_fp, cur, next);
-
-            // beforeChange 显示返回false 可阻止滚屏的发生
-            if (flag === false) {
-                return 1;
-            }
+            _fp.ref.trigger('beforeChange', [cur, next]);
         }
 
         _fp.movingFlag = true;
         _fp.curIndex = next;
-        // move.call(_fp, _fp._inner, -next * _fp.height);
         if (!opts.gesture) {
             move.call(_fp, next);
         } else {
@@ -214,17 +230,16 @@
         }
 
         if (next !== cur) {
-            opts.change.call(_fp, cur, next);
+            _fp.ref.trigger('change', [cur, next]);
         }
 
         window.setTimeout(function() {
             _fp.movingFlag = false;
             if (next !== cur) {
-                opts.afterChange.call(_fp, cur, next);
                 _fp._pages.removeClass('active').eq(next).addClass('active');
                 opts.dots && updateDots.apply(_fp, [next, cur]);
             }
-        }, 200);
+        }, opts.speed);
 
         return this;
     };
@@ -239,10 +254,8 @@
             gesture: false,
             dots: false,
             arrow: false,
-            change: function(cur, next) {},
-            beforeChange: function(cur, next) {},
-            afterChange: function(cur, next) {},
-            ortchange: function(orientation) {}
+            fullPage: true,
+            speed: 500
         });
 
         //初始化
@@ -261,7 +274,7 @@
                 return this;
             },
             moveTo: function(next) {
-                moveTo.call(this,next,true);
+                moveTo.call(this, next, true);
                 return this;
             },
             prev: function() {

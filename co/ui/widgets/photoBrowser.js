@@ -217,7 +217,7 @@
         });
 
         //注册$插件
-        $.fn.photoBrowser = function(opts) {
+        $.fn.photobrowser = function(opts) {
             var photoBrowserObjs = [];
             opts || (opts = {});
             this.each(function() {

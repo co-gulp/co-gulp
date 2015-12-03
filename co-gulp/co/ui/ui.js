@@ -1,9 +1,5 @@
 define(function(require, exports, module) {
 	var $ui = {},Base = {};
-   /*
-        判断是否存在原生插件对象
-    */
-  Base.isPlus = !!$N;
 
   Base.eachObj = function( obj, iterator ) {
         obj && Object.keys( obj ).forEach(function( key ) {
@@ -123,14 +119,7 @@ define(function(require, exports, module) {
             element.focus();
         }
         return this;
-    };  
-  Base.back = function(id,ottions) {
-        id = id||'root';
-       $local.Win.backWin(id,ottions);
     }; 
-  Base.openWin = function(url,id,options,type) {
-       $local.Win.openWin(url,id,options,type);
-    };   
 
   $ui.define = function( name, options) {
         if($ui[ name ])return $ui[ name ];
@@ -153,7 +142,7 @@ define(function(require, exports, module) {
             this.ref = $(this.opts.ref);
             this.callback = this.opts.callback;
             this.$family = {name:name}
-            this.init($N);
+            this.init();
         }
         $ui[ name ] = Base.extend.call(klass,Base);
         $ui[ name ].prototype.options = $.extend(defOpts, options); 

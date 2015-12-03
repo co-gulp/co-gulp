@@ -6,12 +6,15 @@
         CLASS_SLIDER_DOTS = 'ui-slider-dots',
         CLASS_SLIDER_GROUP = 'ui-slider-group',
         CLASS_SLIDER_ITEM = 'ui-slider-item',
+        CLASS_SLIDER_IMG = 'ui-slider-img',
         CLASS_SLIDER = 'ui-slider';
 
     /**
      * @property {Object}  容器的选择器
      */
     var SELECTOR_SLIDER_DOTS = '.' + CLASS_SLIDER_DOTS,
+    	SELECTOR_SLIDER_ITEM = '.' + CLASS_SLIDER_ITEM,
+    	SELECTOR_SLIDER_IMG = '.' + CLASS_SLIDER_IMG,
         SELECTOR_SLIDER_GROUP = '.' + CLASS_SLIDER_GROUP;
     var defDots = '<p class="' + CLASS_SLIDER_DOTS + '"><%= new Array( len + 1 )' +
         '.join("<b></b>") %></p>';
@@ -26,7 +29,7 @@
     var render = function() {
         var _sl = this,
             opts = _sl.opts,
-            viewNum = opts.viewNum || 1,
+            viewNum = opts.mulViewNum || 1,
             items,
             container;
         _sl.loading = $(loading).appendTo(_sl.ref);
@@ -38,16 +41,18 @@
             opts.loop = false;
         }
 
+        _sl.length = container.children().length;
+
         // 如果节点少了，需要复制几份
         while (opts.loop && container.children().length < 3 * viewNum) {
             container.append(items.clone());
         }
 
-        _sl.length = container.children().length;
-
         _sl._items = (_sl._container = container)
             .children()
             .toArray();
+
+        _sl._pages = container.find(SELECTOR_SLIDER_ITEM);
 
         _sl.ref.trigger('donedom');
         opts.dots && initDots.call(_sl);
@@ -130,6 +135,15 @@
         if ((width = _sl.ref.width()) === _sl.width) {
             return;
         }
+        if (opts.fullPage) {
+            $(document.body).css('position','absolute');
+            _sl.height = $(document.body).height();
+        } else {
+            _sl.height = _sl.ref.parent().height();
+        }
+        _sl.ref.height(_sl.height);
+        _sl._pages.height(_sl.height);	
+        _sl._pages.find(SELECTOR_SLIDER_IMG).height(_sl.height);	
         _sl.width = width;
         _sl.arrange();
         _sl._container.css('display', 'block');
@@ -211,7 +225,12 @@
              * @property {Number} [space=10] 图片之间的间隔
              * @namespace options
              */
-            space: 0
+            space: 0,
+            /**
+             * @property {Number} [space=10f] 是否全屏显示
+             * @namespace options
+             */
+            fullPage:false
 
         });
         //初始化
@@ -287,7 +306,6 @@
         $slider.prototype.play = function() {
             var _sl = this,
                 opts = _sl.opts;
-
             if (opts.autoPlay && !_sl._timer) {
                 _sl._timer = setTimeout(function() {
                     _sl.slideTo(_sl.index + 1);

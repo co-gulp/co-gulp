@@ -33,6 +33,7 @@
     };
 
     var loadImage = function(el) {
+        return;
         el = $(el);
         var bg = el.attr('data-background');
         var src = bg ? bg : el.attr('data-src');
@@ -103,7 +104,7 @@
 
         };
         //注册$插件
-        $.fn.lazyLoadImage = function(opts) {
+        $.fn.lazyloadimage = function(opts) {
             var lazyLoadImageObjs = [];
             opts || (opts = {});
             this.each(function() {

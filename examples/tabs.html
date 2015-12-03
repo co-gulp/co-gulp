@@ -6,7 +6,7 @@
     <title>Hello UI Tabs</title>
    <link rel="stylesheet" href="dist/css/co.css">
    <style type="text/css">
-
+    
 
 </style>
 </head>
@@ -29,46 +29,23 @@
                 <span class="ui-tab-label">设置</span>
             </a>
         </div>
-        <div class="ui-swipe">
-            <div class="ui-swipe-group">
-                <div class="ui-swipe-item">
-                    <div class="ui-swipe-content">
-                        <img class="ui-slider-img" src="img/1.png">
-                    </div>
-                </div>
-                <div class="ui-swipe-item">
-                    <div class="ui-swipe-content">
-                        <img class="ui-slider-img" src="img/2.png">
-                    </div>
-                </div>
-                <div class="ui-swipe-item">
-                    <div class="ui-swipe-content">
-                        <img class="ui-slider-img" src="img/3.png">
-                    </div>
-                </div>
-                <div class="ui-swipe-item">
-                    <div class="ui-swipe-content">
-                        <img class="ui-slider-img" src="img/4.png">
-                    </div>
-                </div>
-            </div>
-        </div>
+
+        <script src="dist/js/native.js"></script>   
         <script src="dist/js/dom.js"></script>
         <script src="dist/js/co.js"></script>
 </body>
 <script>
+    var win = app.createWindow();
+    var view = app.currentView();
     domReady(function(require){
-            require("swipePage");
-            var swipe = $('.ui-swipe').swipepage();
+            debugger;
+            var y = $('.ui-tab-bar').height();
+            var height = document.body.scrollHeight - y
+            var pop = view.createPopover(0,0,0,height);
             require("tab");
             var tab = $('.ui-tab-bar').tab()
             tab.ref.on('activate',function(e,to,from){
-                swipe.slideTo(to);
-                console.log(to);
-            });
-            swipe.ref.on('slide',function(e,to,from){
-                tab.switchTo(to);
-                console.log(to);
+                pop.open('swipepage.html');
             });
     });
 </script>   

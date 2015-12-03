@@ -60,7 +60,7 @@
                     </div>
                     <div class="ui-button-row">
                         <button type="submit" class="ui-btn ui-btn-primary">确认</button>&nbsp;&nbsp;
-                        <button type="button" class="ui-btn ui-btn-danger" onclick="return false;">取消</button>
+                        <button type="button" class="ui-btn ui-btn-danger" >取消</button>
                     </div>
                 </form>
                 <div class="ui-card">
@@ -108,8 +108,8 @@
 </body>
      <script>
         domReady(function(require){
-            $('a.ui-pull-left').button(function(el,evt){
-                this.back();
+            $('.ui-btn-danger').button(function(el,evt){
+                alert($(el).html())
             })
             $('.ui-input-group').radio(function(el,evt){
                     alert($(el).val());
@@ -118,7 +118,7 @@
                     if(el.checked)  alert($(el).val());
             }); 
             $('.ui-input-group').select(function(el,eve){
-                    alert(this.callZ(el).val());
+                    alert($(el).val());
              }); 
             $('.ui-input-group')[0].onSubmit = function(){
                 alert(11)

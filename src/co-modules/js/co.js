@@ -1,82 +1,77 @@
-if (global.co) {
-  return;
-}
+/** co.js 1.0.1 * /
+	/*===============================================================================
+	************   co start   ************
+	===============================================================================*/
+;
+(function(global, loader, undefined) {
+	var co = global.co = {
+		// The current version of co.js being used
+		version: "1.0.1",
+		verticalSwipe: true //是否可以纵向滑动
+	}
+	var readyRE = /complete|loaded|interactive/;
 
-var co = global.co = {
-  // The current version of co.js being used
-  version: "1.0.1",
-  verticalSwipe: true //是否可以纵向滑动
-}
+	var REQUIRE_RE = /"(?:\\"|[^"])*"|'(?:\\'|[^'])*'|\/\*[\S\s]*?\*\/|\/(?:\\\/|[^\/\r\n])+\/(?=[^\/])|\/\/.*|\.\s*require|(?:^|[^$])\brequire\s*\(\s*(["'])(.+?)\1\s*\)/g
+	var SLASH_RE = /\\\\/g
 
-function isType(type) {
-  return function(obj) {
-    return {}.toString.call(obj) == "[object " + type + "]"
-  }
-}
+	function parseDependencies(code) {
+		var ret = []
 
-var isObject = isType("Object")
-var isString = isType("String")
-var isArray = Array.isArray || isType("Array")
-var isFunction = isType("Function")
-var isUndefined = isType("Undefined")
-var readyRE = /complete|loaded|interactive/;
+		code.replace(SLASH_RE, "")
+			.replace(REQUIRE_RE, function(m, m1, m2) {
+				if (m2) {
+					ret.push(m2)
+				}
+			})
 
-var REQUIRE_RE = /"(?:\\"|[^"])*"|'(?:\\'|[^'])*'|\/\*[\S\s]*?\*\/|\/(?:\\\/|[^\/\r\n])+\/(?=[^\/])|\/\/.*|\.\s*require|(?:^|[^$])\brequire\s*\(\s*(["'])(.+?)\1\s*\)/g
-var SLASH_RE = /\\\\/g
+		return ret
+	}
+	if (($.os.android || $.os.ios)) {
+		if (($.os.ios) && (parseFloat($.os.version) >= 7)) {
+			$(document.body).addClass('ui-ios7');
+		}
+	}
 
-function parseDependencies(code) {
-  var ret = []
 
-  code.replace(SLASH_RE, "")
-    .replace(REQUIRE_RE, function(m, m1, m2) {
-      if (m2) {
-        ret.push(m2)
-      }
-    })
+	var domReady = function(factory) {
+		if ($.isFunction(factory)) {
+			var deps = parseDependencies(factory.toString())
+			if (!(($.os.android || $.os.ios) && co.plus)) {
+				deps.splice(0, 0, "debug")
+			}
+			loader.use(deps, function() {
+				if (($.os.android || $.os.ios) && co.plus) {
+					setTimeout(function() {
+						if (domReady.isReady) {
+							factory.call(null, loader.require);
+						} else {
+							setTimeout(arguments.callee, 1);
+						}
+					}, 1);
+				} else {
+					factory.call(null, loader.require);
+				}
 
-  return ret
-}
-if (($.os.android || $.os.ios)) {
-  if (($.os.ios) && (parseFloat($.os.version) >= 7)) {
-    $(document.body).addClass('ui-ios7');
-  }
-}
+				$(document).find('.ui-action-back').button(function(evt) {
+					app.currentView().back();
+				})
+			})
+		}
+	};
 
-var domReady = function(factory) {
-  if (isFunction(factory)) {
-    var deps = parseDependencies(factory.toString())
-    loader.use(deps, function() {
-      if (($.os.android || $.os.ios) && global.rd) {
-        setTimeout(function() {
-          if (domReady.isReady) {
-            factory.call(null, loader.require);
-          } else {
-            setTimeout(arguments.callee, 1);
-          }
-        }, 1);
-      } else {
-        factory.call(null, loader.require);
-      }
+	co.plus = !!global['rd'];
+	global.onLoad = function() {
+		domReady.isReady = true;
+		co.plus = !!global['rd'];
+	};
 
-      $(document).find('.ui-action-back').button(function(evt) {
-        this.back();
-      })
-    })
-  }
-};
-global.domReady = domReady;
-global.$N = false;
-co.plus = !!$N;
-global.onLoad = function() {
-  domReady.isReady = true;
-  global.$N = global.rd
-  co.plus = !!$N;
-};
+	$.fn.ready = function(callback) {
+		if (readyRE.test(document.readyState) && document.body) domReady(callback);
+		else document.addEventListener('DOMContentLoaded', function() {
+			domReady(callback)
+		}, false)
+		return this
+	};
 
-$.fn.ready = function(callback) {
-  if (readyRE.test(document.readyState) && document.body) domReady(callback);
-  else document.addEventListener('DOMContentLoaded', function() {
-    domReady(callback)
-  }, false)
-  return this
-};
+	global.domReady = domReady;
+})(this, seajs);

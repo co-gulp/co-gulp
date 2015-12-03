@@ -41,9 +41,7 @@
      <script>
             domReady(function(require){
                 var Dialog = require("dialog");
-                $('#alertBtn').button(function(btn,el){
-                        var str = 'null';
-    console.log($.chk(str))
+                $('#alertBtn').button(function(btn,evt){
                          Dialog.init({
                             title:'消息框',
                             width: 288,
@@ -60,7 +58,7 @@
 
                 });
 
-                $('#confirmBtn').button(function(btn,el){
+                $('#confirmBtn').button(function(btn,evt){
                         Dialog.init({
                             title:'文档评分',
                             autoOpen: false,
@@ -69,7 +67,7 @@
                             content:  '<div  class="vote-dialog" style="display:block"><p class="vote"></p><p>星级从1到5，获得越多星星，表示等级越高</p></div>'
                         });
                 });
-                $('.button-highlight').button(function(btn,el){
+                $('.button-highlight').button(function(btn,evt){
                        Dialog.init({
                             title:'登陆提示',
                             autoOpen: false,
@@ -86,7 +84,7 @@
                         })//.opts['_wrap'].addClass('login-dialog').addClass('login-dialog login-dialog-dark');;
 
                 });
-                $('#customBtn').button(function(btn,el){
+                $('#customBtn').button(function(btn,evt){
                         Dialog.init({
                             autoOpen: false,
                             closeBtn: false,
@@ -106,10 +104,10 @@
                         })._wrap.addClass('login-dialog login-dialog-dark')
 
                 });
-                $('#toastBtn').button(function(btn,el){
+                $('#toastBtn').button(function(btn,evt){
                     Dialog.showToast();
                 });
-                $('#mesToastBtn').button(function(btn,el){
+                $('#mesToastBtn').button(function(btn,evt){
                     
                     Dialog.showToast({
                         message:'您输入的信息有误，请重新输入'

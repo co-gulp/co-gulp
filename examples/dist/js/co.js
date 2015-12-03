@@ -974,14 +974,9 @@ seajs.config({
       alias: {
           'ui': 'ui/ui',
           'iscroll': 'libs/iscroll',
-          'swipeout': 'libs/swipeout',
           'accordion' : 'ui/widgets/accordion',
           'accordionList' : 'ui/widgets/accordionList',
-          'button' : 'ui/widgets/button',
-          'checkbox' : 'ui/widgets/checkbox',
           'dialog' : 'ui/widgets/dialog',
-          'radio' : 'ui/widgets/checkbox',
-          'select' : 'ui/widgets/select',
           'input' : 'ui/widgets/input',
           'switch':'ui/widgets/switch',
           'slider':'ui/widgets/slider/slider',
@@ -992,206 +987,92 @@ seajs.config({
           'swipelist' : 'ui/widgets/swipelist',
           'tab' : 'ui/widgets/tabs/tabs',
           'navigator' : 'ui/widgets/navigator',
-          'swipePage' : 'ui/widgets/swipePage',
+          'swipepage' : 'ui/widgets/swipepage',
           'treeview' : 'ui/widgets/treeview',
           'refresh' : 'ui/widgets/refresh',
           'fullpage' : 'ui/widgets/fullpage',
           'searchbar' : 'ui/widgets/searchbar',
-          'photoBrowser' : 'ui/widgets/photoBrowser',
-          'lazyLoadImage' : 'ui/widgets/lazyLoadImage',
-          'scroll' : 'ui/widgets/iscroll'
+          'photobrowser' : 'ui/widgets/photobrowser',
+          'lazyloadimage' : 'ui/widgets/lazyloadimage',
+          'scroll' : 'ui/widgets/iscroll',
+          'debug' : 'debug'
       },
-      preload: ['ui','button','checkbox','select','input']
+      preload: ['ui','input']
   });
-/**
- * co.js 0.0.1 
- */
-;(function(global,loader, undefined){
-if (global.co) {
-  return;
-}
-
-var co = global.co = {
-  // The current version of co.js being used
-  version: "1.0.1",
-  verticalSwipe: true //是否可以纵向滑动
-}
-
-function isType(type) {
-  return function(obj) {
-    return {}.toString.call(obj) == "[object " + type + "]"
-  }
-}
-
-var isObject = isType("Object")
-var isString = isType("String")
-var isArray = Array.isArray || isType("Array")
-var isFunction = isType("Function")
-var isUndefined = isType("Undefined")
-var readyRE = /complete|loaded|interactive/;
-
-var REQUIRE_RE = /"(?:\\"|[^"])*"|'(?:\\'|[^'])*'|\/\*[\S\s]*?\*\/|\/(?:\\\/|[^\/\r\n])+\/(?=[^\/])|\/\/.*|\.\s*require|(?:^|[^$])\brequire\s*\(\s*(["'])(.+?)\1\s*\)/g
-var SLASH_RE = /\\\\/g
-
-function parseDependencies(code) {
-  var ret = []
-
-  code.replace(SLASH_RE, "")
-    .replace(REQUIRE_RE, function(m, m1, m2) {
-      if (m2) {
-        ret.push(m2)
-      }
-    })
-
-  return ret
-}
-if (($.os.android || $.os.ios)) {
-  if (($.os.ios) && (parseFloat($.os.version) >= 7)) {
-    $(document.body).addClass('ui-ios7');
-  }
-}
-
-var domReady = function(factory) {
-  if (isFunction(factory)) {
-    var deps = parseDependencies(factory.toString())
-    loader.use(deps, function() {
-      if (($.os.android || $.os.ios) && global.rd) {
-        setTimeout(function() {
-          if (domReady.isReady) {
-            factory.call(null, loader.require);
-          } else {
-            setTimeout(arguments.callee, 1);
-          }
-        }, 1);
-      } else {
-        factory.call(null, loader.require);
-      }
-
-      $(document).find('.ui-action-back').button(function(evt) {
-        this.back();
-      })
-    })
-  }
-};
-global.domReady = domReady;
-global.$N = false;
-co.plus = !!$N;
-global.onLoad = function() {
-  domReady.isReady = true;
-  global.$N = global.rd
-  co.plus = !!$N;
-};
-
-$.fn.ready = function(callback) {
-  if (readyRE.test(document.readyState) && document.body) domReady(callback);
-  else document.addEventListener('DOMContentLoaded', function() {
-    domReady(callback)
-  }, false)
-  return this
-};
-/*===============================================================================
-************   ui native window   ************
-===============================================================================*/
-
-var Native = function () {
-    
-};
-
-Native.genericize = function (object, property, check) {
-    if ((!check || !object[property]) && typeof object.prototype[property] == 'function') object[property] = function () {
-        var args = Array.prototype.slice.call(arguments);
-        return object.prototype[property].apply(args.shift(), args);
-    };
-};
-
-Native.implement = function (objects, properties) {
-    for (var i = 0, l = objects.length; i < l; i++) objects[i].implement(properties);
-};
-
-Native.typize = function (object, family) {
-    if (!object.type) object.type = function (item) {
-        return ($type(item) === family);
-    };
-};
-
-(function () {
-    var natives = {'Array':Array, 'Date':Date, 'Function':Function, 'Number':Number, 'RegExp':RegExp, 'String':String};
-    for (var n in natives) new Native({name:n, initialize:natives[n], protect:true});
-
-    var types = {'boolean':Boolean, 'native':Native, 'object':Object};
-    for (var t in types) Native.typize(types[t], t);
-
-    var generics = {
-        'Array':["concat", "indexOf", "join", "lastIndexOf", "pop", "push", "reverse", "shift", "slice", "sort", "splice", "toString", "unshift", "valueOf"],
-        'String':["charAt", "charCodeAt", "concat", "indexOf", "lastIndexOf", "match", "replace", "search", "slice", "split", "substr", "substring", "toLowerCase", "toUpperCase", "valueOf"]
-    };
-    for (var g in generics) {
-        for (var i = generics[g].length; i--;) Native.genericize(window[g], generics[g][i], true);
-    }
-    ;
-})();
-
-(function(global) {
-  var $L = function(){
-      return this;
-  }
-  $L.prototype = {
-    openWin: function(url, id, options, type) {
-      if (co.plus) {
-        id = id || url;
-        type = type || 0;
-        options = options || {
-          type: $N.window.ANIMATION_TYPE_PUSH,
-          time: 150,
-          curve: $N.window.ANIMATION_CURVE_LINEAR
-        };
-        $N.window.openWindow(id, type, url, options);
-      } else {
-        global.location.href = url;
-      }
-      return this;
-    },
-
-    backWin: function(id, options) {
-      if (co.plus) {
-        options = options || {
-          type: $N.window.ANIMATION_TYPE_PUSH,
-          time: 150,
-          curve: $N.window.ANIMATION_CURVE_LINEAR
-        };
-        $N.window.backToWindow(id, options);
-      } else {
-        if (global.history.length > 1) {
-          global.history.back();
-        }
-      }
-      return this;
-    }
-  }
-  global.$local = new $L();
-}(global));
-/*===============================================================================
-************   ui native window end  ************
-===============================================================================*/
-/*===============================================================================
-************   $.fn extend   ************
-===============================================================================*/
-        (function($){
-            
-        }($));
-
-/*===============================================================================
-************   $.fn extend end ************
-===============================================================================*/    
-})(this, seajs);
-if (($.os.android || $.os.ios) && window.rd) {
-	window.onerror = function(sMsg, sUrl, sLine, columnNumber, error) {
-		var str = "Error: " + sMsg + "----------";
-		str += "Line: " + sLine + "-----------";
-		str += "URL: " + sUrl + "---------";
-		str += "columnNumber: " + columnNumber + "---------";
-		str += "error: " + error + "---------";
-		alert(str)
-		return false;
+/** co.js 1.0.1 * /
+	/*===============================================================================
+	************   co start   ************
+	===============================================================================*/
+;
+(function(global, loader, undefined) {
+	var co = global.co = {
+		// The current version of co.js being used
+		version: "1.0.1",
+		verticalSwipe: true //是否可以纵向滑动
 	}
-}
+	var readyRE = /complete|loaded|interactive/;
+
+	var REQUIRE_RE = /"(?:\\"|[^"])*"|'(?:\\'|[^'])*'|\/\*[\S\s]*?\*\/|\/(?:\\\/|[^\/\r\n])+\/(?=[^\/])|\/\/.*|\.\s*require|(?:^|[^$])\brequire\s*\(\s*(["'])(.+?)\1\s*\)/g
+	var SLASH_RE = /\\\\/g
+
+	function parseDependencies(code) {
+		var ret = []
+
+		code.replace(SLASH_RE, "")
+			.replace(REQUIRE_RE, function(m, m1, m2) {
+				if (m2) {
+					ret.push(m2)
+				}
+			})
+
+		return ret
+	}
+	if (($.os.android || $.os.ios)) {
+		if (($.os.ios) && (parseFloat($.os.version) >= 7)) {
+			$(document.body).addClass('ui-ios7');
+		}
+	}
+
+
+	var domReady = function(factory) {
+		if ($.isFunction(factory)) {
+			var deps = parseDependencies(factory.toString())
+			if (!(($.os.android || $.os.ios) && co.plus)) {
+				deps.splice(0, 0, "debug")
+			}
+			loader.use(deps, function() {
+				if (($.os.android || $.os.ios) && co.plus) {
+					setTimeout(function() {
+						if (domReady.isReady) {
+							factory.call(null, loader.require);
+						} else {
+							setTimeout(arguments.callee, 1);
+						}
+					}, 1);
+				} else {
+					factory.call(null, loader.require);
+				}
+
+				$(document).find('.ui-action-back').button(function(evt) {
+					app.currentView().back();
+				})
+			})
+		}
+	};
+
+	co.plus = !!global['rd'];
+	global.onLoad = function() {
+		domReady.isReady = true;
+		co.plus = !!global['rd'];
+	};
+
+	$.fn.ready = function(callback) {
+		if (readyRE.test(document.readyState) && document.body) domReady(callback);
+		else document.addEventListener('DOMContentLoaded', function() {
+			domReady(callback)
+		}, false)
+		return this
+	};
+
+	global.domReady = domReady;
+})(this, seajs);

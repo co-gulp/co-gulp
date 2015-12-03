@@ -47,7 +47,7 @@
                 _re.bottomPocket.appendTo(_re.scrollEl);
                 _re.bottomPocket.addClass(CLASS_BLOCK);
                 _re.bottomPocket.css('visibility', 'visible');
-                _re.initPullup = true;
+                // _re.initPullup = true;
             }
             _re.bottomLoading = _re.bottomPocket.find('.' + CLASS_PULL_LOADING);
             _re.bottomCaption = _re.bottomPocket.find('.' + CLASS_PULL_CAPTION);
@@ -71,7 +71,7 @@
                 y: this.pointY
             };
             if (!_re.loading) {
-                _re.pulldown = _re.pullPocket = _re.pullCaption = _re.pullLoading = false
+                _re.pulldown = _re.pullup = _re.pullPocket = _re.pullCaption = _re.pullLoading = false
             }
         });
         _re.scroller.on('scroll', function(e) {
@@ -97,40 +97,42 @@
             // console.log(angle(touchesEnd,touchesStart));
             // if(Math.abs(angle(touchesEnd,touchesStart)) < 30)return;
             if (!_re.pulldown && !_re.loading && _re.topPocket && this.directionY === -1 && this.y >= 0) {
-                opts.enablePulldown && initPulldownRefresh.call(_re);
+                initPulldownRefresh.call(_re);
+            }
+            if (!_re.pullup && !_re.finished && !_re.loading && _re.topPocket && this.directionY === 1 && this.y < 0) {
+                initPullupRefresh.call(_re);
             }
             if (_re.pulldown) {
                 setCaption.call(_re, this.y > opts.down.height ? opts.down.contentover : opts.down.contentdown);
             }
+
             if (this.maxScrollY == -1) {
                 this.maxScrollY = 0 - opts.up.height;
             }
             var disY = this.maxScrollY - this.y
-            if (_re.initPullup && disY > 10) {
-                if (opts.up && opts.up.hasOwnProperty('callback')) {
-                    if (!_re.pulldown && !_re.loading && !_re.finished) {
-                        _re.readyUpLoad = true;
-                        _re.autoUpHidden = false;
-                        initPullupRefresh.call(_re);
-                        setCaption.call(_re, Math.abs(this.y) > opts.up.height ? opts.up.contentover : opts.up.contentdown);
-                    }
+            if (_re.pullup && !_re.finished && disY > 10) {
+                _re.autoUpHidden = false;
+                setCaption.call(_re, Math.abs(this.y) > opts.up.height ? opts.up.contentover : opts.up.contentdown);
+            } else if (disY < 10 && disY > 0 - opts.up.height) {
+                if (_re.pullup && !_re.loading && !_re.finished) {
+                    !opts.up.display && (_re.autoUpHidden = true)
                 }
-            } else if (disY <= 10 && disY > 0 - opts.up.height) {
-                if (!_re.pulldown && !_re.loading && !_re.finished) {
-                    _re.autoUpHidden = true;
-                }
+            }
+            if (_re.pulldown && this.y > 0 && this.y < opts.down.height) {
+                _re.autoDownHidden = true;
+            }else{
+                _re.autoDownHidden = false;
             }
         });
 
         _re.scroller.on('scrollEnd', function(e) {
-            if (_re.readyUpLoad) {
-                _re.pulldown = false;
-                _re.pullupLoading();
-                _re.readyUpLoad = false;
-            }
             if (_re.autoUpHidden) {
                 _re.autoUpHidden = false;
                 _re.scroller.scrollTo(0, 0, _re.scroller.options.bounceTime, _re.scroller.options.bounceEasing);
+                _re.ref.trigger('cancelRefresh');
+            } else if (_re.pulldown && _re.autoDownHidden) {
+                _re.autoDownHidden = false;
+                _re.ref.trigger('cancelRefresh');
             }
 
         });
@@ -140,6 +142,14 @@
             resetPosition: function(time) {
                 if (_re.pulldown && this.y >= opts.down.height) {
                     _re.pulldownLoading();
+                    return true;
+                }
+                if (this.maxScrollY == -1) {
+                    this.maxScrollY = 0 - opts.up.height;
+                }
+                var disY = this.maxScrollY - this.y
+                if (_re.pullup && disY > 10 && !_re.loading && !_re.finished) {
+                    _re.pullupLoading();
                     return true;
                 }
                 return _resetPosition.call(_re.scroller, time);
@@ -156,6 +166,7 @@
         }
         _re.ref.trigger('beforeRefresh');
         _re.pulldown = true;
+        _re.pullup = false;
         _re.pullPocket = _re.topPocket;
         _re.pullPocket.addClass(CLASS_BLOCK);
         _re.pullPocket.css('visibility', 'visible');
@@ -170,6 +181,7 @@
         }
         _re.ref.trigger('beforeRefresh');
         _re.pulldown = false;
+        _re.pullup = true;
         _re.pullPocket = _re.bottomPocket;
         _re.pullCaption = _re.bottomCaption;
         _re.pullLoading = _re.bottomLoading;
@@ -254,8 +266,6 @@
         var $ui = require("ui");
         require("scroll");
         var $refresh = $ui.define('Refresh', {
-            scrollY: true,
-            scrollX: false,
             down: {
                 height: 50,
                 contentdown: '下拉可以刷新',
@@ -268,8 +278,7 @@
                 contentdown: '上拉显示更多',
                 contentover: '释放立即刷新',
                 contentrefresh: '正在加载...',
-                contentnomore: '没有更多数据了',
-                duration: 300
+                contentnomore: '没有更多数据了'
             },
             enablePulldown: true,
             enablePullup: true,
@@ -358,7 +367,7 @@
                     _re.finished = true;
                     setCaption.call(_re, opts.up.contentnomore);
                     _re.scroller.refresh();
-                    _re.ref.trigger('afterRefresh');
+                    _re.ref.trigger('finished');
                 } else {
                     setCaption.call(_re, opts.up.contentdown);
                     setTimeout(function() {

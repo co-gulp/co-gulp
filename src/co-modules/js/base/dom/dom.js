@@ -1,6 +1,6 @@
  /* ===========================
-                                 Dom Library
-                             ===========================*/
+                                      Dom Library
+                                  ===========================*/
  var Dom = (function() {
      var emptyArray = [],
          concat = emptyArray.concat,
@@ -18,6 +18,9 @@
              'z-index': 1,
              'zoom': 1
          },
+         fragmentRE = /^\s*<(\w+|!)[^>]*>/,
+         singleTagRE = /^<(\w+)\s*\/?>(?:<\/\1>|)$/,
+         adjacencyOperators = ['after', 'prepend', 'before', 'append'],
          simpleSelectorRE = /^[\w-]*$/,
          isAndroid = (/android/gi).test(navigator.appVersion),
          elementDisplay = {},
@@ -25,6 +28,15 @@
          classCache = {},
          table = document.createElement('table'),
          tableRow = document.createElement('tr'),
+         containers = {
+             'tr': document.createElement('tbody'),
+             'tbody': table,
+             'thead': table,
+             'tfoot': table,
+             'td': tableRow,
+             'th': tableRow,
+             '*': document.createElement('div')
+         },
          toString = class2type.toString,
          isArray = Array.isArray ||
          function(object) {
@@ -168,6 +180,16 @@
          temp && tempParent.removeChild(element)
          return match
      };
+
+     var fragment = function(html, name) {
+         if (name === undefined) name = fragmentRE.test(html) && RegExp.$1
+         if (!(name in containers)) name = '*'
+         var container = containers[name]
+         container.innerHTML = '' + html
+         return $.each(slice.call(container.childNodes), function() {
+             container.removeChild(this)
+         })
+     }
 
      var Dom = function(arr) {
          var _this = this,
@@ -471,6 +493,16 @@
                  return null;
              }
          },
+         map: function(fn) {
+             return $($.map(this, function(el, i) {
+                 return fn.call(el, i, el)
+             }))
+         },
+         clone: function() {
+             return this.map(function() {
+                 return this.cloneNode(true)
+             })
+         },
          hide: function() {
              return this.css("display", "none")
          },
@@ -661,79 +693,6 @@
              var el = this[this.length - 1]
              return el && !isObject(el) ? el : $(el)
          },
-         append: function(newChild) {
-             var i, j;
-             for (i = 0; i < this.length; i++) {
-                 if (typeof newChild === 'string') {
-                     var tempDiv = document.createElement('div');
-                     tempDiv.innerHTML = newChild;
-                     while (tempDiv.firstChild) {
-                         this[i].appendChild(tempDiv.firstChild);
-                     }
-                 } else if (newChild instanceof Dom) {
-                     for (j = 0; j < newChild.length; j++) {
-                         this[i].appendChild(newChild[j]);
-                     }
-                 } else {
-                     this[i].appendChild(newChild);
-                 }
-             }
-             return this;
-         },
-         appendTo: function(target) {
-             $(target).append(this);
-             return this;
-         },
-         prepend: function(newChild) {
-             var i, j;
-             for (i = 0; i < this.length; i++) {
-                 if (typeof newChild === 'string') {
-                     var tempDiv = document.createElement('div');
-                     tempDiv.innerHTML = newChild;
-                     for (j = tempDiv.childNodes.length - 1; j >= 0; j--) {
-                         this[i].insertBefore(tempDiv.childNodes[j], this[i].childNodes[0]);
-                     }
-                     // this[i].insertAdjacentHTML('afterbegin', newChild);
-                 } else if (newChild instanceof Dom) {
-                     for (j = 0; j < newChild.length; j++) {
-                         this[i].insertBefore(newChild[j], this[i].childNodes[0]);
-                     }
-                 } else {
-                     this[i].insertBefore(newChild, this[i].childNodes[0]);
-                 }
-             }
-             return this;
-         },
-         prependTo: function(target) {
-             $(target).prepend(this);
-             return this;
-         },
-         insertBefore: function(selector) {
-             var before = $(selector);
-             for (var i = 0; i < this.length; i++) {
-                 if (before.length === 1) {
-                     before[0].parentNode.insertBefore(this[i], before[0]);
-                 } else if (before.length > 1) {
-                     for (var j = 0; j < before.length; j++) {
-                         before[j].parentNode.insertBefore(this[i].cloneNode(true), before[j]);
-                     }
-                 }
-             }
-             return this;
-         },
-         insertAfter: function(selector) {
-             var after = $(selector);
-             for (var i = 0; i < this.length; i++) {
-                 if (after.length === 1) {
-                     after[0].parentNode.insertBefore(this[i], after[0].nextSibling);
-                 } else if (after.length > 1) {
-                     for (var j = 0; j < after.length; j++) {
-                         after[j].parentNode.insertBefore(this[i].cloneNode(true), after[j].nextSibling);
-                     }
-                 }
-             }
-             return this;
-         },
          next: function(selector) {
              if (this.length > 0) {
                  if (selector) {
@@ -906,7 +865,54 @@
          }
      })
 
+     function insert(operator, target, node) {
+         var parent = (operator % 2) ? target : target.parentNode
+         parent ? parent.insertBefore(node, !operator ? target.nextSibling : // after
+                 operator == 1 ? parent.firstChild : // prepend
+                 operator == 2 ? target : // before
+                 null) : // append
+             $(node).remove()
+     }
+
+     function traverseNode(node, fun) {
+         fun(node)
+         for (var i = 0, len = node.childNodes.length; i < len; i++)
+             traverseNode(node.childNodes[i], fun)
+     }
+
+     // Generate the `after`, `prepend`, `before`, `append`,
+     // `insertAfter`, `insertBefore`, `appendTo`, and `prependTo` methods.
+     adjacencyOperators.forEach(function(key, operator) {
+         $.fn[key] = function() {
+             // arguments can be nodes, arrays of nodes, Zepto objects and HTML strings
+             var nodes = $.map(arguments, function(n) {
+                 return isObject(n) ? n : fragment(n)
+             })
+             if (nodes.length < 1) return this
+             var size = this.length,
+                 copyByClone = size > 1,
+                 inReverse = operator < 2
+
+             return this.each(function(index, target) {
+                 for (var i = 0; i < nodes.length; i++) {
+                     var node = nodes[inReverse ? nodes.length - i - 1 : i]
+                     traverseNode(node, function(node) {
+                         if (node.nodeName != null && node.nodeName.toUpperCase() === 'SCRIPT' && (!node.type || node.type === 'text/javascript'))
+                             window['eval'].call(window, node.innerHTML)
+                     })
+                     if (copyByClone && index < size - 1) node = node.cloneNode(true)
+                     insert(operator, target, node)
+                 }
+             })
+         }
+         $.fn[(operator % 2) ? key + 'To' : 'insert' + (operator ? 'Before' : 'After')] = function(html) {
+             $(html)[key](this)
+             return this
+         }
+     })
+
      // DOM Library Utilites
+     $.uuid = 0
      $.type = type
      $.isFunction = isFunction
      $.isWindow = isWindow
