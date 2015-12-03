@@ -967,10 +967,9 @@ textarea {
 }
 .ui-search:before {
   position: absolute;
-  top: 50%;
   right: 50%;
   display: none;
-  margin-top: -18px;
+  margin-top: 3px;
   margin-right: 31px;
   font-family: uiicons;
   font-size: 20px;
@@ -1048,6 +1047,9 @@ textarea {
 }
 .ui-radio input[type="radio"]:before {
   content: "\e411";
+}
+.ui-input-row.ui-input-textarea {
+  margin: 10px 5px;
 }
 /* === button === */
 .ui-button-row {

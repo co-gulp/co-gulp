@@ -7,25 +7,42 @@
    <link rel="stylesheet" href="dist/css/co.css">
 </head>
 <body>
-    <header class="ui-nav-bar">
-        <div class="ui-nav-bar-inner">
-            <a class="ui-action-back ui-nav-bar-link">
-                <i class="ui-nav-bar-icon ui-nav-bar-left ui-icon-left-nav"><span class="ui-nav-bar-des">Back</span>
-          </i>
-            </a>
-            <h1 class="ui-nav-bar-title">Input</h1>
-            <a class="ui-nav-bar-link"><i class="ui-nav-bar-icon ui-nav-bar-right ui-icon-bars"></i></a>
-        </div>
-    </header>
-    <div class = 'ui-content'>
-        <h5>默认搜索框：</h5>
+                 普通输入框：
+                <div class="ui-input-group">
+                    <div class="ui-input-row">
+                        <label>text</label>
+                        <input type="text" required="required" placeholder="text">
+                    </div>
+                </div>
+
+                带清除按钮的输入框：
+                <div class="ui-input-group">
+                    <div class="ui-input-row">
+                        <label>清除按钮</label>
+                        <input type="text" class="ui-input-clear" placeholder="带清除按钮的输入框">
+                    </div>
+                </div>
+
+                 语音输入输入框：
+                <div class="ui-input-group">
+                    <div class="ui-input-row">
+                        <label>语音输入</label>
+                        <input type="text" class="ui-input-speech ui-input-clear" placeholder="语音输入">
+                        <span class="ui-icon ui-icon-speech"></span>
+                    </div>
+                </div>
+
+                搜索框：
                 <div class="ui-input-row ui-search">
                     <input type="search" class="ui-input-clear" placeholder="">
                 </div>
-                <h5>语音输入搜索框：</h5>
+                语音输入搜索框：
                 <div class="ui-input-row ui-search">
-                    <input id="search" type="search" class="ui-input-speech ui-input-clear" placeholder="带语音输入的搜索框">
+                    <input type="search" class="ui-input-speech ui-input-clear" placeholder="带语音输入的搜索框">
+                    <span class="ui-icon ui-icon-speech"></span>
                 </div>
+
+               下拉：
                 <div class="ui-input-group">
                     <div class="ui-input-row">
                         <label>请选择</label>
@@ -36,79 +53,70 @@
                                 <option value=3>选项四</option>
                         </select>
                     </div>
-                    <div class="ui-input-row">
-                        <label>dataType:</label>
-                        <select>
-                            <option value="html">HTML</option>
-                            <option value="json">JSON</option>
-                            <option value="xml">XML</option>
-                        </select>
-                    </div>    
                 </div>
-                <form class="ui-input-group" onsubmit="alert(1)">
-                    <div class="ui-input-row">
-                        <label>Input</label>
-                        <input type="email" required="required" placeholder="email">
-                    </div>
-                    <div class="ui-input-row">
-                        <input type="text" class="ui-input-clear" placeholder="带清除按钮的输入框">
-                    </div>
 
+                
+
+                多选框：
+                <div class="ui-input-group">
+                    <div class="ui-input-row ui-checkbox ui-left">
+                        <label>left checkbox</label>
+                        <input name="checkbox" type="checkbox" value="0">
+                    </div>
+                    <div class="ui-input-row ui-checkbox">
+                        <label>right checkbox</label>
+                        <input name="checkbox1" type="checkbox" checked>
+                    </div>
+                    <div id="discheck" class="ui-input-row ui-checkbox ui-left">
+                        <label>disabled checkbox</label>
+                        <input name="checkbox" type="checkbox" value="2" disabled="disabled">
+                    </div>
+                </div>
+
+                单选框：
+                <div class="ui-input-group">
+                    <div class="ui-input-row ui-radio ui-left" >
+                        <label>radio</label>
+                        <input name="radio1" type="radio" value="0">
+                    </div>
+                    <div class="ui-input-row ui-radio">
+                        <label>radio</label>
+                        <input  name="radio1" type="radio" value="1" checked>
+                    </div>
+                    <div class="ui-input-row ui-radio ui-left" >
+                        <label>disabled radio</label>
+                        <input name="radio1" type="radio" value="2" disabled="disabled">
+                    </div>
+                </div>
+
+                card-input
+                <div class="ui-card">
+                    <div class="ui-input-group">
+                        <div class="ui-input-row">
+                            <label>普通</label>
+                            <input type="email" required="required" placeholder="email">
+                        </div>
+                    </div>
+                </div>
+                账户、密码
+                <div class="ui-group-card">
                     <div class="ui-input-row">
-                        <label>Input</label>
-                        <input type="text" class="ui-input-speech ui-input-clear" placeholder="语音输入">
+                        <input type="text" class="ui-input-clear ui-input" placeholder="账号">
                     </div>
-                    <div class="ui-button-row">
-                        <button type="submit" class="ui-btn ui-btn-primary">确认</button>&nbsp;&nbsp;
-                        <button type="button" class="ui-btn ui-btn-danger" >取消</button>
+                    <div class="ui-input-row">
+                        <input type="password" class="ui-input-clear ui-input" placeholder="密码">
                     </div>
-                </form>
-                <div class="ui-card">
-                    <form class="ui-input-group">
-                        <div class="ui-input-row ui-checkbox ui-left">
-                            <label>left checkbox</label>
-                            <input name="checkbox" type="checkbox" value="0">
-                        </div>
-                        <div class="ui-input-row ui-checkbox">
-                            <label>right checkbox</label>
-                            <input name="checkbox1" type="checkbox" checked>
-                        </div>
-                        <div id="discheck" class="ui-input-row ui-checkbox ui-left">
-                            <label>disabled checkbox</label>
-                            <input name="checkbox" type="checkbox" value="2" disabled="disabled">
-                        </div>
-                    </form>
                 </div>
-                <div class="ui-card">
-                    <form class="ui-input-group">
-                        <div class="ui-input-row ui-radio ui-left" >
-                            <label>radio</label>
-                            <input name="radio1" type="radio" value="0">
-                        </div>
-                        <div class="ui-input-row ui-radio">
-                            <label>radio</label>
-                            <input  name="radio1" type="radio" value="1" checked>
-                        </div>
-                        <div class="ui-input-row ui-radio ui-left" >
-                            <label>disabled radio</label>
-                            <input name="radio1" type="radio" value="2" disabled="disabled">
-                        </div>
-                    </form>
+                文本域
+                <div class="ui-input-row ui-input-textarea">
+                    <textarea rows="5" placeholder="多行文本框"></textarea>
                 </div>
-                <form class="ui-group-card">
-                    <input id='account' type="text" class="ui-input-clear ui-input" placeholder="账号">
-                    <input id='password' type="password" class="ui-input-clear ui-input" placeholder="密码">
-                </form>
-                <div class="ui-input-row" style="margin: 10px 5px;">
-                    <textarea id="textarea" rows="5" placeholder="多行文本框"></textarea>
-                </div>
-        </div>
       <script src="dist/js/dom.js"></script>
       <script src="dist/js/co.js"></script>
 </body>
      <script>
         domReady(function(require){
-            $('.ui-btn-danger').button(function(el,evt){
+           $('.ui-btn-danger').button(function(el,evt){
                 alert($(el).html())
             })
             $('.ui-input-group').radio(function(el,evt){
