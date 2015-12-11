@@ -1,4 +1,5 @@
 var body = document.body
+var bWidth = body.offsetWidth
 var Zindex = 10000
 var windows = []
 var winMap = {}
@@ -42,7 +43,7 @@ var uuid = function(len, radix) {
 }
 var iframeload = function(id) {
     if (!this.readyState || this.readyState == "complete") {
-        // this.postMessage(id,'*');
+        // this.contentWindow.postMessage(id,'*');
     }
 }
 var GetQueryString = function(name) {
@@ -54,7 +55,7 @@ var GetQueryString = function(name) {
 window.addEventListener('message', function(e) {
     eval(e.data);
 }, false);
-var rootName = GetQueryString('pageId') || uuid(16);
+var rootName = GetQueryString('pageId') || 'index.html';
 var rootUrl = GetQueryString('pageId') || 'index.html';
 openWindow(rootName, rootUrl, true);
 
@@ -173,13 +174,13 @@ function openWindow(windowname, url, noTransition) {
         iframeload.call(iframe, pageId);
     }
     iframe.src = url + "?pageId=" + pageId;
-    // view.innerHTML = '<iframe style="position:absolute;left:0px;top:0px;width:100%;height:100%;border:0px;padding:0px;" src="' + args[2] + '"></iframe>';
+    if (!noTransition) {
+        view.className = 'page-from-right-to-center';
+        view.addEventListener("webkitAnimationEnd", function() {
+            view.className = '';
+        }, false);
+    }
     body.appendChild(view);
-    if (noTransition) return;
-    view.className = 'page-from-right-to-center';
-    view.addEventListener("webkitAnimationEnd", function() {
-        view.className = '';
-    }, false);
 }
 
 function closeWindow(windowname, pageId) {
@@ -193,7 +194,7 @@ function closeWindow(windowname, pageId) {
             var pop = document.getElementById(popId);
             pop && pop.parentNode.removeChild(pop)
         }
-        winMap[pageId]['pops']
+        // winMap[pageId]['pops']
         delete winMap[pageId];
         win.parentNode.removeChild(win);
     }, false);
@@ -253,4 +254,164 @@ function closePopover(windowname, pageId) {
     // windows.splice(index,index);
     var pop = document.getElementById(pageId);
     pop.parentNode.removeChild(pop);
+}
+
+function setSlideLayout(params) {
+    params = JSON.parse(params);
+    var type = params.type;
+    var edge = 200;
+    var name = '';
+    var url = '';
+    if (type == 'right') {
+        name = params.rightPane.name;
+        url = params.rightPane.url;
+        edge = params.rightEdge;
+    } else {
+        name = params.leftPane.name;
+        url = params.leftPane.url;
+        edge = params.leftEdge;
+    }
+
+    var pageId = strEncode(name);
+    pageId = 'drawer' + pageId;
+    var pane = {
+        id: pageId,
+        edge: edge
+    }
+    if (type == 'right') {
+        winMap['rightPane'] = pane
+    } else {
+        winMap['leftPane'] = pane
+    }
+    var win = document.getElementById(pageId);
+    if (win) {
+        // winMap[pageId]['pops']
+        delete winMap[pageId];
+        win.parentNode.removeChild(win);
+    }
+    winMap[pageId] = {};
+    winMap[pageId]['pops'] = [];
+    windows.push(pageId);
+    var view = document.createElement("DIV");
+    view.style.borderWidth = "0px";
+    view.style.position = "absolute";
+    view.style.left = "0px";
+    view.style.top = "0px";
+    view.style.width = edge + 'px';
+    view.style.height = "100%";
+    view.id = pageId;
+    var iframe = document.createElement("iframe");
+    iframe.style.position = "absolute";
+    iframe.style.borderWidth = "0px";
+    iframe.style.left = "0px";
+    iframe.style.top = "0px";
+    iframe.style.border = "0px";
+    iframe.style.padding = "0px";
+    iframe.style.width = "100%";
+    iframe.style.height = "100%";
+    view.appendChild(iframe);
+    iframe.onload = iframe.onreadystatechange = function() {
+        iframeload.call(iframe, pageId);
+    }
+    iframe.src = url + "?pageId=" + pageId;
+    if (type == 'right') {
+        view.style.cssText += '-webkit-transition-duration:' + 500 +
+            'ms;-webkit-transform: translate(' +
+            (bWidth + edge) + 'px, 0) translateZ(0);';
+    } else {
+        view.style.cssText += '-webkit-transition-duration:' + 500 +
+            'ms;-webkit-transform: translate(' +
+            -edge + 'px, 0) translateZ(0);';
+    }
+    body.appendChild(view);
+}
+
+function openSlidePane(params) {
+    var mask = document.getElementById('drawerMask');
+    if (mask) {
+        mask.style.display = 'block';
+    } else {
+        mask = document.createElement("DIV");
+        mask.style.borderWidth = "0px";
+        mask.style.position = "absolute";
+        mask.style.left = "0px";
+        mask.style.top = "0px";
+        mask.style.width = "100%";
+        mask.style.height = "100%";
+        mask.style.background = "#888";
+        mask.style.opacity = "0.5";
+        mask.style.zIndex = ++Zindex;
+        mask.id = 'drawerMask';
+        body.appendChild(mask);
+        mask.addEventListener("click", function() {
+            closeSlideDrawer()
+        }, false);
+    }
+    params = JSON.parse(params);
+    var type = params.type;
+    var pageId = ''
+    var edge = 200;
+    if (type == 'right') {
+        pageId = winMap['rightPane'].id
+        edge = winMap['rightPane'].edge;
+    } else {
+        pageId = winMap['leftPane'].id
+        edge = winMap['leftPane'].edge;
+    }
+    var pane = document.getElementById(pageId);
+    pane.style.zIndex = ++Zindex;
+    if (type == 'right') {
+        pane.style.cssText += '-webkit-transition-duration:' + 500 +
+            'ms;-webkit-transform: translate(' +
+            (bWidth - edge) + 'px, 0) translateZ(0);';
+    } else {
+        pane.style.cssText += '-webkit-transition-duration:' + 500 +
+            'ms;-webkit-transform: translate(0, 0) translateZ(0);';
+    }
+}
+
+function closeSlideDrawer() {
+    if (winMap['rightPane']) {
+        var pageId = winMap['rightPane'].id;
+        var edge = winMap['rightPane'].edge;
+        var pane = document.getElementById(pageId);
+        pane.style.cssText += '-webkit-transition-duration:' + 500 +
+            'ms;-webkit-transform: translate(' +
+            (bWidth + edge) + 'px, 0) translateZ(0);';
+    }
+    if (winMap['leftPane']) {
+        var pageId = winMap['leftPane'].id;
+        var edge = winMap['leftPane'].edge;
+        var pane = document.getElementById(pageId);
+        pane.style.cssText += '-webkit-transition-duration:' + 500 +
+            'ms;-webkit-transform: translate(' +
+            -edge + 'px, 0) translateZ(0);';
+    }
+    var mask = document.getElementById('drawerMask');
+    if (mask) {
+        mask.style.display = 'none';
+    }
+}
+
+function sendRequest(settings, pageId,token) {
+    settings = JSON.parse(settings);
+    var xhr = new XMLHttpRequest
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            var res = {
+                type: 'ajax',
+                data: xhr.responseText,
+                token:token
+            }
+            res = JSON.stringify(res)
+            setTimeout(function() {
+                document.getElementById(pageId).firstChild.contentWindow.postMessage(res, '*');
+            }, settings.timeout);
+        }
+    };
+    //创建请求
+    xhr.open('POST', 'http://127.0.0.1:3001', true);
+    xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8;");
+    //发送请求
+    xhr.send('{aa:333}');
 }

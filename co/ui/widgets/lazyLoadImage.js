@@ -33,7 +33,6 @@
     };
 
     var loadImage = function(el) {
-        return;
         el = $(el);
         var bg = el.attr('data-background');
         var src = bg ? bg : el.attr('data-src');

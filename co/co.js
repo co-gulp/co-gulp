@@ -1058,21 +1058,6 @@ seajs.config({
 				})
 			})
 		}
-		window.onerror = function(sMsg, sUrl, sLine, columnNumber, error) {
-			var str = sMsg;
-			app.log.e(str);
-			// window['rd']['log']['e'].call(window['rd']['log'], str);
-			str = "Line: " + sLine;
-			app.log.e(str);
-			// window['rd']['log']['e'].call(window['rd']['log'], str);
-			str = "resource: " + sUrl;
-			app.log.e(str);
-			// window['rd']['log']['e'].call(window['rd']['log'], str);
-			str = "column: " + columnNumber;
-			// window['rd']['log']['e'].call(window['rd']['log'], str);
-			app.log.e(str);
-			return false;
-		}
 	};
 
 	co.plus = !!global['rd'];

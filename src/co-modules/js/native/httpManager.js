@@ -5,9 +5,9 @@
 
 	var XMLHttpRequest = function() {
 		var isOpened = false;
+		var isAbort = false;
 		var settings = {};
-		var uuid = 0;
-		var requests = {};
+		var self = this;
 		settings.offline = 'undefined';
 		settings.expires = 0;
 		this.open = function(url, method, timeout) {
@@ -20,26 +20,26 @@
 			isOpened = true;
 		};
 		this.send = function(body, dataType) {
-			requests[uuid++]['isAbort'] = false;
+			isAbort = false;
 			if (!isOpened) {
 				throw new Error("执行send方法失败，请确保请求对象为OPENDE状态！");
 			}
 			if (body && $L.isPlainObject(body)) settings.body = JSON.stringify(body);
 			settings.dataType = dataType || 'json';
 			$L.executeNativeJS(['httpManager', 'sendRequest'], settings, function(response, data) {
-				if (this.onSuccess && $L.isFunction(this.onSuccess && !requests[uuid++]['isAbort'])) {
-					this.onSuccess.call(null, data, response);
+				if (self.onSuccess && $L.isFunction(self.onSuccess) && !isAbort) {
+					self.onSuccess.call(null, data, response);
 				}
 
 			}, function(code, response, Message) {
-				if (this.onError && $L.isFunction(this.onError) && !requests[uuid++]['isAbort']) {
-					this.onError.call(null, Message, code, response);
+				if (self.onError && $L.isFunction(self.onError) && !isAbort) {
+					self.onError.call(null, Message, code, response);
 				}
 			});
 
 		};
 		this.postForm = function(data, dataType, files) {
-			requests[uuid++]['isAbort'] = false;
+			isAbort = false;
 			if (!isOpened) {
 				throw new Error("执行postForm方法失败，请确保请求对象为OPENDE状态！");
 			}
@@ -52,21 +52,24 @@
 			settings.form = form;
 			settings.dataType = dataType || 'json';
 			$L.executeNativeJS(['httpManager', 'sendRequest'], settings, function(response, data) {
-				if (this.onSuccess && $L.isFunction(this.onSuccess && !requests[uuid++]['isAbort'])) {
-					this.onSuccess.call(null, data, response);
+				if (self.onSuccess && $L.isFunction(self.onSuccess) && !isAbort) {
+					self.onSuccess.call(null, data, response);
 				}
 
 			}, function(code, response, message) {
-				if (this.onError && $L.isFunction(this.onError) && !requests[uuid++]['isAbort']) {
-					this.onError.call(null, message, code, response);
+				if (self.onError && $L.isFunction(self.onError) && !isAbort) {
+					self.onError.call(null, message, code, response);
 				}
 			});
 
 		};
 		this.abort = function() {
-			requests[uuid]['isAbort'] = true;
+			isAbort = true;
 		};
 		this.setHeader = function(headerName, headerValue) {
+			if (!isOpened) {
+				throw new Error("执行setHeader方法失败，请确保请求对象为OPENDE状态！");
+			}
 			if (settings.HTTPHeader) {
 				if (headerName && headerValue) settings.HTTPHeader[headerName.toLowerCase()] = headerValue;
 			} else {
@@ -75,18 +78,28 @@
 			}
 		};
 		this.setOffline = function(type) {
+			if (!isOpened) {
+				throw new Error("执行setOffline方法失败，请确保请求对象为OPENDE状态！");
+			}
 			if (type == 'true') {
 				settings.offline = 'true';
 			} else if (type == 'false') {
 				settings.offline = 'false';
-			}else if (type == 'none') {
+			} else if (type == 'none') {
 				settings.offline = 'undefined';
 			}
 		};
 		this.setExpires = function(ms) {
+
+			if (!isOpened) {
+				throw new Error("执行setExpires方法失败，请确保请求对象为OPENDE状态！");
+			}
 			if (ms) settings.expires = ms;
 		};
 		this.setCertificate = function(path, password) {
+			if (!isOpened) {
+				throw new Error("执行setCertificate方法失败，请确保请求对象为OPENDE状态！");
+			}
 			if (settings.certificate) {
 				if (path) settings.certificate['path'] = path;
 				if (password) settings.certificate['password'] = password;

@@ -167,6 +167,55 @@
         _dog._wrap.off().remove();
         _dog._mask && _dog._mask.off().remove();
     };
+    /**
+     * 用来更新弹出框位置和mask大小。如父容器大小发生变化时，可能弹出框位置不对，可以外部调用refresh来修正。
+     * @method refresh
+     * @return {self} 返回本身
+     */
+    var refresh = function() {
+        var _dog = this,
+            opts = _dog.opts,
+            ret, action;
+        if (_dog._isOpen) {
+
+            action = function() {
+                ret = calculate.call(_dog);
+                ret.mask && _dog._mask.css(ret.mask);
+                _dog._wrap.css(ret.wrap);
+                setTimeout(function() {
+                    opts.scrollMove && $(document.body).css('overflowY', 'hidden');
+                }, 10);
+            }
+
+            //如果有键盘在，需要多加延时
+            if ($.os.ios &&
+                document.activeElement &&
+                /input|textarea|select/i.test(document.activeElement.tagName)) {
+
+                document.body.scrollLeft = 0;
+                setTimeout(action, 200); //do it later in 200ms.
+
+            } else {
+                action(); //do it now
+            }
+        }
+    };
+
+    /**
+     * 弹出弹出框
+     * @method open
+     * @return {self} 返回本身
+     */
+    var open = function() {
+        var _dog = this,
+            opts = _dog.opts;
+        _dog._isOpen = true;
+
+        _dog._wrap.css('display', 'block');
+        _dog._mask && _dog._mask.css('display', 'block');
+
+        refresh.call(_dog);
+    };
 
 
     /**
@@ -229,57 +278,10 @@
                 opts = _dog.opts;
             render.call(_dog);
             bind.call(_dog);
-            _dog.open();
-        };
-        /**
-         * 弹出弹出框
-         * @method open
-         * @return {self} 返回本身
-         */
-        $dialog.prototype.open = function() {
-            var _dog = this,
-                opts = _dog.opts;
-            _dog._isOpen = true;
-
-            _dog._wrap.css('display', 'block');
-            _dog._mask && _dog._mask.css('display', 'block');
-
-            _dog.refresh();
+            open.call(_dog);
         };
 
-        /**
-         * 用来更新弹出框位置和mask大小。如父容器大小发生变化时，可能弹出框位置不对，可以外部调用refresh来修正。
-         * @method refresh
-         * @return {self} 返回本身
-         */
-        $dialog.prototype.refresh = function() {
-            var _dog = this,
-                opts = _dog.opts,
-                ret, action;
-            if (_dog._isOpen) {
 
-                action = function() {
-                    ret = calculate.call(_dog);
-                    ret.mask && _dog._mask.css(ret.mask);
-                    _dog._wrap.css(ret.wrap);
-                    setTimeout(function() {
-                        opts.scrollMove && $(document.body).css('overflowY', 'hidden');
-                    }, 10);
-                }
-
-                //如果有键盘在，需要多加延时
-                if ($.os.ios &&
-                    document.activeElement &&
-                    /input|textarea|select/i.test(document.activeElement.tagName)) {
-
-                    document.body.scrollLeft = 0;
-                    setTimeout(action, 200); //do it later in 200ms.
-
-                } else {
-                    action(); //do it now
-                }
-            }
-        };
 
         /**
          * 关闭弹出框
@@ -296,6 +298,7 @@
             _dog._mask && _dog._mask.css('display', 'none');
             opts.scrollMove && $(document.body).css('overflowY', '');
             destroy.call(_dog);
+            _dog = null
         };
 
         /*$.fn.dialog = function (opts) {

@@ -24,34 +24,21 @@ var dialog = require("dialog");
 # 索引
 
 
-*	[接口](#接口)
-	-	[init](#init)
-		-	options
-			-	[buttons](#buttons)
-			-	[mask](#mask)
-			-	[width](#width)
-			-	[height](#height)
-			-	[contentMaxHeight](#contentMaxHeight)
-			-	[touchMashClose](#touchMashClose)
-			-	[title](#title)
-			-	[content](#content)
-			-	[scrollMove](#scrollMove)
-	-	[showToast](#showToast)
-		-	options
-			-	[time](#time)
-			-	[message](#message)
+*	[方法](#方法)
+	-	[init](#init)：创建一个弹出框
+	-	[showToast](#showToast)：创建一个toast消息提示框
 
 *	[注意事项](#注意事项)
 
 
-## <div id="接口">接口</div>
+## <div id="方法">方法</div>
 	对外提供方法--function
 	调用对象 : var dialog = require("dialog");
 
 
 ###  <div id="init">init</div>
 	
-*	dialog.init(opts)   ⇒ object
+*	dialog.init(options)   ⇒ object
 	-	<div id="buttons">buttons</div> 
 		-	description : 弹出框上的按钮
 		-	type : object

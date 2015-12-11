@@ -680,3 +680,5 @@ var app = (function(global) {
 
   return $L;
 }(this));
+ window.app = app;
+ window.A === undefined && (window.A = app);

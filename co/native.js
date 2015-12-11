@@ -5,8 +5,6 @@ var app = (function(global) {
   var $L = {
     version: '0.0.1'
   }
-
-
   var class2type = {},
     toString = class2type.toString,
     types = "Boolean Number String Function Array Date RegExp Object Error".split(" ");
@@ -30,15 +28,22 @@ var app = (function(global) {
   var head = doc.head || doc.getElementsByTagName("head")[0] || doc.documentElement
   var domReady = function(factory) {
     if ($L.isFunction(factory)) {
-      if (!(($.os.android || $.os.ios) && plus)) {
+      if (!(($L.android || $L.ios) && plus)) {
         var node = doc.createElement("script");
         node.charset = 'utf-8';
         node.async = true
-        node.src = url
+        node.src = loaderDir + 'debug.js'
+        node.onload = function() {
+          node.onload = node.onerror = node.onreadystatechange = null
+          factory.call(null, function() {
+            throw new Error("请引入dom.js和co.js后加载组件！");
+          });
+        }
+        node.onerror = function() {
+          return true;
+        }
         head.appendChild(node)
-          // deps.splice(0, 0, "debug")
-      }
-      if (($L.android || $L.ios) && plus) {
+      } else {
         setTimeout(function() {
           if (domReady.isReady) {
             factory.call(null, function() {
@@ -48,28 +53,21 @@ var app = (function(global) {
             setTimeout(arguments.callee, 1);
           }
         }, 1);
-      } else {
-        factory.call(null, function() {
-          throw new Error("请引入dom.js和co.js后加载组件！");
-        });
       }
+
     }
   };
 
 
   window.onerror = function(sMsg, sUrl, sLine, columnNumber, error) {
     var str = sMsg;
-    app.log.e(str);
-    // window['rd']['log']['e'].call(window['rd']['log'], str);
+    app.log.error(str);
     str = "Line: " + sLine;
-    app.log.e(str);
-    // window['rd']['log']['e'].call(window['rd']['log'], str);
+    app.log.error(str);
     str = "resource: " + sUrl;
-    app.log.e(str);
-    // window['rd']['log']['e'].call(window['rd']['log'], str);
+    app.log.error(str);
     str = "column: " + columnNumber;
-    // window['rd']['log']['e'].call(window['rd']['log'], str);
-    app.log.e(str);
+    app.log.error(str);
     return false;
   }
 
@@ -196,6 +194,22 @@ var app = (function(global) {
       class2type[toString.call(obj)] || "object"
   };
 
+  var isWindow = function(obj) {
+    return obj != null && obj == obj.window
+  };
+
+  var isObject = function(obj) {
+    return type(obj) == "object"
+  };
+
+  var likeArray = function(obj) {
+    return typeof obj.length == 'number'
+  };
+
+  $L.isPlainObject = function(obj) {
+    return isObject(obj) && !isWindow(obj) && Object.getPrototypeOf(obj) == Object.prototype
+  };
+
   $L.isFunction = function(value) {
     return type(value) == "function"
   };
@@ -213,12 +227,25 @@ var app = (function(global) {
     return $L.os.getName() == "iOS"
   };
 
+  $L.each = function(elements, callback) {
+    var i, key
+    if (likeArray(elements)) {
+      for (i = 0; i < elements.length; i++)
+        if (callback.call(elements[i], i, elements[i]) === false) return elements
+    } else {
+      for (key in elements)
+        if (callback.call(elements[key], key, elements[key]) === false) return elements
+    }
+
+    return elements
+  }
+
   var resolveFun = function(arr) {
     var fun = baseObj;
     var callObj = baseObj;
-    if ($.isArray(arr)) {
-      $.each(arr, function(index, item) {
-        if ($.chk(fun) && $.chk(item)) {
+    if ($L.isArray(arr)) {
+      $L.each(arr, function(index, item) {
+        if (fun && item) {
           callObj = fun;
           fun = fun[item];
         }
@@ -236,7 +263,7 @@ var app = (function(global) {
   $L.executeNativeJS = function() {
     var args = Array.prototype.slice.call(arguments, 1);
     var callFun = resolveFun(arguments[0]);
-    if ($.isFunction(callFun.fun)) {
+    if ($L.isFunction(callFun.fun)) {
       return callFun.fun.apply(callFun.callObj, args);
     }
   }
@@ -248,11 +275,11 @@ var app = (function(global) {
     var args = Array.prototype.slice.call(arguments, 1);
     var fun = arguments[0][0]
     var callObj = fun;
-    if ($.chk(fun)) {
+    if (fun) {
       fun = fun[arguments[0][1]];
     }
 
-    if ($.isFunction(fun)) {
+    if ($L.isFunction(fun)) {
       return fun.apply(callObj, args);
     }
   }
@@ -262,7 +289,7 @@ var app = (function(global) {
    */
   $L.executeConstantJS = function() {
     var constant = resolveFun(arguments[0]);
-    if ($.chk(constant.fun)) {
+    if (constant.fun) {
       return constant.fun;
     }
   }
@@ -272,7 +299,7 @@ var app = (function(global) {
    */
   $L.executeObjConstantJS = function() {
     var constant = arguments[0];
-    if ($.chk(constant)) {
+    if (constant) {
       return constant[arguments[1]];
     }
   }
@@ -356,9 +383,10 @@ var app = (function(global) {
    * @param Number edge 侧滑时, 侧滑window停留时露出的宽度  -- 默认值 50
    */
   $L.addSlideDrawer = function(url, type, edge) {
+    var patrn = /^[0-9]{1,20}$/;
     if (typeof url === 'undefined') {
       throw new Error("请传入有效的抽屉页面路径！");
-    } else if ($.isPlainObject(url)) {
+    } else if ($L.isPlainObject(url)) {
       var uri = url['url'];
       if (typeof uri === 'undefined') {
         throw new Error("请传入有效的抽屉页面路径！");
@@ -368,7 +396,7 @@ var app = (function(global) {
         url = uri;
       }
     }
-    if (!$.isDigit(edge)) {
+    if (!patrn.test(edge)) {
       edge = 50;
     }
     if (type == 'right') {
@@ -501,7 +529,7 @@ var app = (function(global) {
   $L.alert = function(message, title, btnCaption, callback) {
     if (typeof message === 'undefined') {
       throw new Error("请传入有效消息内容！");
-    } else if ($.isPlainObject(message)) {
+    } else if ($L.isPlainObject(message)) {
       var msg = message['message'];
       if (typeof msg === 'undefined') {
         throw new Error("请传入有效消息内容！");
@@ -512,11 +540,11 @@ var app = (function(global) {
         message = msg;
       }
     } else {
-      if ($.isFunction(title)) {
+      if ($L.isFunction(title)) {
         callback = title;
         title = '消息提示';
         btnCaption = '确定';
-      } else if ($.isFunction(btnCaption)) {
+      } else if ($L.isFunction(btnCaption)) {
         callback = btnCaption;
         btnCaption = '确定';
       }
@@ -528,7 +556,7 @@ var app = (function(global) {
       }
       // callback = callback || function(){}
     $L.executeNativeJS(['window', 'alert'], setting, function() {
-      $.isFunction(callback) && callback.call();
+      $L.isFunction(callback) && callback.call();
     });
   };
 
@@ -542,7 +570,7 @@ var app = (function(global) {
   $L.confirm = function(message, title, btnCaptions, callback) {
     if (typeof message === 'undefined') {
       throw new Error("请传入有效消息内容！");
-    } else if ($.isPlainObject(message)) {
+    } else if ($L.isPlainObject(message)) {
       var msg = message['message'];
       if (typeof msg === 'undefined') {
         throw new Error("请传入有效消息内容！");
@@ -553,11 +581,11 @@ var app = (function(global) {
         message = msg;
       }
     } else {
-      if ($.isFunction(title)) {
+      if ($L.isFunction(title)) {
         callback = title;
         title = '消息提示';
         btnCaptions = ['确认', '放弃', '取消'];
-      } else if ($.isFunction(btnCaptions)) {
+      } else if ($L.isFunction(btnCaptions)) {
         callback = btnCaptions;
         btnCaptions = ['确认', '放弃', '取消'];
       }
@@ -569,7 +597,7 @@ var app = (function(global) {
       }
       // callback = callback || function(){}
     $L.executeNativeJS(['window', 'confirm'], setting, function(Tips) {
-      $.isFunction(callback) && callback.call(global, Tips.buttonIndex);
+      $L.isFunction(callback) && callback.call(global, Tips.buttonIndex);
     });
   };
 
@@ -585,7 +613,7 @@ var app = (function(global) {
   $L.prompt = function(message, title, btnCaptions, inputValue, inputTpye, callback) {
     if (typeof message === 'undefined') {
       throw new Error("请传入有效消息内容！");
-    } else if ($.isPlainObject(message)) {
+    } else if ($L.isPlainObject(message)) {
       var msg = message['message'];
       if (typeof msg === 'undefined') {
         throw new Error("请传入有效消息内容！");
@@ -598,22 +626,22 @@ var app = (function(global) {
         message = msg;
       }
     } else {
-      if ($.isFunction(title)) {
+      if ($L.isFunction(title)) {
         callback = title;
         title = '消息提示';
         btnCaptions = ['确认', '放弃', '取消'];
         inputValue = '';
         inputTpye = 'text';
-      } else if ($.isFunction(btnCaptions)) {
+      } else if ($L.isFunction(btnCaptions)) {
         callback = btnCaptions;
         btnCaptions = ['确认', '放弃', '取消'];
         inputValue = '';
         inputTpye = 'text';
-      } else if ($.isFunction(inputValue)) {
+      } else if ($L.isFunction(inputValue)) {
         callback = inputValue;
         inputValue = '';
         inputTpye = 'text';
-      } else if ($.isFunction(inputTpye)) {
+      } else if ($L.isFunction(inputTpye)) {
         callback = inputTpye;
         inputTpye = 'text';
       }
@@ -627,7 +655,7 @@ var app = (function(global) {
       }
       // callback = callback || function(){}
     $L.executeNativeJS(['window', 'prompt'], setting, function(Tips) {
-      $.isFunction(callback) && callback.call(global, Tips.buttonIndex, Tips.buttonIndex.text);
+      $L.isFunction(callback) && callback.call(global, Tips.buttonIndex, Tips.buttonIndex.text);
     });
   }
 
@@ -652,6 +680,8 @@ var app = (function(global) {
 
   return $L;
 }(this));
+ window.app = app;
+ window.A === undefined && (window.A = app);
 /*===============================================================================
 ************   ui native window   ************
 ===============================================================================*/
@@ -1185,20 +1215,36 @@ var app = (function(global) {
      * 获取当前设备的录音对象
      *
      */
-    getRecorder: function(opts) {
+    getRecorder: function() {
       !recorder && (recorder = $L.executeNativeJS(['audio', 'getRecorder']))
-      var supportedSamplerates = $L.executeObjConstantJS(recorder,'supportedSamplerates');
-      var supportedFormats = $L.executeObjConstantJS(recorder,'supportedFormats');
-      opts = opts || {}
-      var options = {
-        filename: opts.filename,
-        samplerate: opts.samplerate,
-        format: opts.format
-      }
+      var supportedSamplerates = $L.executeObjConstantJS(recorder, 'supportedSamplerates');
+      var supportedFormats = $L.executeObjConstantJS(recorder, 'supportedFormats');
       return {
-        supportedSamplerates: supportedSamplerates,
-        supportedFormats: supportedFormats,
-        record: function(success, error) {
+        getSamplerates: function() {
+          if (supportedSamplerates && $L.isArray(supportedSamplerates)) {
+            return supportedSamplerates
+          } else {
+            return []
+          }
+
+        },
+        getFormats: function() {
+          if (supportedFormats && $L.isArray(supportedFormats)) {
+            return supportedFormats
+          } else {
+            return []
+          }
+        },
+        record: function(success, error, opts) {
+          if ($L.isPlainObject(error)) {
+            opts = error;
+          }
+          opts = opts || {}
+          var options = {
+            filename: opts.filename,
+            samplerate: opts.samplerate,
+            format: opts.format
+          }
           $L.executeObjFunJS([recorder, 'record'], options, function(recordFile) {
             if ($L.isFunction(success)) {
               success.call(null, recordFile);
@@ -1260,6 +1306,11 @@ var app = (function(global) {
           if (typeof path === undefined) {
             throw new Error("请传入有效的音频输出线路！");
           }
+          if(route == 1){
+            route = $L.executeConstantJS(['auduo', 'ROUTE_EARPIECE'])
+          }else{
+            route = $L.executeConstantJS(['auduo', 'ROUTE_SPEAKER'])
+          }
           $L.executeObjFunJS([player, 'setRoute'], route)
         },
         isPlaying: function() {
@@ -1279,12 +1330,6 @@ var app = (function(global) {
   var resolution;
   var index;
   var camera = {
-    resolutionTypeHigh: 0, //高质量
-    resolutionTypeMedium: 1, //中等质量
-    resolutionTypeLow: 2, //低质量
-    resolutionTypeIFrame640x480: 3, //VGA质量
-    resolutionTypeIFrame1280x720: 4, //1280*720
-    resolutionTypeIFrame960x540: 5, //960*540
     captureImage: function(success, error) {
       var options = {
         filename: filename,
@@ -1323,11 +1368,29 @@ var app = (function(global) {
   }
 
   $L.camera = {
-    getCamera: function(opts) {
-      opts = opts || {}
-      filename = opts.filename
-      resolution = opts.resolution
-      index = opts.index
+    getCamera: function(fname, rlution, cameraType) {
+      if (typeof fname === 'undefined') {
+        throw new Error("请传入有效的文件保存的路径！");
+      }
+      filename = fname
+      if (rlution == 0) {
+        resolution = $L.executeConstantJS(['camera', 'ResolutionTypeHigh'])
+      } else if (rlution == 1) {
+        resolution = $L.executeConstantJS(['camera', 'ResolutionTypeMedium'])
+      } else if (rlution == 2) {
+        resolution = $L.executeConstantJS(['camera', 'ResolutionTypeLow'])
+      } else if (rlution == 3) {
+        resolution = $L.executeConstantJS(['camera', 'ResolutionTypeIFrame640x480'])
+      } else if (rlution == 4) {
+        resolution = $L.executeConstantJS(['camera', 'ResolutionTypeIFrame1280x720'])
+      } else if (rlution == 5) {
+        resolution = $L.executeConstantJS(['camera', 'ResolutionTypeIFrame960x540'])
+      }
+      if (cameraType = 1) {
+        index = cameraType
+      } else {
+        index = 0
+      }
       return camera;
     }
   }
@@ -1338,11 +1401,11 @@ var app = (function(global) {
 ===============================================================================*/
 (function($L, global) {
 
-  var contacts = function(type) {
-    if (type == $L.contacts.ADDRESSBOOK_PHONE) {
-      type = $L.executeConstantJS(['contacts', 'ADDRESSBOOK_PHONE'])
-    } else if (type == $L.contacts.ADDRESSBOOK_PHONE) {
+  var AddressBook = function(type) {
+    if (type == 1) {
       type = $L.executeConstantJS(['contacts', 'ADDRESSBOOK_SIM'])
+    } else {
+      type = $L.executeConstantJS(['contacts', 'ADDRESSBOOK_PHONE'])
     }
     this.create = function(success, error) {
       $L.executeNativeJS(['contacts', 'getAddressBook'], type, function(addressbook) {
@@ -1355,11 +1418,12 @@ var app = (function(global) {
         }
       });
     };
-    this.find = function(findOptions,success, error) {
+    this.find = function(findOptions, success, error) {
 
       $L.executeNativeJS(['contacts', 'getAddressBook'], type, function(addressbook) {
           addressbook.find(function(res) {
               if ($L.isFunction(success)) {
+                res = res || []
                 success.call(null, res);
               }
             },
@@ -1382,13 +1446,11 @@ var app = (function(global) {
   }
 
   $L.contacts = {
-    ADDRESSBOOK_SIM: 1,
-    ADDRESSBOOK_PHONE: 0,
     getAddressBook: function(type) {
-      if (type != $L.contacts.ADDRESSBOOK_PHONE && type != $L.contacts.ADDRESSBOOK_PHONE) {
-        throw new Error("请传入有效的通讯录存储类型！");
+      if (type != 1) {
+        type = 0
       }
-      return new contacts(type)
+      return new AddressBook(type)
     }
   }
 
@@ -1408,6 +1470,9 @@ var app = (function(global) {
 		 * @return flag : 成功：1 , 失败：0
 		 */
 		this.executeSql = function(sql) {
+			if (typeof sql === undefined) {
+				throw new Error("请传入有效的sql语句！");
+			}
 			return $L.executeObjFunJS([dataBase, 'executeSql'], sql);
 		}
 
@@ -1415,14 +1480,14 @@ var app = (function(global) {
 		 * 关闭数据库。
 		 */
 		this.close = function() {
-			$L.executeObjFunJS([dataBase, 'close']);
+			return $L.executeObjFunJS([dataBase, 'close']);
 		}
 
 		/*
 		 * 删除数据库。
 		 */
 		this.deleteDataBase = function() {
-			$L.executeObjFunJS([dataBase, 'deleteDataBase']);
+			return $L.executeObjFunJS([dataBase, 'deleteDataBase']);
 		}
 
 		/*
@@ -1430,7 +1495,15 @@ var app = (function(global) {
 		 * @param sql :要执行的Sql语句,例如：'select * from t_students'
 		 */
 		this.selectAll = function(sql) {
-			$L.executeObjFunJS([dataBase, 'selectAll'], sql);
+			if (typeof sql === undefined) {
+				throw new Error("请传入有效的sql语句！");
+			}
+			var res = $L.executeObjFunJS([dataBase, 'selectAll'], sql);
+			if(res && $L.isArray(res)){
+				return res 
+			}else{
+				return []
+			}
 		}
 
 		/*
@@ -1511,17 +1584,24 @@ var app = (function(global) {
 		},
 		/*
 		 * 拨打电话
-		 * @param number: ( String ) 必选 要获取通讯录的类型，可取通讯录类型常量
+		 * @param number: ( String ) 必选 要拨打的电话号码
 		 * @param confirm: ( Boolean ) 可选 是否弹出确认对话框，默认false
 		 */
 		dial: function(number, confirm) {
+			if (typeof number === undefined) {
+				throw new Error("请传入有效的手机号码！");
+			}
+			if (!confirm) {
+				confirm = false;
+			}
 			$L.executeNativeJS(['device', 'dial'], number, confirm);
 		},
 		/*
-		 * 拨打电话
+		 * 发出蜂鸣声
 		 * @param times: ( Number ) 可选 蜂鸣声重复的次数，默认发出一次蜂鸣声，ios不支持
 		 */
 		beep: function(times) {
+			if (!times) times = 1
 			$L.executeNativeJS(['device', 'beep'], times);
 		},
 		/*
@@ -1529,6 +1609,7 @@ var app = (function(global) {
 		 * @param milliseconds: ( Number ) 必选 设备振动持续的时间，单位为ms，默认为500ms。ios不支持
 		 */
 		vibrate: function(milliseconds) {
+			if (!milliseconds) milliseconds = 500
 			$L.executeNativeJS(['device', 'vibrate'], milliseconds);
 		},
 		/*
@@ -1577,6 +1658,9 @@ var app = (function(global) {
 		}
 		this.getUrl = function() {
 			if (download) return download.url;
+		}
+		this.getPath = function() {
+			if (download) return download.filePath;
 		}
 		this.getState = function() {
 			if (download) return download.state;
@@ -1649,6 +1733,7 @@ var app = (function(global) {
 		 * @return downloads
 		 */
 		enumerate: function(state) {
+			if(!state) state = -1;
 			var downloads = $L.executeNativeJS(['downloader', 'enumerate'], state);
 			if(downloads && $L.isArray(downloads)){
 				return downloads;
@@ -1662,6 +1747,7 @@ var app = (function(global) {
 		 * @param state: ( 下载任务状态 ) 必选 要清除下载任务的状态。
 		 */
 		clear: function(state) {
+			if(!state) state = -1;
 			$L.executeNativeJS(['downloader', 'clear'], state);
 		},
 
@@ -1724,7 +1810,19 @@ var app = (function(global) {
 ===============================================================================*/
 (function($L, global) {
   $L.gallery = {
-    pick: function(option, success, error) {
+    pick: function(success, error, opts) {
+      var option = {
+        filter: 'image',
+        multiple: true
+      }
+      if ($L.isPlainObject(error)) {
+        opts = error;
+      }
+      if (opts) {
+        if (!opts.multiple) option.multiple = false
+        if (opts.filter == 'video') option.filter = 'video'
+        if (opts.filter == 'none') option.filter = 'none'
+      }
       $L.executeNativeJS(['gallery', 'pick'], function(paths) {
         if ($L.isFunction(success)) {
           success.call(null, paths);
@@ -1761,15 +1859,18 @@ var app = (function(global) {
 		 * @param options: 获取设备位置信息的参数
 		 */
 		getCurrentPosition: function(success, error, options) {
+			if ($L.isPlainObject(error)) {
+				options = error;
+			}
 			$L.executeNativeJS(['geolocation', 'getCurrentPosition'], function(position) {
 				if ($L.isFunction(success)) {
-					success.call(null,position);
+					success.call(null, position);
 				}
 			}, function(err) {
 				if ($L.isFunction(error)) {
 					error.call(null, err);
 				}
-			},options);
+			}, options);
 		},
 
 		/*
@@ -1779,15 +1880,18 @@ var app = (function(global) {
 		 * @param options: 获取设备位置信息的参数
 		 */
 		watchPosition: function(success, error, options) {
+			if ($L.isPlainObject(error)) {
+				options = error;
+			}
 			$L.executeNativeJS(['geolocation', 'watchPosition'], function(position) {
 				if ($L.isFunction(success)) {
-					success.call(null,position);
+					success.call(null, position);
 				}
 			}, function(err) {
 				if ($L.isFunction(error)) {
 					error.call(null, err);
 				}
-			},options);
+			}, options);
 		},
 
 		/*
@@ -1806,10 +1910,11 @@ var app = (function(global) {
 
 	var XMLHttpRequest = function() {
 		var isOpened = false;
+		var isAbort = false;
 		var settings = {};
-		var uuid = 0;
-		var requests = {};
+		var self = this;
 		settings.offline = 'undefined';
+		settings.expires = 0;
 		this.open = function(url, method, timeout) {
 			if (typeof url === 'undefined') {
 				throw new Error("请传入有效的请求地址！");
@@ -1820,26 +1925,26 @@ var app = (function(global) {
 			isOpened = true;
 		};
 		this.send = function(body, dataType) {
-			requests[uuid++]['isAbort'] = false;
+			isAbort = false;
 			if (!isOpened) {
 				throw new Error("执行send方法失败，请确保请求对象为OPENDE状态！");
 			}
-			if (body) settings.body = body;
+			if (body && $L.isPlainObject(body)) settings.body = JSON.stringify(body);
 			settings.dataType = dataType || 'json';
 			$L.executeNativeJS(['httpManager', 'sendRequest'], settings, function(response, data) {
-				if (this.onSuccess && $L.isFunction(this.onSuccess && !requests[uuid++]['isAbort'])) {
-					this.onSuccess.call(null, data, response);
+				if (self.onSuccess && $L.isFunction(self.onSuccess) && !isAbort) {
+					self.onSuccess.call(null, data, response);
 				}
 
 			}, function(code, response, Message) {
-				if (this.onError && $L.isFunction(this.onError) && !requests[uuid++]['isAbort']) {
-					this.onError.call(null, Message, code, response);
+				if (self.onError && $L.isFunction(self.onError) && !isAbort) {
+					self.onError.call(null, Message, code, response);
 				}
 			});
 
 		};
 		this.postForm = function(data, dataType, files) {
-			requests[uuid++]['isAbort'] = false;
+			isAbort = false;
 			if (!isOpened) {
 				throw new Error("执行postForm方法失败，请确保请求对象为OPENDE状态！");
 			}
@@ -1852,21 +1957,24 @@ var app = (function(global) {
 			settings.form = form;
 			settings.dataType = dataType || 'json';
 			$L.executeNativeJS(['httpManager', 'sendRequest'], settings, function(response, data) {
-				if (this.onSuccess && $L.isFunction(this.onSuccess && !requests[uuid++]['isAbort'])) {
-					this.onSuccess.call(null, data, response);
+				if (self.onSuccess && $L.isFunction(self.onSuccess) && !isAbort) {
+					self.onSuccess.call(null, data, response);
 				}
 
 			}, function(code, response, message) {
-				if (this.onError && $L.isFunction(this.onError) && !requests[uuid++]['isAbort']) {
-					this.onError.call(null, message, code, response);
+				if (self.onError && $L.isFunction(self.onError) && !isAbort) {
+					self.onError.call(null, message, code, response);
 				}
 			});
 
 		};
 		this.abort = function() {
-			requests[uuid]['isAbort'] = true;
+			isAbort = true;
 		};
 		this.setHeader = function(headerName, headerValue) {
+			if (!isOpened) {
+				throw new Error("执行setHeader方法失败，请确保请求对象为OPENDE状态！");
+			}
 			if (settings.HTTPHeader) {
 				if (headerName && headerValue) settings.HTTPHeader[headerName.toLowerCase()] = headerValue;
 			} else {
@@ -1875,16 +1983,28 @@ var app = (function(global) {
 			}
 		};
 		this.setOffline = function(type) {
+			if (!isOpened) {
+				throw new Error("执行setOffline方法失败，请确保请求对象为OPENDE状态！");
+			}
 			if (type == 'true') {
 				settings.offline = 'true';
 			} else if (type == 'false') {
 				settings.offline = 'false';
+			} else if (type == 'none') {
+				settings.offline = 'undefined';
 			}
 		};
 		this.setExpires = function(ms) {
+
+			if (!isOpened) {
+				throw new Error("执行setExpires方法失败，请确保请求对象为OPENDE状态！");
+			}
 			if (ms) settings.expires = ms;
 		};
 		this.setCertificate = function(path, password) {
+			if (!isOpened) {
+				throw new Error("执行setCertificate方法失败，请确保请求对象为OPENDE状态！");
+			}
 			if (settings.certificate) {
 				if (path) settings.certificate['path'] = path;
 				if (password) settings.certificate['password'] = password;
@@ -2009,7 +2129,7 @@ var app = (function(global) {
 		 * 将Information发送到IDE控制台。
 		 * @param info: 发送的信息
 		 */
-		i: function(info) {
+		info: function(info) {
 			$L.executeNativeJS(['log', 'i'], info);
 		},
 
@@ -2017,7 +2137,7 @@ var app = (function(global) {
 		 * 将warning发送到IDE控制台。
 		 * @param info: 发送的信息
 		 */
-		w: function(info) {
+		warning: function(info) {
 			$L.executeNativeJS(['log', 'w'], info);
 		},
 
@@ -2025,7 +2145,7 @@ var app = (function(global) {
 		 * 将error发送到IDE控制台。
 		 * @param info: 发送的信息
 		 */
-		e: function(info) {
+		error: function(info) {
 			$L.executeNativeJS(['log', 'e'], info);
 		}
 	}
@@ -2036,7 +2156,7 @@ var app = (function(global) {
 ===============================================================================*/
 (function($L, global) {
 
-	var message = function() {
+	var message = function(type) {
 		var recipients = [];
 		this.setRecipients = function(rp) {
 			recipients = rp;
@@ -2049,16 +2169,16 @@ var app = (function(global) {
 			} else if (!$L.isArray(recipients)) {
 				throw new Error("收件人信息必須是數組對象！");
 			}
-			var mo = $L.executeNativeJS(['message', 'createMessage'], 1);
+			var mo = $L.executeNativeJS(['message', 'createMessage'], type);
 			if (mo) {
-				msg.to = recipients;
-				msg.body = msg;
+				mo.to = recipients;
+				mo.body = msg;
 			}
 
 
-			$L.executeConstantJS(['message', 'sendMessage'], mo, function(res) {
+			$L.executeNativeJS(['message', 'sendMessage'], mo, function() {
 				if ($L.isFunction(success)) {
-					success.call(null, res);
+					success.call();
 				}
 			}, function(err) {
 				if ($L.isFunction(error)) {
@@ -2074,8 +2194,11 @@ var app = (function(global) {
 		 * 创建消息对象
 		 * @return message
 		 */
-		createMessage: function() {
-			return new message();
+		createMessage: function(type) {
+			if (typeof type === 'undefined') {
+				type = 1
+			}
+			return new message(type);
 		}
 	}
 
@@ -2164,13 +2287,12 @@ var app = (function(global) {
           width: width,
           height: height
         };
-          $L.executeNativeJS(['window', 'openPopover'], popovername, popoverType, url, rect)
+        $L.executeNativeJS(['window', 'openPopover'], popovername, popoverType, url, rect)
       }
       this.setType = function(type) {
         popoverType = type;
       }
-      this.setAnimationType = function(type) {
-      }
+      this.setAnimationType = function(type) {}
       this.hide = function() {
         if (popovername) $L.executeNativeJS(['window', 'setPopoverVisible'], 0, popovername)
       }
@@ -2203,12 +2325,8 @@ var app = (function(global) {
         }
         if (popovername) $L.executeNativeJS(['window', 'bringPopoverAbove'], popovername, popovr)
       }
-      this.close = function(animationType) {
-          if (animationType == 10) {
-            if (popovername) $L.executeNativeJS(['window', 'closePopover'], popovername, animationType)
-          } else {
-            if (popovername) $L.executeNativeJS(['window', 'closePopover'], popovername)
-          }
+      this.close = function() {
+          if (popovername) $L.executeNativeJS(['window', 'closePopover'], popovername)
         }
         /*
          * 执行JS语句
@@ -2240,16 +2358,16 @@ var app = (function(global) {
 ************   ui native progress   ************
 ===============================================================================*/
 (function($L, global) {
+	var fade = 0, //值为 0 进度提示框以渐隐渐显动画呈现
+		zoom = 1; //值为 1 进度提示框以缩放动画呈现
 	$L.progress = {
-		ANIMATIONTYPE_FADE: 0, //值为 0 进度提示框以渐隐渐显动画呈现
-		ANIMATIONTYPE_ZOOM: 1, //值为 1 进度提示框以缩放动画呈现
 		/*
 		 * 显示进度框。
 		 * @param options:  ( JSON对象 ) 必选  进度条配置项
 		 * @param animationtype: 可选项，设置弹出框显示时的动画类型
 		 */
 		showProgress: function(options, animationtype) {
-			if (animationtype == this.ANIMATIONTYPE_FADE || animationtype == this.ANIMATIONTYPE_ZOOM) {
+			if (animationtype == fade || animationtype == zoom) {
 				$L.executeNativeJS(['progress', 'showProgress'], animationtype, options);
 			} else {
 				$L.executeNativeJS(['progress', 'showProgress'], options);
@@ -2289,7 +2407,7 @@ var app = (function(global) {
 		 * @param key: ( String ) 必选 键值
 		 * @param value: ( String ) 必选 属性值
 		 */
-		this.putProperty = function(key, value) {
+		this.put = function(key, value) {
 			$L.executeObjFunJS([propertie, 'putProperty'], key, value);
 		}
 
@@ -2297,7 +2415,7 @@ var app = (function(global) {
 		 * 获取属性值
 		 * @param key: ( String ) 必选 键值
 		 */
-		this.getProperty = function(key) {
+		this.get = function(key) {
 			return $L.executeObjFunJS([propertie, 'getProperty'], key);
 		}
 
@@ -2305,7 +2423,7 @@ var app = (function(global) {
 		 * 删除属性值
 		 * @param key: ( String ) 必选 键值
 		 */
-		this.deleteProperty = function(key) {
+		this.delete = function(key) {
 			$L.executeObjFunJS([propertie, 'deleteProperty'], key);
 		}
 
@@ -2327,16 +2445,12 @@ var app = (function(global) {
 
 	$L.properties = {
 		/*
-		 * 打开一个dataBase，获得一个dataBase对象，若存在此对象，则直接返回；若不存在，则创建一个新的dataBase。
-		 * @param databaseName : (String) : 必选 支持名字(在默认路径创建数据库)和协议路径(请参照以下的协议路径)
-		 	res : 程序资源路径，相当于app目录
-			data : 用户自定义数据路径，相当于数据目录
-			cache : 缓存路径
-			cpts : components路径，相当于component所在的上级目录
-			cpt : 当前component所在的路径
-		 * @return DataBase : 数据库对象
+		 * 如果property文件不存在，新建相应的property，如果存在，直接读取
+		 * @param domain : ( String ) 必选 一级文件夹。
+		 * @param fileName :  ( String ) 必选 文件名。
+		 * @return Property  : 新建的property对象
 		 */
-		openProperties: function(domain, fileName) {
+		open: function(domain, fileName) {
 			return new properties(domain, fileName);
 		}
 	}
@@ -2399,7 +2513,7 @@ var app = (function(global) {
 			/*
 			 * 解除锁定屏幕方向,iOS不支持.
 			 */
-			unlockOrientation: function() {
+			unLockOrientation: function() {
 				$L.executeConstantJS(['screen', 'unlockOrientation']);
 			}
 	}
@@ -2437,9 +2551,9 @@ var app = (function(global) {
 	}
 
 
-	$L.socketManager = {
+	$L.socket = {
 		/*
-		 * 打开一个dataBase，获得一个dataBase对象，若存在此对象，则直接返回；若不存在，则创建一个新的dataBase。
+		 * 创建一个tcp或udp socket连接，连接到指定服务器，参数可设置socket服务器ip地址，端口号，连接超时时间
 		 * @param options : 必选 socket设置参数
 		 * @param callback : 状态回调
 		 * @return socket 
@@ -2465,7 +2579,7 @@ var app = (function(global) {
 		 * 通过键(key)检索获取应用存储的值
 		 * @param key : (String) 必选 存储的键值
 		 */
-		getItem: function(key) {
+		get: function(key) {
 			return $L.executeNativeJS(['storage', 'getItem'], key);
 		},
 		/*
@@ -2473,46 +2587,28 @@ var app = (function(global) {
 		 * @param key : (String) 必选 存储的键值
 		 * @param value : (String) 必选 存储的内容
 		 */
-		setItem: function(key, value) {
-			return $L.executeNativeJS(['storage', 'setItem'], key, value);
+		set: function(key, value) {
+			$L.executeNativeJS(['storage', 'setItem'], key, value);
 		},
 		/*
 		 * 通过key值删除键值对存储的数据
 		 * @param key : (String) 必选 存储的键值
 		 */
-		removeItem: function(key) {
-			return $L.executeNativeJS(['storage', 'removeItem'], key);
+		remove: function(key) {
+			$L.executeNativeJS(['storage', 'removeItem'], key);
 		},
 		/*
 		 * 清除应用所有的键值对存储数据
 		 */
 		clear: function() {
-			return $L.executeNativeJS(['storage', 'clear']);
+			$L.executeNativeJS(['storage', 'clear']);
 		},
 		/*
 		 * 获取键值对中指定索引值的key值
 		 * @param index: (Number) 必选 存储键值的索引
 		 */
 		key: function(index) {
-			$L.executeNativeJS(['storage', 'key'], index)
-		},
-		/*
-		 * 获取屏幕亮度值
-		 */
-		getBrightness: function() {
-			return $L.executeNativeJS(['storage', 'getBrightness']);
-		},
-		/*
-		 * 锁定屏幕方向,iOS不支持.
-		 */
-		lockOrientation: function() {
-			return $L.executeNativeJS(['storage', 'lockOrientation']);
-		},
-		/*
-		 * 解除锁定屏幕方向,iOS不支持.
-		 */
-		unlockOrientation: function() {
-			return $L.executeNativeJS(['storage', 'unlockOrientation']);
+			return $L.executeNativeJS(['storage', 'key'], index)
 		}
 	}
 

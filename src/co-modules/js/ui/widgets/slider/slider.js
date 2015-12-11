@@ -169,6 +169,7 @@
      * 图片轮播组件
      */
     define(function(require, exports, module) {
+        debugger;
         var $ui = require("ui"),
             cssPrefix = $.fx.cssPrefix;
         transitionEnd = $.fx.transitionEnd;

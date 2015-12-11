@@ -247,6 +247,25 @@
         $('.ui-accordion-list').on('tapped',function(e,el){
             win.open(el.data('target'));
         })
+        app.addSlideDrawer('dialog.html','left',200);
+        $('.ui-nav-bar-left').button(function(){
+            app.openLeftSlideDrawer();
+        })
+
+
+        app.http.ajax('http://api.u148.net/json/6/1', {
+            timeout: 3000,
+            success: function(data, response) {
+                alert(data)
+            }
+        })
+
+        app.http.ajax('http://api.u148.net/json/6/1', {
+            timeout: 100,
+            success: function(data, response) {
+                alert(data)
+            }
+        })
   })
    </script>
 </html>

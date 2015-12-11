@@ -1,10 +1,10 @@
 .page-from-right-to-center {
-  -webkit-animation: pageFromRightToCenter 500ms forwards;
-  animation: pageFromRightToCenter 500ms forwards;
+  -webkit-animation: pageFromRightToCenter 600ms forwards;
+  animation: pageFromRightToCenter 600ms forwards;
 }
 .page-from-right-to-center:before {
-  -webkit-animation: pageFromRightToCenterShadow 500ms forwards;
-  animation: pageFromRightToCenterShadow 500ms forwards;
+  -webkit-animation: pageFromRightToCenterShadow 600ms forwards;
+  animation: pageFromRightToCenterShadow 600ms forwards;
 }
 .page-from-center-to-right {
   -webkit-animation: pageFromCenterToRight 500ms forwards;
@@ -81,104 +81,3 @@
 
 
 
-
-
- @-webkit-keyframes moveLeftToRightIn {
-            from {
-                left: -100%;
-            }
-
-            to {
-                left: 0px;
-            }
-        }
-
-        @-webkit-keyframes moveRightToLeftIn {
-            from {
-                left: 100%;
-            }
-
-            to {
-                left: 0px;
-            }
-        }
-
-        @-webkit-keyframes moveTopToBottomIn {
-            from {
-                top: -100%;
-            }
-
-            to {
-                top: 0px;
-            }
-        }
-
-        @-webkit-keyframes moveBottomToTopIn {
-            from {
-                top: 100%;
-            }
-
-            to {
-                top: 0px;
-            }
-        }
-
-        @-webkit-keyframes moveLeftToRightOut {
-            from {
-                left: 0px;
-            }
-
-            to {
-                left: 100%;
-            }
-        }
-
-        @-webkit-keyframes moveRightToLeftOut {
-            from {
-                left: 0px;
-            }
-
-            to {
-                left: -100%;
-            }
-        }
-
-        @-webkit-keyframes moveTopToBottomOut {
-            from {
-                top: 0px;
-            }
-
-            to {
-                top: 100%;
-            }
-        }
-
-        @-webkit-keyframes moveBottomToTopOut {
-            from {
-                top: 0px;
-            }
-
-            to {
-                top: -100%;
-            }
-        }
-
-        @-webkit-keyframes fadeOut {
-            from {
-                opacity: 1.0;
-            }
-
-            to {
-                opacity: 0;
-            }
-        }
-
-        @-webkit-keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1.0;
-            }
-        }
