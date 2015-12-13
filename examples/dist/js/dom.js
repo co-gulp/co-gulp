@@ -1,6 +1,6 @@
  /* ===========================
-                                      Dom Library
-                                  ===========================*/
+                                       Dom Library
+                                   ===========================*/
  var Dom = (function() {
      var emptyArray = [],
          concat = emptyArray.concat,
@@ -815,10 +815,11 @@
                  var childNodes = this[i].childNodes;
 
                  for (var j = 0; j < childNodes.length; j++) {
+                     var node = childNodes[j];
                      if (!selector) {
-                         if (childNodes[j].nodeType === 1) children.push(childNodes[j]);
+                         if (node.nodeType === 1 && node.nodeName.toUpperCase() !== 'SCRIPT') children.push(childNodes[j]);
                      } else {
-                         if (childNodes[j].nodeType === 1 && $(childNodes[j]).is(selector)) children.push(childNodes[j]);
+                         if (node.nodeType === 1 && node.nodeName.toUpperCase() !== 'SCRIPT' && $(node).is(selector)) children.push(node);
                      }
                  }
              }
@@ -896,10 +897,6 @@
              return this.each(function(index, target) {
                  for (var i = 0; i < nodes.length; i++) {
                      var node = nodes[inReverse ? nodes.length - i - 1 : i]
-                     traverseNode(node, function(node) {
-                         if (node.nodeName != null && node.nodeName.toUpperCase() === 'SCRIPT' && (!node.type || node.type === 'text/javascript'))
-                             window['eval'].call(window, node.innerHTML)
-                     })
                      if (copyByClone && index < size - 1) node = node.cloneNode(true)
                      insert(operator, target, node)
                  }
@@ -3137,7 +3134,7 @@ $(function () {
 (function($) {
 	$.fn.button = function(callback) {
 		var self = this;
-		self.on('tab', function(evt) {
+		self.on('tap', function(evt) {
 			var ele = evt.currentTarget;
 			if ($.isFunction(callback)) {
 				callback.apply(self, [ele, evt]);

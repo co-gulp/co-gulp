@@ -2,24 +2,22 @@
  * @file lazyLoadImage组件
  */
 (function() {
-    var placeholderSrc = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEXCwsK592mkAAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==';
     var imagesSequence = [];
     var imageIsLoading = false;
-    var CLASS_LAZY_LOADER_CONTENT = 'ui-lazy-loader-content';
     var CLASS_LAZY = 'ui-lazy';
 
-    var SELECTOR_LAZY_LOADER_CONTENT = '.' + CLASS_LAZY_LOADER_CONTENT,
-        SELECTOR_LAZY = '.' + CLASS_LAZY;
+    var SELECTOR_LAZY = '.' + CLASS_LAZY;
 
     var render = function() {
         var _lli = this,
             opts = _lli.opts;
+        _lli.pageContent = _lli.ref.find('.' + opts.lazyContent);
+        if (_lli.pageContent.length === 0) return;
         _lli._lazyLoadImages = _lli.ref.find(SELECTOR_LAZY);
         if (_lli._lazyLoadImages.length === 0) return;
-        _lli.pageContent = _lli.ref.find(SELECTOR_LAZY_LOADER_CONTENT);
-        if (_lli.pageContent.length === 0) return;
         _lli._lazyLoadImages.each(function() {
-            if ($(this).attr('data-src')) $(this).attr('src', placeholderSrc);
+            if ($(this).data('src')) $(this).attr('src', opts.placeholderSrc);
+            if ($(this).data('background')) $(this).css('background-image', 'url(' + opts.placeholderSrc + ')'); 
         });
         lazyHandler.call(_lli);
     };
@@ -34,8 +32,8 @@
 
     var loadImage = function(el) {
         el = $(el);
-        var bg = el.attr('data-background');
-        var src = bg ? bg : el.attr('data-src');
+        var bg = el.data('background');
+        var src = bg ? bg : el.data('src');
         if (!src) return;
 
         function onLoad() {
@@ -91,7 +89,8 @@
 
         //lazyLoadImage
         var $lazyLoadImage = $ui.define('LazyLoadImage', {
-
+            placeholderSrc:'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABAQMAAAAl21bKAAAAA1BMVEXCwsK592mkAAAACklEQVQI12NgAAAAAgAB4iG8MwAAAABJRU5ErkJggg==',
+            lazyContent :'ui-lazy-loader-content'
         });
 
         //初始化

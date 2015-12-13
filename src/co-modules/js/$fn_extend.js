@@ -4,7 +4,7 @@
 (function($) {
 	$.fn.button = function(callback) {
 		var self = this;
-		self.on('tab', function(evt) {
+		self.on('tap', function(evt) {
 			var ele = evt.currentTarget;
 			if ($.isFunction(callback)) {
 				callback.apply(self, [ele, evt]);
