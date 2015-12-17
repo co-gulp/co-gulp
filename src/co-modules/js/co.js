@@ -53,7 +53,11 @@
 				}
 
 				$(document).find('.ui-action-back').button(function(evt) {
-					app.currentView().back();
+					if(app){
+						app.currentView().back();
+					}else if(rd){
+						rd.window.closeSelf();
+					}
 				})
 			})
 		}

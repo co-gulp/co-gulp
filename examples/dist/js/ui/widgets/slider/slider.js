@@ -139,9 +139,14 @@
             $(document.body).css('position','absolute');
             _sl.height = $(document.body).height();
         } else {
-            _sl.height = _sl.ref.height();
+            if(opts.heightTarget == 'parent'){
+                _sl.height = _sl.ref.parent().height();
+            }else{
+                _sl.height = _sl.ref.height();
+            }
+                
         }
-        // _sl.ref.height(_sl.height);
+        _sl.ref.height(_sl.height);
         _sl._pages.height(_sl.height);	
         _sl._pages.find(SELECTOR_SLIDER_IMG).height(_sl.height);	
         _sl.width = width;
@@ -169,7 +174,6 @@
      * 图片轮播组件
      */
     define(function(require, exports, module) {
-        debugger;
         var $ui = require("ui"),
             cssPrefix = $.fx.cssPrefix;
         transitionEnd = $.fx.transitionEnd;
@@ -231,7 +235,12 @@
              * @property {Number} [space=10f] 是否全屏显示
              * @namespace options
              */
-            fullPage:false
+            fullPage:false,
+            /**
+             * @property {Number} [space=10f] 高度目标 parent/self
+             * @namespace options
+             */
+            heightTarget :'self'
 
         });
         //初始化

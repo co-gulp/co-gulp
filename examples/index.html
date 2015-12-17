@@ -253,17 +253,16 @@
         })
 
 
-        app.http.ajax('http://api.u148.net/json/6/1', {
-            timeout: 3000,
+        app.http.ajax('http://124.202.153.169:8090/inter/moka/newUser/1/interface', {
+            type:'POST',
+            data:  {
+                    'method' : "login",
+                    'userName' : '13811780160',
+                    'passWord' : '12345678',
+                    'type' : "T"
+                },
             success: function(data, response) {
-                alert(data)
-            }
-        })
-
-        app.http.ajax('http://api.u148.net/json/6/1', {
-            timeout: 100,
-            success: function(data, response) {
-                alert(data)
+                alert(JSON.stringify(data))
             }
         })
   })

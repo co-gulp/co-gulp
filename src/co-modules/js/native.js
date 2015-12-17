@@ -206,12 +206,18 @@ var app = (function(global) {
     return typeof obj.length == 'number'
   };
 
+  $L.type = type
+
   $L.isPlainObject = function(obj) {
     return isObject(obj) && !isWindow(obj) && Object.getPrototypeOf(obj) == Object.prototype
   };
 
   $L.isFunction = function(value) {
     return type(value) == "function"
+  };
+
+  $L.isString = function(value) {
+    return type(value) == "string"
   };
 
   $L.isArray = Array.isArray ||
@@ -402,7 +408,8 @@ var app = (function(global) {
     if (type == 'right') {
       var slideLayoutParams = {
         type: 'right',
-        rightEdge: edge,
+        leftEdge: edge,
+        rightEdge:edge,
         rightPane: {
           name: url,
           url: url
@@ -413,6 +420,7 @@ var app = (function(global) {
       var slideLayoutParams = {
         type: 'left',
         leftEdge: edge,
+        rightEdge:edge,
         leftPane: {
           name: url,
           url: url

@@ -35,7 +35,7 @@ var gulp = require('gulp'), //基础库
         },
         examples: {
             root: 'examples/',
-            index: 'examples/index.html'
+            index: 'examples/contains.html'
         }
     },
     native = {

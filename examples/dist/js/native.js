@@ -206,12 +206,18 @@ var app = (function(global) {
     return typeof obj.length == 'number'
   };
 
+  $L.type = type
+
   $L.isPlainObject = function(obj) {
     return isObject(obj) && !isWindow(obj) && Object.getPrototypeOf(obj) == Object.prototype
   };
 
   $L.isFunction = function(value) {
     return type(value) == "function"
+  };
+
+  $L.isString = function(value) {
+    return type(value) == "string"
   };
 
   $L.isArray = Array.isArray ||
@@ -402,7 +408,8 @@ var app = (function(global) {
     if (type == 'right') {
       var slideLayoutParams = {
         type: 'right',
-        rightEdge: edge,
+        leftEdge: edge,
+        rightEdge:edge,
         rightPane: {
           name: url,
           url: url
@@ -413,6 +420,7 @@ var app = (function(global) {
       var slideLayoutParams = {
         type: 'left',
         leftEdge: edge,
+        rightEdge:edge,
         leftPane: {
           name: url,
           url: url
@@ -1907,7 +1915,6 @@ var app = (function(global) {
 ************   ui native httpManager   ************
 ===============================================================================*/
 (function($L, global) {
-
 	var XMLHttpRequest = function() {
 		var isOpened = false;
 		var isAbort = false;
@@ -1915,6 +1922,7 @@ var app = (function(global) {
 		var self = this;
 		settings.offline = 'undefined';
 		settings.expires = 0;
+		settings.bodyType = 'text';
 		this.open = function(url, method, timeout) {
 			if (typeof url === 'undefined') {
 				throw new Error("请传入有效的请求地址！");
@@ -1929,7 +1937,11 @@ var app = (function(global) {
 			if (!isOpened) {
 				throw new Error("执行send方法失败，请确保请求对象为OPENDE状态！");
 			}
-			if (body && $L.isPlainObject(body)) settings.body = JSON.stringify(body);
+			if (body && $L.isPlainObject(body)) {
+				if (body.json && $L.isPlainObject(body.json)) body.json = JSON.stringify(body.json)
+				settings.body = body
+			}
+
 			settings.dataType = dataType || 'json';
 			$L.executeNativeJS(['httpManager', 'sendRequest'], settings, function(response, data) {
 				if (self.onSuccess && $L.isFunction(self.onSuccess) && !isAbort) {

@@ -393,25 +393,64 @@ function closeSlideDrawer() {
     }
 }
 
-function sendRequest(settings, pageId,token) {
-    settings = JSON.parse(settings);
+function sendRequest(settings, pageId, token) {
+    var serialize = function(params, obj, scope) {
+        var type, array = app.isArray(obj),
+            hash = app.isPlainObject(obj)
+        app.each(obj, function(key, value) {
+            type = app.type(value)
+            if (scope) key = scope + '[' + (hash || type == 'object' || type == 'array' ? key : '') + ']'
+                // handle data in serializeArray() format
+            if (!scope && array) params.add(value.name, value.value)
+                // recurse into nested objects
+            else if (type == "array" || (type == "object"))
+                serialize(params, value, key)
+            else params.add(key, value)
+        })
+    }
+    var escape = encodeURIComponent
+    var appendQuery = function(url, query) {
+        if (query == '') return url
+        return (url + '&' + query).replace(/[&?]{1,2}/, '?')
+    }
+
+    var param = function(obj) {
+        var params = []
+        params.add = function(key, value) {
+            if (app.isFunction(value)) value = value()
+            if (value == null) value = ""
+            this.push(escape(key) + '=' + escape(value))
+        }
+        serialize(params, obj)
+        return params.join('&').replace(/%20/g, '+')
+    }
+
+    var serializeData = function(data, settings) {
+        if (data && app.type(data) != "string")
+            settings.body = param(data)
+        if (data && (!settings.method || settings.method.toUpperCase() == 'GET'))
+            settings.url = appendQuery(settings.url, data), settings.body = undefined
+    }
+
+    // settings = JSON.parse(settings);
     var xhr = new XMLHttpRequest
     xhr.onreadystatechange = function() {
         if (xhr.readyState === 4) {
             var res = {
                 type: 'ajax',
                 data: xhr.responseText,
-                token:token
+                token: token
             }
             res = JSON.stringify(res)
-            setTimeout(function() {
-                document.getElementById(pageId).firstChild.contentWindow.postMessage(res, '*');
-            }, settings.timeout);
+            document.getElementById(pageId).firstChild.contentWindow.postMessage(res, '*');
         }
     };
     //创建请求
     xhr.open('POST', 'http://127.0.0.1:3001', true);
     xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8;");
     //发送请求
-    xhr.send('{aa:333}');
+    // var data = settings.data;
+    // settings.data = JSON.parse(data);
+    // settings = JSON.stringify(settings)
+    xhr.send(settings);
 }
